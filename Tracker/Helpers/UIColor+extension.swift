@@ -6,8 +6,8 @@ extension UIColor {
     static var ypBlue: UIColor? { return UIColor(named: "YPBlue")}
     static var ypGray: UIColor? { return UIColor(named: "YPGray")}
     static var ypLightGray: UIColor? { return UIColor(named: "YPLightGray")}
-    static var ypRed: UIColor? { return UIColor(named: "ypRed")}
-    static var ypWhite: UIColor? { return UIColor(named: "ypWhite")}
+    static var ypRed: UIColor? { return UIColor(named: "YPRed")}
+    static var ypWhite: UIColor? { return UIColor(named: "YPWhite")}
     
     static var ypColorSelection1: UIColor? { return UIColor(named: "Color selection 1")}
     static var ypColorSelection2: UIColor? { return UIColor(named: "Color selection 2")}
