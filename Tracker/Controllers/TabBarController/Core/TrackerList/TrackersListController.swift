@@ -146,6 +146,7 @@ extension TrackersListController {
     }
     
     private func showTypeTrackerViewController() {
-        present(typeTrackerViewController, animated: true)
+        let navigationViewController = UINavigationController(rootViewController: typeTrackerViewController)
+        present(navigationViewController, animated: true)
     }
 }

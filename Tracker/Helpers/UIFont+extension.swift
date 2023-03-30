@@ -13,8 +13,8 @@ extension UIFont {
         return UIFont.systemFont(ofSize: 19, weight: .bold)
     }
     
-    static var ypRegularSize19: UIFont {
-        return UIFont.systemFont(ofSize: 19, weight: .regular)
+    static var ypRegularSize17: UIFont {
+        return UIFont.systemFont(ofSize: 17, weight: .regular)
     }
     
     static var ypMediumSize16: UIFont {

@@ -12,7 +12,6 @@ final class TypeTrackerView: UIView {
     
     // MARK: -TypeTrackerViewConstants
     private struct TypeTrackerViewConstants {
-        static let title = "Создание трекера"
         static let habbitButtonTitle = "Привычка"
         static let eventButtonTitle = "Нерегулярные события"
         static let topAnchorConstant: CGFloat = 30
@@ -21,17 +20,7 @@ final class TypeTrackerView: UIView {
         static let buttonHeight: CGFloat = 60
     }
     
-    // MARK: UI
-    private lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.ypMediumSize16
-        label.textColor = .ypBlack
-        label.text = TypeTrackerViewConstants.title
-        label.textAlignment = .center
-        return label
-    }()
-    
+    // MARK: UI    
     private lazy var buttonsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -90,17 +79,13 @@ final class TypeTrackerView: UIView {
     }
     
     private func addViews() {
-        addSubViews(titleLabel, buttonsStackView)
+        addSubview(buttonsStackView)
         buttonsStackView.addArrangedSubview(habitButton)
         buttonsStackView.addArrangedSubview(eventButton)
     }
     
     private func activateConstraints() {
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.indentationFromEdges),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.indentationFromEdges),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: TypeTrackerViewConstants.topAnchorConstant),
-            
             buttonsStackView.centerYAnchor.constraint(equalTo: centerYAnchor),
             buttonsStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: TypeTrackerViewConstants.indentationFromEdges),
             buttonsStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -TypeTrackerViewConstants.indentationFromEdges),
