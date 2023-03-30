@@ -14,6 +14,8 @@ final class CreateTrackerView: UIView {
     private struct CreateTrackerViewConstants {
         static let cancelButtonTitle = "Отменить"
         static let createButtonTitle = "Создать"
+        static let errorLabelText = "Ограничение 38 символов"
+        
         static let textFieldPlaceholder = "Введите название трекера"
 
         static let standartCellIdentifire = "cell"
@@ -30,6 +32,10 @@ final class CreateTrackerView: UIView {
     private var emojiCollectionViewHelper: EmojiCollectionViewHelper
     private var colorsCollectionViewHelper: ColorsCollectionViewHelper
     private var sheduleCategoryTableViewHelper: SheduleCategoryTableViewHelper
+    
+    private var nameTrackerTextFieldHelper =  NameTrackerTextFieldHelper()
+    
+    private var topViewConstraint: NSLayoutConstraint!
 
     // MARK: UI
     private lazy var scrollView: UIScrollView = {
@@ -72,6 +78,17 @@ final class CreateTrackerView: UIView {
             placeholderText: CreateTrackerViewConstants.textFieldPlaceholder
         )
         return textField
+    }()
+    
+    private lazy var errorLabel: UILabel = {
+       let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.ypRegularSize17
+        label.textColor = .ypRed
+        label.text = CreateTrackerViewConstants.errorLabelText
+        label.textAlignment = .center
+        label.alpha = 0
+        return label
     }()
 
     private lazy var sheduleCategoryTableView: UITableView = {
@@ -193,6 +210,10 @@ final class CreateTrackerView: UIView {
 
         sheduleCategoryTableView.dataSource = sheduleCategoryTableViewHelper
         sheduleCategoryTableView.delegate = sheduleCategoryTableViewHelper
+        
+        nameTrackerTextField.delegate = nameTrackerTextFieldHelper
+        
+        nameTrackerTextFieldHelper.delegate = self
 
         setupView()
         addViews()
@@ -215,6 +236,7 @@ final class CreateTrackerView: UIView {
 
         contentView.addSubViews(
             nameTrackerTextField,
+            errorLabel,
             stackView,
             buttonStackView
         )
@@ -243,7 +265,13 @@ final class CreateTrackerView: UIView {
         let buttonHeight: CGFloat = 60
         let verticalAxis: CGFloat = 10
         let edge = Constants.indentationFromEdges
-
+        
+        let insetBetweenNameTextFieldAndStackView: CGFloat = 24
+        
+        topViewConstraint = stackView.topAnchor.constraint(equalTo: nameTrackerTextField.bottomAnchor, constant: insetBetweenNameTextFieldAndStackView)
+        topViewConstraint.isActive = true
+        
+        
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -259,8 +287,11 @@ final class CreateTrackerView: UIView {
             nameTrackerTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: edge),
             nameTrackerTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -edge),
             nameTrackerTextField.heightAnchor.constraint(equalToConstant: Constants.hugHeight),
-
-            stackView.topAnchor.constraint(equalTo: nameTrackerTextField.bottomAnchor, constant: 24),
+            
+            errorLabel.leadingAnchor.constraint(equalTo: nameTrackerTextField.leadingAnchor),
+            errorLabel.trailingAnchor.constraint(equalTo: nameTrackerTextField.trailingAnchor),
+            errorLabel.topAnchor.constraint(equalTo: nameTrackerTextField.bottomAnchor, constant: 8),
+ 
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: edge),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -edge),
             stackView.bottomAnchor.constraint(equalTo: buttonStackView.topAnchor, constant: -10),
@@ -288,6 +319,26 @@ final class CreateTrackerView: UIView {
             guard let self = self else { return }
             self.delegate?.cancelCreate()
             print(self.collectionStackView.frame)
+        }
+    }
+}
+
+extension CreateTrackerView: NameTrackerTextFieldHelperDelegate {
+    func noLimitedCharacters() {
+        topViewConstraint.constant = 24
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self = self else { return }
+            self.errorLabel.alpha = 0
+            self.layoutIfNeeded()
+        }
+    }
+    
+    func askLimitedCharacter() {
+        topViewConstraint.constant = 40
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self = self else { return }
+            self.errorLabel.alpha = 1
+            self.layoutIfNeeded()
         }
     }
 }

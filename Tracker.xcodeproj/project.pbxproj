@@ -36,6 +36,7 @@
 		5B88D90129D47B5A00A325E4 /* EmojiCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B88D90029D47B5A00A325E4 /* EmojiCollectionViewCell.swift */; };
 		5B88D90A29D5619400A325E4 /* SheduleCategoryTableViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B88D90929D5619400A325E4 /* SheduleCategoryTableViewHelper.swift */; };
 		5B88D90C29D5786800A325E4 /* NameTrackerTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B88D90B29D5786800A325E4 /* NameTrackerTextField.swift */; };
+		5B88D91629D5BC2000A325E4 /* NameTrackerTextFieldHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B88D91529D5BC2000A325E4 /* NameTrackerTextFieldHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +71,7 @@
 		5B88D90029D47B5A00A325E4 /* EmojiCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCollectionViewCell.swift; sourceTree = "<group>"; };
 		5B88D90929D5619400A325E4 /* SheduleCategoryTableViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheduleCategoryTableViewHelper.swift; sourceTree = "<group>"; };
 		5B88D90B29D5786800A325E4 /* NameTrackerTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameTrackerTextField.swift; sourceTree = "<group>"; };
+		5B88D91529D5BC2000A325E4 /* NameTrackerTextFieldHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameTrackerTextFieldHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -290,6 +292,7 @@
 				5B88D8F529D442E900A325E4 /* EmojiCollectionViewHelper.swift */,
 				5B88D8F829D444CF00A325E4 /* ColorsCollectionViewHelper.swift */,
 				5B88D90929D5619400A325E4 /* SheduleCategoryTableViewHelper.swift */,
+				5B88D91529D5BC2000A325E4 /* NameTrackerTextFieldHelper.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -385,6 +388,7 @@
 			files = (
 				5B7D879629D16EDD00765744 /* TrackersListController.swift in Sources */,
 				5B88D8FB29D4487500A325E4 /* Collection+extension.swift in Sources */,
+				5B88D91629D5BC2000A325E4 /* NameTrackerTextFieldHelper.swift in Sources */,
 				5B6A1DFD29D1B184006BD980 /* StatisticViewController.swift in Sources */,
 				5B88D8E729D34D7500A325E4 /* UIViewController+extension.swift in Sources */,
 				5B6A1DF829D1A804006BD980 /* UIFont+extension.swift in Sources */,
