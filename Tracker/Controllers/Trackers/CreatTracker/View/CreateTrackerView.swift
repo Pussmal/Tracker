@@ -4,6 +4,7 @@ protocol CreateTrackerViewDelegate: AnyObject {
     func createTracker()
     func cancelCreate()
     func showCategory()
+    func showShedule()
 }
 
 final class CreateTrackerView: UIView {
@@ -345,6 +346,10 @@ extension CreateTrackerView: NameTrackerTextFieldHelperDelegate {
 }
 
 extension CreateTrackerView: SheduleCategoryTableViewHelperDelegate {
+    func showShedule() {
+        delegate?.showShedule()
+    }
+    
     func showCategory() {
         delegate?.showCategory()
     }

@@ -2,6 +2,7 @@ import UIKit
 
 protocol SheduleCategoryTableViewHelperDelegate: AnyObject {
     func showCategory()
+    func showShedule()
 }
 
 final class SheduleCategoryTableViewHelper: NSObject {
@@ -53,6 +54,8 @@ extension SheduleCategoryTableViewHelper: UITableViewDataSource {
         switch indexPath.row {
         case 0:
             delegate?.showCategory()
+        case 1:
+            delegate?.showShedule()
         default:
             break
         }

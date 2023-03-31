@@ -1,28 +1,21 @@
-
 import UIKit
 
-enum EditCategory {
-    case addCategory
-    case editCategory
+protocol SheduleViewDelegate: AnyObject {
+    func setDates()
 }
 
-protocol CategoryViewDelegate: AnyObject {
-    func showEditCategoryViewController(type: EditCategory, editCategoryString: String?)
-    func showDeleteActionSheet()
-}
-
-final class CategoryView: UIView {
+final class SheduleView: UIView {
     
-    weak var delegate: CategoryViewDelegate?
+    weak var delegate: SheduleViewDelegate?
     
-    private struct CategoryViewConstant {
-        static let collectionViewReuseIdentifier = "Cell"
-        static let addButtontitle = "Добавить категорию"
+    private struct SheduleViewConstant {
+        static let collectionViewReuseIdentifier = "cell"
+        static let addButtontitle = "Готово"
     }
     
-    private var сategoryCollectionViewCellHelper: CategoryCollectionViewCellHelper?
+    private var sheduleCollectionViewCellHelper: SheduleCollectionViewCellHelper?
     
-    private let categoryCollectionView: UICollectionView = {
+    private let sheduleCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(
@@ -31,11 +24,11 @@ final class CategoryView: UIView {
         )
         collectionView.register(
             UICollectionViewCell.self,
-            forCellWithReuseIdentifier: CategoryViewConstant.collectionViewReuseIdentifier
+            forCellWithReuseIdentifier: SheduleViewConstant.collectionViewReuseIdentifier
         )
         collectionView.register(
-            CategoryCollectionViewCell.self,
-            forCellWithReuseIdentifier: CategoryCollectionViewCell.reuseIdentifire
+            SheduleCollectionViewCell.self,
+            forCellWithReuseIdentifier: SheduleCollectionViewCell.reuseIdentifire
         )
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsVerticalScrollIndicator = false
@@ -46,7 +39,7 @@ final class CategoryView: UIView {
     private lazy var addButton: TrackerButton = {
         let button = TrackerButton(
             frame: .zero,
-            title: CategoryViewConstant.addButtontitle
+            title: SheduleViewConstant.addButtontitle
         )
         button.addTarget(
             self,
@@ -58,15 +51,15 @@ final class CategoryView: UIView {
     
     init(
         frame: CGRect,
-        delegate: CategoryViewDelegate?
+        delegate: SheduleViewDelegate?
     ) {
         self.delegate = delegate
        
         super.init(frame: frame)
         
-        сategoryCollectionViewCellHelper = CategoryCollectionViewCellHelper(delegate: self)
-        categoryCollectionView.delegate = сategoryCollectionViewCellHelper
-        categoryCollectionView.dataSource = сategoryCollectionViewCellHelper
+        sheduleCollectionViewCellHelper = SheduleCollectionViewCellHelper(delegate: self)
+        sheduleCollectionView.delegate = sheduleCollectionViewCellHelper
+        sheduleCollectionView.dataSource = sheduleCollectionViewCellHelper
         
         setupView()
         addSubviews()
@@ -84,17 +77,17 @@ final class CategoryView: UIView {
     
     private func addSubviews() {
         addSubViews(
-            categoryCollectionView,
+            sheduleCollectionView,
             addButton
         )
     }
     
     private func activateConstraints() {
         NSLayoutConstraint.activate([
-            categoryCollectionView.topAnchor.constraint(equalTo: topAnchor),
-            categoryCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.indentationFromEdges),
-            categoryCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.indentationFromEdges),
-            categoryCollectionView.bottomAnchor.constraint(equalTo: addButton.topAnchor),
+            sheduleCollectionView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
+            sheduleCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.indentationFromEdges),
+            sheduleCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.indentationFromEdges),
+            sheduleCollectionView.bottomAnchor.constraint(equalTo: addButton.topAnchor),
             
             addButton.heightAnchor.constraint(equalToConstant: Constants.hugHeight),
             addButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.indentationFromEdges),
@@ -107,17 +100,11 @@ final class CategoryView: UIView {
     private func addButtonTapped() {
         addButton.showAnimation { [weak self] in
             guard let self = self else { return }
-            self.delegate?.showEditCategoryViewController(type: .addCategory, editCategoryString: nil)
+            self.delegate?.setDates()
         }
     }
 }
 
-extension CategoryView: CategoryCollectionViewCellHelperDelegate {
-    func editCategory(editCategoryString: String?) {
-        delegate?.showEditCategoryViewController(type: .editCategory, editCategoryString: editCategoryString)
-    }
-    
-    func deleteCategory() {
-        delegate?.showDeleteActionSheet()
-    }
+extension SheduleView: SheduleCollectionViewCellHelperDelegate {
+  
 }
