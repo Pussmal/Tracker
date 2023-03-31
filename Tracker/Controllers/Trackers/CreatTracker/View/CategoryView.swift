@@ -8,6 +8,7 @@ enum EditCategory {
 
 protocol CategoryViewDelegate: AnyObject {
     func showEditCategoryViewController(type: EditCategory, editCategoryString: String?)
+    func showDeleteActionSheet()
 }
 
 final class CategoryView: UIView {
@@ -117,6 +118,6 @@ extension CategoryView: CategoryCollectionViewCellHelperDelegate {
     }
     
     func deleteCategory() {
-        // удалить категорию
+        delegate?.showDeleteActionSheet()
     }
 }

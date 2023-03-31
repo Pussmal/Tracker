@@ -1,8 +1,25 @@
 import UIKit
 
 final class CategoryViewController: UIViewController {
-
+    
     private var сategoryView: CategoryView!
+    
+    private var deleteActionSheet: UIAlertController {
+        let message = "Эта категория точно не нужна?"
+        let alertController = UIAlertController(
+            title: nil, message: message,
+            preferredStyle: .actionSheet
+        )
+        let deleteAction = UIAlertAction(
+            title: "Удалить",
+            style: .destructive) { _ in
+                // TODO: удалить категорию обновить изображение
+            }
+        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+        alertController.addAction(deleteAction)
+        alertController.addAction(cancelAction)
+        return alertController
+    }
     
     private struct CategoryViewControllerConstants {
         static let title = "Категория"
@@ -31,6 +48,11 @@ final class CategoryViewController: UIViewController {
 }
 
 extension CategoryViewController: CategoryViewDelegate {
+    func showDeleteActionSheet() {
+        let viewController = deleteActionSheet
+        present(viewController, animated: true)
+    }
+    
     func showEditCategoryViewController(type: EditCategory, editCategoryString: String?) {
         let viewController = createEditCategoryViewController(type: type, editCategoryString: editCategoryString)
         present(viewController, animated: true)

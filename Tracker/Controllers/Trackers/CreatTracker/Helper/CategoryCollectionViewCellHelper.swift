@@ -28,6 +28,7 @@ final class CategoryCollectionViewCellHelper: NSObject {
                 UIAction(title: "Удалить", attributes: .destructive, handler: {  [weak self] _ in
                     guard let self = self else { return }
                     print("Вызвать делегата и сказать чтобы удалил категорию и передать в него категорию")
+                    self.delegate?.deleteCategory()
                 })
             ])
         })
