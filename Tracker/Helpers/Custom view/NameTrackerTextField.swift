@@ -1,10 +1,10 @@
 import UIKit
 
-final class NameTrackerTextField: UITextField {
+final class TrackerTextField: UITextField {
 
     private let inset: CGFloat = 16
     
-    init(frame: CGRect, placeholderText: String) {
+    init(frame: CGRect, placeholderText: String?) {
         super.init(frame: frame)
         setupView(placeholderText: placeholderText)
     }
@@ -21,7 +21,7 @@ final class NameTrackerTextField: UITextField {
         bounds.insetBy(dx: inset, dy: inset)
     }
     
-    private func setupView(placeholderText: String) {
+    private func setupView(placeholderText: String?) {
         translatesAutoresizingMaskIntoConstraints = false
         font = UIFont.ypRegularSize17
         textColor = .ypBlack

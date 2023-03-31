@@ -1,9 +1,15 @@
 import UIKit
 
+protocol SheduleCategoryTableViewHelperDelegate: AnyObject {
+    func showCategory()
+}
+
 final class SheduleCategoryTableViewHelper: NSObject {
     
     private var typeTracker: TypeTracker
     private let cellsTitle = ["Категория", "Расписание"]
+    
+    weak var delegate: SheduleCategoryTableViewHelperDelegate?
     
     init(typeTracker: TypeTracker) {
         self.typeTracker = typeTracker
@@ -41,5 +47,14 @@ extension SheduleCategoryTableViewHelper: UITableViewDataSource {
         cell.textLabel?.text = cellsTitle[safe: indexPath.row]
         cell.detailTextLabel?.text = "Хрень"
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            delegate?.showCategory()
+        default:
+            break
+        }
     }
 }

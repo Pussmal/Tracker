@@ -8,8 +8,6 @@ final class CreateTrackerViewController: UIViewController {
         static let habitTitle = "Новая привычка"
         static let eventTitle = "Новое нерегулярное событие"
     }
-
-  //  private var createTrackerView: CreateTrackerViewDelete!
     
     private var createTrackerView: CreateTrackerView!
     
@@ -48,11 +46,26 @@ final class CreateTrackerViewController: UIViewController {
 }
 
 extension CreateTrackerViewController: CreateTrackerViewDelegate {
+    func showCategory() {
+        let viewController = createCategoryViewController()
+        present(viewController, animated: true)
+    }
+    
     func createTracker() {
         print("Создаем tracker")
     }
     
     func cancelCreate() {
         print("Отмена")
+    }
+}
+
+
+// MARK: create CategoryViewController
+extension CreateTrackerViewController {
+    private func createCategoryViewController() -> UINavigationController {
+        let viewController = CategoryViewController()
+        let navigationViewController = UINavigationController(rootViewController: viewController)
+        return navigationViewController
     }
 }

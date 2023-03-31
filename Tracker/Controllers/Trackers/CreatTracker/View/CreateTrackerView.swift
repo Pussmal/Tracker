@@ -3,6 +3,7 @@ import UIKit
 protocol CreateTrackerViewDelegate: AnyObject {
     func createTracker()
     func cancelCreate()
+    func showCategory()
 }
 
 final class CreateTrackerView: UIView {
@@ -72,8 +73,8 @@ final class CreateTrackerView: UIView {
         return stackView
     }()
 
-    private lazy var nameTrackerTextField: NameTrackerTextField = {
-        let textField = NameTrackerTextField(
+    private lazy var nameTrackerTextField: TrackerTextField = {
+        let textField = TrackerTextField(
             frame: .zero,
             placeholderText: CreateTrackerViewConstants.textFieldPlaceholder
         )
@@ -214,6 +215,7 @@ final class CreateTrackerView: UIView {
         nameTrackerTextField.delegate = nameTrackerTextFieldHelper
         
         nameTrackerTextFieldHelper.delegate = self
+        sheduleCategoryTableViewHelper.delegate = self
 
         setupView()
         addViews()
@@ -318,7 +320,6 @@ final class CreateTrackerView: UIView {
         cancelButton.showAnimation { [weak self] in
             guard let self = self else { return }
             self.delegate?.cancelCreate()
-            print(self.collectionStackView.frame)
         }
     }
 }
@@ -340,5 +341,11 @@ extension CreateTrackerView: NameTrackerTextFieldHelperDelegate {
             self.errorLabel.alpha = 1
             self.layoutIfNeeded()
         }
+    }
+}
+
+extension CreateTrackerView: SheduleCategoryTableViewHelperDelegate {
+    func showCategory() {
+        delegate?.showCategory()
     }
 }
