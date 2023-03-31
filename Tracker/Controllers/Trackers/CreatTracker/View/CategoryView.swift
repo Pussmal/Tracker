@@ -7,8 +7,7 @@ enum EditCategory {
 }
 
 protocol CategoryViewDelegate: AnyObject {
-    func addCategory(type: EditCategory)
-    func editCategory(type: EditCategory)
+    func showEditCategoryViewController(type: EditCategory, editCategoryString: String?)
 }
 
 final class CategoryView: UIView {
@@ -20,7 +19,7 @@ final class CategoryView: UIView {
         static let addButtontitle = "Добавить категорию"
     }
     
-    private var сategoryCollectionViewCellHelper = CategoryCollectionViewCellHelper()
+    private var сategoryCollectionViewCellHelper: CategoryCollectionViewCellHelper?
     
     private let colorCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -61,8 +60,10 @@ final class CategoryView: UIView {
         delegate: CategoryViewDelegate?
     ) {
         self.delegate = delegate
+       
         super.init(frame: frame)
         
+        сategoryCollectionViewCellHelper = CategoryCollectionViewCellHelper(delegate: self)
         colorCollectionView.delegate = сategoryCollectionViewCellHelper
         colorCollectionView.dataSource = сategoryCollectionViewCellHelper
         
@@ -105,8 +106,17 @@ final class CategoryView: UIView {
     private func addButtonTapped() {
         addButton.showAnimation { [weak self] in
             guard let self = self else { return }
-            self.delegate?.addCategory(type: .addCategory)
+            self.delegate?.showEditCategoryViewController(type: .addCategory, editCategoryString: nil)
         }
     }
 }
 
+extension CategoryView: CategoryCollectionViewCellHelperDelegate {
+    func editCategory(editCategoryString: String?) {
+        delegate?.showEditCategoryViewController(type: .editCategory, editCategoryString: editCategoryString)
+    }
+    
+    func deleteCategory() {
+        // удалить категорию
+    }
+}

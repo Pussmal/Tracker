@@ -1,11 +1,37 @@
 import UIKit
 
+protocol CategoryCollectionViewCellHelperDelegate: AnyObject {
+    func editCategory(editCategoryString: String?)
+    func deleteCategory()
+}
+
 final class CategoryCollectionViewCellHelper: NSObject {
+    
+    weak var delegate: CategoryCollectionViewCellHelperDelegate?
     
     private let category = [
         "Важное", "Радостоные мелочи"
     ]
     
+    init(delegate: CategoryCollectionViewCellHelperDelegate?) {
+        self.delegate = delegate
+    }
+    
+    private func createContextMenu(indexPath: IndexPath) -> UIContextMenuConfiguration {
+        return UIContextMenuConfiguration(actionProvider: { actions in
+            return UIMenu(children: [
+                UIAction(title: "Редактировать") { [weak self] _ in
+                    guard let self = self else { return }
+                    print("Вызвать делегата и сказать чтобы редактировал категорию и передать в него категорию")
+                    self.delegate?.editCategory(editCategoryString: self.category[safe: indexPath.row])
+                },
+                UIAction(title: "Удалить", attributes: .destructive, handler: {  [weak self] _ in
+                    guard let self = self else { return }
+                    print("Вызвать делегата и сказать чтобы удалил категорию и передать в него категорию")
+                })
+            ])
+        })
+    }
 }
 
 extension CategoryCollectionViewCellHelper: UICollectionViewDataSource {
@@ -52,6 +78,15 @@ extension CategoryCollectionViewCellHelper: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as? CategoryCollectionViewCell
         cell?.didDeselect()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        
+        guard indexPaths.count > 0 else { return nil }
+        
+        let indexPath = indexPaths[0]
+        return createContextMenu(indexPath: indexPath)
+        
     }
 }
 

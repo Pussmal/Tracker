@@ -3,6 +3,7 @@ import UIKit
 final class EditCategoryViewController: UIViewController {
 
     private var editCategoryView: EditCategoryView!
+    private var editCategoryText: String?
     
     private struct CategoryViewControllerConstants {
         static let newCategoryTitle = "Новая категория"
@@ -21,16 +22,17 @@ final class EditCategoryViewController: UIViewController {
     
     private func setupView() {
         view.backgroundColor = .clear
-        //title = CategoryViewControllerConstants.title
         addScreenView(view: editCategoryView)
+        editCategoryView.setTextFieldText(text: editCategoryText)
     }
     
-    func setEditType(type: EditCategory) {
+    func setEditType(type: EditCategory, editCategoryString: String?) {
         switch type {
         case .addCategory:
             title = CategoryViewControllerConstants.newCategoryTitle
         case .editCategory:
             title = CategoryViewControllerConstants.editCategoryTitle
+            editCategoryText = editCategoryString
         }
     }
     

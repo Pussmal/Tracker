@@ -31,22 +31,17 @@ final class CategoryViewController: UIViewController {
 }
 
 extension CategoryViewController: CategoryViewDelegate {
-    func addCategory(type: EditCategory) {
-        let viewController = createEditCategoryViewController(type: type)
+    func showEditCategoryViewController(type: EditCategory, editCategoryString: String?) {
+        let viewController = createEditCategoryViewController(type: type, editCategoryString: editCategoryString)
         present(viewController, animated: true)
     }
-    
-    func editCategory(type: EditCategory) {
-        // TODO: меняем категорию
-    }
-
 }
 
 // MARK: create CategoryViewController
 extension CategoryViewController {
-    private func createEditCategoryViewController(type: EditCategory) -> UINavigationController {
+    private func createEditCategoryViewController(type: EditCategory, editCategoryString: String?) -> UINavigationController {
         let viewController = EditCategoryViewController()
-        viewController.setEditType(type: type)
+        viewController.setEditType(type: type, editCategoryString: editCategoryString)
         let navigationViewController = UINavigationController(rootViewController: viewController)
         return navigationViewController
     }
