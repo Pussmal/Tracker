@@ -3,6 +3,12 @@ import UIKit
 final class ColorCollectionViewCell: UICollectionViewCell {
     static let reuseIdentifire = "ColorCollectionViewCell"
     
+    var cellIsSelected = false {
+        didSet {
+            cellIsSelected ? showBorderCell() : hideBorderCell()
+        }
+    }
+
     private lazy var colorView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -30,19 +36,19 @@ final class ColorCollectionViewCell: UICollectionViewCell {
     func config(color: UIColor?) {
         colorView.backgroundColor = color
     }
+        
+    private func addSubview() {
+        contentView.addSubview(colorView)
+    }
     
-    func showBorderCell() {
+    private func showBorderCell() {
         layer.borderWidth = 3
         layer.borderColor = colorView.backgroundColor?.withAlphaComponent(0.3).cgColor
     }
     
-    func hideBorderCell() {
+    private func hideBorderCell() {
         layer.borderWidth = 0
         layer.borderColor = colorView.backgroundColor?.withAlphaComponent(0.3).cgColor
-    }
-    
-    private func addSubview() {
-        contentView.addSubview(colorView)
     }
     
     private func activateConstraints() {

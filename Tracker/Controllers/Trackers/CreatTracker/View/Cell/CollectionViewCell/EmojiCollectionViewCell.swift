@@ -3,6 +3,12 @@ import UIKit
 final class EmojiCollectionViewCell: UICollectionViewCell {
     static let reuseIdentifire = "EmojiCollectionViewCell"
     
+    var cellIsSelected = false {
+        didSet {
+            cellIsSelected ? showHighlightCell() : hideHighlightCell()
+        }
+    }
+    
     private lazy var emojiLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -30,17 +36,17 @@ final class EmojiCollectionViewCell: UICollectionViewCell {
     func config(emoji: String?) {
         emojiLabel.text = emoji
     }
+
+    private func addSubview() {
+        contentView.addSubview(emojiLabel)
+    }
     
-    func showHighlightCell() {
+    private func showHighlightCell() {
         contentView.backgroundColor = .ypLightGray
     }
     
-    func hideHighlightCell() {
+    private func hideHighlightCell() {
         contentView.backgroundColor = .clear
-    }
-    
-    private func addSubview() {
-        contentView.addSubview(emojiLabel)
     }
     
     private func activateConstraints() {

@@ -31,8 +31,7 @@ final class CreateTrackerView: UIView {
         CGSize(width: frame.width, height: 931)
     }
 
-    private var emojiCollectionViewHelper: EmojiCollectionViewHelper
-    private var colorsCollectionViewHelper: ColorsCollectionViewHelper
+    private var emojiCollectionViewHelper: ColorAndEmojiCollectionViewHelper
     private var sheduleCategoryTableViewHelper: SheduleCategoryTableViewHelper
     
     private var nameTrackerTextFieldHelper =  NameTrackerTextFieldHelper()
@@ -60,15 +59,6 @@ final class CreateTrackerView: UIView {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.distribution = .fill
-        stackView.axis = .vertical
-        stackView.backgroundColor = .clear
-        return stackView
-    }()
-
-    private lazy var collectionStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.distribution = .fillProportionally
         stackView.axis = .vertical
         stackView.backgroundColor = .clear
         return stackView
@@ -105,32 +95,7 @@ final class CreateTrackerView: UIView {
         return tableView
     }()
 
-    private let colorCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        let collectionView = UICollectionView(
-            frame: .zero,
-            collectionViewLayout: layout
-        )
-        collectionView.register(
-            UICollectionViewCell.self,
-            forCellWithReuseIdentifier: "colorCell"
-        )
-        collectionView.register(
-            ColorCollectionViewCell.self,
-            forCellWithReuseIdentifier: ColorCollectionViewCell.reuseIdentifire
-        )
-        collectionView.register(
-            HeaderReusableView.self,
-            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: HeaderReusableView.reuseIdentifire)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.backgroundColor = .clear
-        return collectionView
-    }()
-
-    private let emojiCollectionView: UICollectionView = {
+    private let colorAndEmojiCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -146,6 +111,9 @@ final class CreateTrackerView: UIView {
             HeaderReusableView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: HeaderReusableView.reuseIdentifire)
+        collectionView.register(
+            ColorCollectionViewCell.self,
+            forCellWithReuseIdentifier: ColorCollectionViewCell.reuseIdentifire)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.backgroundColor = .clear
@@ -199,16 +167,12 @@ final class CreateTrackerView: UIView {
     ) {
         self.delegate = delegate
         self.typeTracer = typeTracker
-        emojiCollectionViewHelper = EmojiCollectionViewHelper()
-        colorsCollectionViewHelper = ColorsCollectionViewHelper()
+        emojiCollectionViewHelper = ColorAndEmojiCollectionViewHelper()
         sheduleCategoryTableViewHelper = SheduleCategoryTableViewHelper(typeTracker: typeTracker)
         super.init(frame: frame)
 
-        colorCollectionView.dataSource = colorsCollectionViewHelper
-        colorCollectionView.delegate = colorsCollectionViewHelper
-
-        emojiCollectionView.dataSource = emojiCollectionViewHelper
-        emojiCollectionView.delegate = emojiCollectionViewHelper
+        colorAndEmojiCollectionView.dataSource = emojiCollectionViewHelper
+        colorAndEmojiCollectionView.delegate = emojiCollectionViewHelper
 
         sheduleCategoryTableView.dataSource = sheduleCategoryTableViewHelper
         sheduleCategoryTableView.delegate = sheduleCategoryTableViewHelper
@@ -245,11 +209,8 @@ final class CreateTrackerView: UIView {
         )
         
         stackView.addArrangedSubview(sheduleCategoryTableView)
-        stackView.addArrangedSubview(collectionStackView)
-
-        collectionStackView.addArrangedSubview(emojiCollectionView)
-        collectionStackView.addArrangedSubview(colorCollectionView)
-
+        stackView.addArrangedSubview(colorAndEmojiCollectionView)
+        
         buttonStackView.addArrangedSubview(cancelButton)
         buttonStackView.addArrangedSubview(createButton)
     }
