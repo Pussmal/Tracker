@@ -10,7 +10,7 @@ final class CategoryCollectionViewCellHelper: NSObject {
     weak var delegate: CategoryCollectionViewCellHelperDelegate?
     
     private let category = [
-        "Важное", "Радостоные мелочи", "еще какая-то хрень"
+        "Важное", "Радостоные мелочи"
     ]
     
     init(delegate: CategoryCollectionViewCellHelperDelegate?) {

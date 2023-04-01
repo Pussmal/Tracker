@@ -20,7 +20,7 @@ final class CreateTrackerView: UIView {
         
         static let textFieldPlaceholder = "Введите название трекера"
 
-        static let collectionViewReuseIdentifier = "cell"
+        static let standartCellIdentifire = "cell"
 
         static let spacingConstant: CGFloat = 8
     }
@@ -33,7 +33,7 @@ final class CreateTrackerView: UIView {
 
     private var emojiCollectionViewHelper: EmojiCollectionViewHelper
     private var colorsCollectionViewHelper: ColorsCollectionViewHelper
-    private var sheduleCategoryTableViewHelper: SheduleCategoryCollectionViewHelper
+    private var sheduleCategoryTableViewHelper: SheduleCategoryTableViewHelper
     
     private var nameTrackerTextFieldHelper =  NameTrackerTextFieldHelper()
     
@@ -93,25 +93,16 @@ final class CreateTrackerView: UIView {
         return label
     }()
 
-    private let sheduleCategoryCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        let collectionView = UICollectionView(
-            frame: .zero,
-            collectionViewLayout: layout
+    private lazy var sheduleCategoryTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.register(
+            UITableViewCell.self,
+            forCellReuseIdentifier: CreateTrackerViewConstants.standartCellIdentifire
         )
-        collectionView.register(
-            UICollectionViewCell.self,
-            forCellWithReuseIdentifier: CreateTrackerViewConstants.collectionViewReuseIdentifier
-        )
-        collectionView.register(
-            SheduleCategoryCollectionViewCell.self,
-            forCellWithReuseIdentifier: SheduleCategoryCollectionViewCell.reuseIdentifire
-        )
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.backgroundColor = .clear
-        return collectionView
+        tableView.backgroundColor = .clear
+        tableView.layer.cornerRadius = Constants.cornerRadius
+        return tableView
     }()
 
     private let colorCollectionView: UICollectionView = {
@@ -210,7 +201,7 @@ final class CreateTrackerView: UIView {
         self.typeTracer = typeTracker
         emojiCollectionViewHelper = EmojiCollectionViewHelper()
         colorsCollectionViewHelper = ColorsCollectionViewHelper()
-        sheduleCategoryTableViewHelper = SheduleCategoryCollectionViewHelper(typeTracker: typeTracker)
+        sheduleCategoryTableViewHelper = SheduleCategoryTableViewHelper(typeTracker: typeTracker)
         super.init(frame: frame)
 
         colorCollectionView.dataSource = colorsCollectionViewHelper
@@ -219,8 +210,8 @@ final class CreateTrackerView: UIView {
         emojiCollectionView.dataSource = emojiCollectionViewHelper
         emojiCollectionView.delegate = emojiCollectionViewHelper
 
-        sheduleCategoryCollectionView.dataSource = sheduleCategoryTableViewHelper
-        sheduleCategoryCollectionView.delegate = sheduleCategoryTableViewHelper
+        sheduleCategoryTableView.dataSource = sheduleCategoryTableViewHelper
+        sheduleCategoryTableView.delegate = sheduleCategoryTableViewHelper
         
         nameTrackerTextField.delegate = nameTrackerTextFieldHelper
         
@@ -253,7 +244,7 @@ final class CreateTrackerView: UIView {
             buttonStackView
         )
         
-        stackView.addArrangedSubview(sheduleCategoryCollectionView)
+        stackView.addArrangedSubview(sheduleCategoryTableView)
         stackView.addArrangedSubview(collectionStackView)
 
         collectionStackView.addArrangedSubview(emojiCollectionView)
@@ -313,7 +304,7 @@ final class CreateTrackerView: UIView {
             buttonStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -edge),
             buttonStackView.heightAnchor.constraint(equalToConstant: buttonHeight),
 
-            sheduleCategoryCollectionView.heightAnchor.constraint(equalToConstant: tableViewHeight),
+            sheduleCategoryTableView.heightAnchor.constraint(equalToConstant: tableViewHeight),
         ])
     }
 
@@ -354,7 +345,7 @@ extension CreateTrackerView: NameTrackerTextFieldHelperDelegate {
     }
 }
 
-extension CreateTrackerView: SheduleCategoryCollectionViewHelperDelegate {
+extension CreateTrackerView: SheduleCategoryTableViewHelperDelegate {
     func showShedule() {
         delegate?.showShedule()
     }
