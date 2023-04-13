@@ -5,7 +5,7 @@ struct Tracker {
     let name: String
     let color: UIColor?
     let emoji: String
-    let schedule: [Date]?
+    let schedule: [String]?
 }
 
 extension Tracker: Equatable {

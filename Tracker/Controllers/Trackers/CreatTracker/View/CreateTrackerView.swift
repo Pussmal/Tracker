@@ -1,7 +1,7 @@
 import UIKit
 
 protocol CreateTrackerViewDelegate: AnyObject {
-    func createTracker()
+    func createTracker(nameTracker: String?)
     func cancelCreate()
     func showCategory()
     func showShedule()
@@ -17,11 +17,8 @@ final class CreateTrackerView: UIView {
         static let cancelButtonTitle = "Отменить"
         static let createButtonTitle = "Создать"
         static let errorLabelText = "Ограничение 38 символов"
-        
         static let textFieldPlaceholder = "Введите название трекера"
-
         static let standartCellIdentifire = "cell"
-
         static let spacingConstant: CGFloat = 8
     }
 
@@ -69,6 +66,7 @@ final class CreateTrackerView: UIView {
             frame: .zero,
             placeholderText: CreateTrackerViewConstants.textFieldPlaceholder
         )
+        textField.addTarget(self, action: #selector(textFieldChangeed), for: .editingChanged)
         return textField
     }()
     
@@ -156,6 +154,8 @@ final class CreateTrackerView: UIView {
             action: #selector(createButtonTapped),
             for: .touchUpInside
         )
+        button.backgroundColor = .ypGray
+        button.isEnabled = false
         return button
     }()
 
@@ -279,11 +279,21 @@ final class CreateTrackerView: UIView {
     @objc
     private func createButtonTapped() {
         createButton.showAnimation { [weak self] in
-            guard let self = self else { return }
-            self.delegate?.createTracker()
+            guard let self = self, self.nameTrackerTextField.text != "" else { return }
+            self.delegate?.createTracker(nameTracker: self.nameTrackerTextField.text)
         }
     }
 
+    @objc private func textFieldChangeed() {
+        if nameTrackerTextField.text?.isEmpty == false {
+            createButton.backgroundColor = .ypBlack
+            createButton.isEnabled = true
+        } else {
+            createButton.backgroundColor = .ypGray
+            createButton.isEnabled = false
+        }
+    }
+    
     @objc
     private func cancelButtonTapped() {
         cancelButton.showAnimation { [weak self] in

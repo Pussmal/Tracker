@@ -31,8 +31,10 @@ final class CreateTrackerViewController: UIViewController {
         }
     }
     
-    private var createTrackerView: CreateTrackerView!
+    private var trackerCategory: TrackerCategory?
+    private var tracker: Tracker?
     
+    private var createTrackerView: CreateTrackerView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,6 +71,20 @@ final class CreateTrackerViewController: UIViewController {
 }
 
 extension CreateTrackerViewController: CreateTrackerViewDelegate {
+    func createTracker(nameTracker: String?) {
+        guard let nameTracker,
+              let categoryString
+        else { return }
+        
+        tracker = Tracker(id: UUID().uuidString, name: nameTracker, color: nil, emoji: "", schedule: selectedDates)
+        
+        guard let tracker = tracker else { return }
+        trackerCategory = TrackerCategory(title: categoryString, trackers: [tracker])
+        
+        print(trackerCategory)
+        dismiss(animated: true)
+    }
+    
     func showShedule() {
         let viewController = createViewController(type: .shedule)
         present(viewController, animated: true)
@@ -78,11 +94,7 @@ extension CreateTrackerViewController: CreateTrackerViewDelegate {
         let viewController = createViewController(type: .category)
         present(viewController, animated: true)
     }
-    
-    func createTracker() {
-        print("Создаем tracker")
-    }
-    
+
     func cancelCreate() {
         delegate?.dismissViewController(self)
     }
