@@ -39,6 +39,5 @@ extension SheduleViewController: SheduleViewDelegate {
     func setDates(dates: [String]?) {
         guard let dates else { return }
         delegate?.setSelectedDates(dates: dates)
-        print(dates)
     }
 }

@@ -194,6 +194,10 @@ final class CreateTrackerView: UIView {
     func setCategory(with category: String?) {
         sheduleCategoryTableViewHelper.setCategory(category: category)
     }
+    
+    func setShedule(with shedule: String?) {
+        sheduleCategoryTableViewHelper.setSchedule(schedule: shedule)
+    }
 
     // MARK: - Private methods
     private func setupView() {

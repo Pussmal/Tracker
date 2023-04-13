@@ -25,6 +25,11 @@ final class SheduleCategoryTableViewHelper: NSObject {
         delegate?.reloadTableView()
     }
     
+    func setSchedule(schedule: String?) {
+        cellsTitle[1].discription = schedule
+        delegate?.reloadTableView()
+    }
+    
     private func cellConfig(cell: UITableViewCell) {
         cell.selectionStyle = .none
         cell.accessoryType = .disclosureIndicator

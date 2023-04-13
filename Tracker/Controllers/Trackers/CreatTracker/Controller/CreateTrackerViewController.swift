@@ -21,9 +21,18 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     private var categoryString: String?
+    private var selectedDates: [String]?
+    
+    private var stringSelectedDates: String {
+        if selectedDates?.count == 7 {
+            return "Каждый день"
+        } else {
+            return selectedDates?.joined(separator: ", ") ?? ""
+        }
+    }
     
     private var createTrackerView: CreateTrackerView!
-   
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -115,7 +124,8 @@ extension CreateTrackerViewController: CategoryViewControllerDelegate {
 
 extension CreateTrackerViewController: SheduleViewControllerDelegate {
     func setSelectedDates(dates: [String]) {
-        print(dates)
+        selectedDates = dates
+        createTrackerView.setShedule(with: stringSelectedDates)
         dismiss(animated: true)
     }
 }
