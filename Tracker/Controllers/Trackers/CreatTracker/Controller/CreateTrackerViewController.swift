@@ -87,7 +87,9 @@ extension CreateTrackerViewController {
         
         switch type {
         case .shedule:
-            viewController = SheduleViewController()
+            let sheduleViewController = SheduleViewController()
+            sheduleViewController.delegate = self
+            viewController = sheduleViewController
         case .category:
             let categoryViewController = CategoryViewController()
             categoryViewController.delegate = self
@@ -107,6 +109,13 @@ extension CreateTrackerViewController: CategoryViewControllerDelegate {
     func setCategory(category: String?) {
         categoryString = category
         createTrackerView.setCategory(with: category)
+        dismiss(animated: true)
+    }
+}
+
+extension CreateTrackerViewController: SheduleViewControllerDelegate {
+    func setSelectedDates(dates: [String]) {
+        print(dates)
         dismiss(animated: true)
     }
 }

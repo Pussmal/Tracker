@@ -1,7 +1,7 @@
 import UIKit
 
 protocol SheduleViewDelegate: AnyObject {
-    func setDates()
+    func setDates(dates: [String]?)
 }
 
 final class SheduleView: UIView {
@@ -57,7 +57,7 @@ final class SheduleView: UIView {
        
         super.init(frame: frame)
         
-        sheduleCollectionViewCellHelper = SheduleCollectionViewCellHelper(delegate: self)
+        sheduleCollectionViewCellHelper = SheduleCollectionViewCellHelper()
         sheduleCollectionView.delegate = sheduleCollectionViewCellHelper
         sheduleCollectionView.dataSource = sheduleCollectionViewCellHelper
         
@@ -100,11 +100,10 @@ final class SheduleView: UIView {
     private func addButtonTapped() {
         addButton.showAnimation { [weak self] in
             guard let self = self else { return }
-            self.delegate?.setDates()
+            let weeDayNumber = [ "Пн": 0, "Вт": 1, "Ср": 2, "Чт": 3, "Пт": 4, "Сб": 5, "Вс": 6]
+            let sortDays = self.sheduleCollectionViewCellHelper?.selectedDates.sorted(by: { weeDayNumber[$0] ?? 7 < weeDayNumber[$1] ?? 7
+            })
+            self.delegate?.setDates(dates: sortDays)
         }
     }
-}
-
-extension SheduleView: SheduleCollectionViewCellHelperDelegate {
-  
 }

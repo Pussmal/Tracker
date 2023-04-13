@@ -1,12 +1,6 @@
 import UIKit
 
-protocol SheduleCollectionViewCellHelperDelegate: AnyObject {
-   
-}
-
 final class SheduleCollectionViewCellHelper: NSObject {
-    
-    weak var delegate: SheduleCollectionViewCellHelperDelegate?
     
     private enum WeekDays: String, CaseIterable {
         case monday = "Понедельник"
@@ -17,10 +11,8 @@ final class SheduleCollectionViewCellHelper: NSObject {
         case saturday = "Суббота"
         case sunday = "Воскресенье"
     }
-    
-    init(delegate: SheduleCollectionViewCellHelperDelegate?) {
-        self.delegate = delegate
-    }
+
+    private(set) var selectedDates: Set<String> = []
 }
 
 extension SheduleCollectionViewCellHelper: UICollectionViewDataSource {
@@ -50,6 +42,8 @@ extension SheduleCollectionViewCellHelper: UICollectionViewDataSource {
             cell.hideLineView()
         }
 
+        cell.delegate = self
+        cell.indexPath = indexPath
         return cell
     }
     
@@ -57,8 +51,6 @@ extension SheduleCollectionViewCellHelper: UICollectionViewDataSource {
         WeekDays.allCases.count
     }
 }
-
-extension SheduleCollectionViewCellHelper: UICollectionViewDelegate {}
 
 extension SheduleCollectionViewCellHelper: UICollectionViewDelegateFlowLayout {
     func collectionView(
@@ -70,9 +62,22 @@ extension SheduleCollectionViewCellHelper: UICollectionViewDelegateFlowLayout {
         return CGSize(width: width, height: Constants.hugHeight)
     }
 
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         0
     }
-    
+}
+
+extension SheduleCollectionViewCellHelper: SheduleCollectionViewCellProtocol {
+    func getSelectedDay(_ indexPath: IndexPath?, select: Bool) {
+        guard let indexPath else { return }
+        var index = indexPath.row + 1
+        if index == Calendar.current.shortWeekdaySymbols.count { index = 0 }
+        let day = Calendar.current.shortWeekdaySymbols[index]
+        
+        if select {
+            selectedDates.insert(day)
+        } else {
+            selectedDates.remove(day)
+        }
+    }
 }

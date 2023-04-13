@@ -1,12 +1,16 @@
 import UIKit
 
+protocol SheduleCollectionViewCellProtocol: AnyObject {
+    func getSelectedDay(_ indexPath: IndexPath?, select: Bool)
+}
+
 final class SheduleCollectionViewCell: UICollectionViewCell {
+    
     static let reuseIdentifire = "SheduleCollectionViewCell"
     
-    private struct SheduleCollectionViewCellConstants {
+    weak var delegate: SheduleCollectionViewCellProtocol?
+    var indexPath: IndexPath?
         
-    }
-    
     private lazy var dayLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -19,6 +23,7 @@ final class SheduleCollectionViewCell: UICollectionViewCell {
         let switchView = UISwitch()
         switchView.onTintColor = .ypBlue
         switchView.translatesAutoresizingMaskIntoConstraints = false
+        switchView.addTarget(self, action: #selector(switchChange(_:)), for: .valueChanged)
         return switchView
     }()
     
@@ -75,5 +80,10 @@ final class SheduleCollectionViewCell: UICollectionViewCell {
             lineView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             lineView.heightAnchor.constraint(equalToConstant: 0.5)
         ])
+    }
+    
+    @objc
+    private func switchChange(_ sender: UISwitch) {
+        delegate?.getSelectedDay(indexPath, select: sender.isOn)
     }
 }

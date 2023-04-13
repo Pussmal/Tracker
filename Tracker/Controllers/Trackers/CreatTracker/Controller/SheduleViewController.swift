@@ -1,9 +1,14 @@
 import UIKit
 
+protocol SheduleViewControllerDelegate: AnyObject {
+    func setSelectedDates(dates: [String])
+}
+
 final class SheduleViewController: UIViewController {
 
     private var sheduleView: SheduleView!
    
+    weak var delegate: SheduleViewControllerDelegate?
     
     private struct SheduleViewControllerConstants {
         static let title = "Расписание"
@@ -31,7 +36,9 @@ final class SheduleViewController: UIViewController {
 }
 
 extension SheduleViewController: SheduleViewDelegate {
-    func setDates() {
-        print("определили даты")
+    func setDates(dates: [String]?) {
+        guard let dates else { return }
+        delegate?.setSelectedDates(dates: dates)
+        print(dates)
     }
 }
