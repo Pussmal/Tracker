@@ -42,7 +42,8 @@ final class EditCategoryViewController: UIViewController {
 }
 
 extension EditCategoryViewController: EditCategoryViewDelegate {
-    func editCategory() {
-        print("изменили привычку")
+    func editCategory(category: String?) {
+        print("изменили или создали категорию \(category ?? "Error")")
+        dismiss(animated: true)
     }
 }

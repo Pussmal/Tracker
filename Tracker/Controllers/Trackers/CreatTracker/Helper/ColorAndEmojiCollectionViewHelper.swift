@@ -9,6 +9,7 @@ final class ColorAndEmojiCollectionViewHelper: NSObject {
     ]
     
     private let emojiSectionTitle = "Emoji"
+    private let colorsSectionTitle = "Цвет"
     
     private let colors = [
         UIColor.ypColorSelection1,
@@ -33,8 +34,6 @@ final class ColorAndEmojiCollectionViewHelper: NSObject {
         if let color { return color }
         return nil
     }
-    
-    private let colorsSectionTitle = "Цвет"
     
     private var emojiSelectedItem: Int?
     private var colorSelectedItem: Int?
@@ -199,7 +198,13 @@ extension ColorAndEmojiCollectionViewHelper {
         else {
             return UICollectionReusableView()
         }
-        view.config(title: emojiSectionTitle)
+        
+        switch indexPath.section {
+        case 0: view.config(title: emojiSectionTitle)
+        case 1: view.config(title: colorsSectionTitle)
+        default: break
+        }
+        
         return view
     }
 }

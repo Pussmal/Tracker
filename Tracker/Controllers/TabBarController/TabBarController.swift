@@ -38,7 +38,7 @@ final class TabBarController: UITabBarController {
         viewControllers = tabBarItems.compactMap({ item in
             switch item {
             case .tracker:
-                let viewController = TrackersListController()
+                let viewController = TrackersViewController()
                 return creatNavigationController(vc: viewController, title: item.title)
             case .statistic:
                 let viewController = StatisticViewController()

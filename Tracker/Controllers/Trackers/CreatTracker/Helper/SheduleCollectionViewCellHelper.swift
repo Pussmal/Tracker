@@ -21,7 +21,6 @@ final class SheduleCollectionViewCellHelper: NSObject {
     init(delegate: SheduleCollectionViewCellHelperDelegate?) {
         self.delegate = delegate
     }
-    
 }
 
 extension SheduleCollectionViewCellHelper: UICollectionViewDataSource {
@@ -59,17 +58,7 @@ extension SheduleCollectionViewCellHelper: UICollectionViewDataSource {
     }
 }
 
-extension SheduleCollectionViewCellHelper: UICollectionViewDelegate {
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let cell = collectionView.cellForItem(at: indexPath) as? SheduleCollectionViewCell
-//        cell?.didSelect()
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-//        let cell = collectionView.cellForItem(at: indexPath) as? SheduleCollectionViewCell
-//        cell?.didDeselect()
-//    }
-}
+extension SheduleCollectionViewCellHelper: UICollectionViewDelegate {}
 
 extension SheduleCollectionViewCellHelper: UICollectionViewDelegateFlowLayout {
     func collectionView(

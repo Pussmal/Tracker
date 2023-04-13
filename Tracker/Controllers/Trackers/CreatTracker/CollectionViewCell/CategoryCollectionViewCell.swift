@@ -45,6 +45,12 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        categoryLabel.text = nil
+        checkmarkImageView.isHidden = true
+        lineView.isHidden = false
+    }
+    
     private func setupView() {
         backgroundColor = .clear
         contentView.backgroundColor = .ypBackground

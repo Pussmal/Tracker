@@ -5,9 +5,15 @@ enum TypeTracker {
     case Event
 }
 
+protocol TypeTrackerViewControllerDelegate: AnyObject {
+    func dismissViewController()
+}
+
 final class TypeTrackerViewController: UIViewController {
     
     private var typeTrackerView: TypeTrackerView!
+    
+    weak var delegate: TypeTrackerViewControllerDelegate?
     
     private struct TypeTrackerViewControllerConstants {
         static let viewControllerTitle = "Создание трекера"
@@ -48,7 +54,14 @@ extension TypeTrackerViewController {
     private func createTrackerViewController(typeTracker: TypeTracker) -> UINavigationController {
         let viewController = CreateTrackerViewController()
         viewController.typeTracker = typeTracker
+        viewController.delegate = self
         let navigationViewController = UINavigationController(rootViewController: viewController)
         return navigationViewController
+    }
+}
+
+extension TypeTrackerViewController: CreateTrackerViewControllerDelegate {
+    func dismissViewController(_ viewController: UIViewController) {
+        delegate?.dismissViewController()
     }
 }

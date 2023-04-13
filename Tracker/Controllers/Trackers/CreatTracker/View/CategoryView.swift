@@ -8,19 +8,36 @@ enum EditCategory {
 
 protocol CategoryViewDelegate: AnyObject {
     func showEditCategoryViewController(type: EditCategory, editCategoryString: String?)
-    func showDeleteActionSheet()
+    func showDeleteActionSheet(category: String?)
+    func selectCategory(category: String?)
 }
 
 final class CategoryView: UIView {
     
     weak var delegate: CategoryViewDelegate?
     
+    private var categoryCollectionViewCellHelperObserver: NSObjectProtocol?
+    
     private struct CategoryViewConstant {
         static let collectionViewReuseIdentifier = "Cell"
         static let addButtontitle = "Добавить категорию"
+        static let plugLabelText = """
+            Привычки и события можно
+            объединить по смыслу
+        """
     }
     
     private var сategoryCollectionViewCellHelper: CategoryCollectionViewCellHelper?
+    
+    private lazy var plugView: PlugView = {
+        let plugView = PlugView(
+            frame: .zero,
+            titleLabel: CategoryViewConstant.plugLabelText,
+            image: UIImage(named: "plug") ?? UIImage()
+        )
+        plugView.isHidden = true
+        return plugView
+    }()
     
     private let categoryCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -58,15 +75,33 @@ final class CategoryView: UIView {
     
     init(
         frame: CGRect,
-        delegate: CategoryViewDelegate?
+        delegate: CategoryViewDelegate?,
+        category: String? = nil
     ) {
         self.delegate = delegate
-       
+        
         super.init(frame: frame)
         
-        сategoryCollectionViewCellHelper = CategoryCollectionViewCellHelper(delegate: self)
+        сategoryCollectionViewCellHelper = CategoryCollectionViewCellHelper(delegate: self, oldCategory: category)
         categoryCollectionView.delegate = сategoryCollectionViewCellHelper
         categoryCollectionView.dataSource = сategoryCollectionViewCellHelper
+        
+        if
+            let сategoryCollectionViewCellHelper = сategoryCollectionViewCellHelper,
+            сategoryCollectionViewCellHelper.categories.isEmpty {
+            plugView.isHidden = false
+        }
+        
+        categoryCollectionViewCellHelperObserver = NotificationCenter.default
+            .addObserver(forName: CategoryCollectionViewCellHelper.didChangeNotification,
+                         object: nil,
+                         queue: .main,
+                         using: { [weak self] _ in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.plugView.isHidden = true
+                }
+            })
         
         setupView()
         addSubviews()
@@ -77,6 +112,10 @@ final class CategoryView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func reloadCollectionView() {
+        categoryCollectionView.reloadData()
+    }
+    
     private func setupView() {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .ypWhite
@@ -85,11 +124,15 @@ final class CategoryView: UIView {
     private func addSubviews() {
         addSubViews(
             categoryCollectionView,
-            addButton
+            addButton,
+            plugView
         )
     }
     
     private func activateConstraints() {
+        
+        let plugViewTopConstant = frame.height / 3.5
+        
         NSLayoutConstraint.activate([
             categoryCollectionView.topAnchor.constraint(equalTo: topAnchor),
             categoryCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.indentationFromEdges),
@@ -100,6 +143,10 @@ final class CategoryView: UIView {
             addButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.indentationFromEdges),
             addButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.indentationFromEdges),
             addButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
+            
+            plugView.topAnchor.constraint(equalTo: topAnchor, constant: plugViewTopConstant),
+            plugView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            plugView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
     }
     
@@ -113,11 +160,19 @@ final class CategoryView: UIView {
 }
 
 extension CategoryView: CategoryCollectionViewCellHelperDelegate {
-    func editCategory(editCategoryString: String?) {
-        delegate?.showEditCategoryViewController(type: .editCategory, editCategoryString: editCategoryString)
+    func selectCategory(category: String?) {
+        delegate?.selectCategory(category: category)
     }
     
-    func deleteCategory() {
-        delegate?.showDeleteActionSheet()
+    func deleteCategory(delete: String?) {
+        delegate?.showDeleteActionSheet(category: delete)
+    }
+    
+    func updateCollectionView() {
+        categoryCollectionView.reloadData()
+    }
+    
+    func editCategory(editCategoryString: String?) {
+        delegate?.showEditCategoryViewController(type: .editCategory, editCategoryString: editCategoryString)
     }
 }

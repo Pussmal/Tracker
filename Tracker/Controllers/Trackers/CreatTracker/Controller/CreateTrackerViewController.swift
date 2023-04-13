@@ -1,8 +1,14 @@
 import UIKit
 
+protocol CreateTrackerViewControllerDelegate: AnyObject {
+    func dismissViewController(_ viewController: UIViewController)
+}
+
 final class CreateTrackerViewController: UIViewController {
     
     public var typeTracker: TypeTracker?
+    
+    weak var delegate: CreateTrackerViewControllerDelegate?
     
     private enum SheduleCategory {
         case shedule
@@ -14,11 +20,14 @@ final class CreateTrackerViewController: UIViewController {
         static let eventTitle = "Новое нерегулярное событие"
     }
     
+    private var categoryString: String?
+    
     private var createTrackerView: CreateTrackerView!
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+        
         guard let typeTracker else {
             dismiss(animated: true)
             return
@@ -66,7 +75,7 @@ extension CreateTrackerViewController: CreateTrackerViewDelegate {
     }
     
     func cancelCreate() {
-        print("Отмена")
+        delegate?.dismissViewController(self)
     }
 }
 
@@ -80,7 +89,13 @@ extension CreateTrackerViewController {
         case .shedule:
             viewController = SheduleViewController()
         case .category:
-            viewController = CategoryViewController()
+            let categoryViewController = CategoryViewController()
+            categoryViewController.delegate = self
+            viewController = categoryViewController
+            
+            if let categoryString {
+                categoryViewController.category = categoryString
+            }
         }
         
         let navigationViewController = UINavigationController(rootViewController: viewController)
@@ -88,3 +103,10 @@ extension CreateTrackerViewController {
     }
 }
 
+extension CreateTrackerViewController: CategoryViewControllerDelegate {
+    func setCategory(category: String?) {
+        categoryString = category
+        createTrackerView.setCategory(with: category)
+        dismiss(animated: true)
+    }
+}

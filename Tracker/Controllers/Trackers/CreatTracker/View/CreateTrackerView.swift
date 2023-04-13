@@ -190,6 +190,10 @@ final class CreateTrackerView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func setCategory(with category: String?) {
+        sheduleCategoryTableViewHelper.setCategory(category: category)
+    }
 
     // MARK: - Private methods
     private func setupView() {
@@ -234,7 +238,6 @@ final class CreateTrackerView: UIView {
         
         topViewConstraint = stackView.topAnchor.constraint(equalTo: nameTrackerTextField.bottomAnchor, constant: insetBetweenNameTextFieldAndStackView)
         topViewConstraint.isActive = true
-        
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: topAnchor),
@@ -307,6 +310,10 @@ extension CreateTrackerView: NameTrackerTextFieldHelperDelegate {
 }
 
 extension CreateTrackerView: SheduleCategoryTableViewHelperDelegate {
+    func reloadTableView() {
+        sheduleCategoryTableView.reloadData()
+    }
+    
     func showShedule() {
         delegate?.showShedule()
     }
@@ -315,3 +322,5 @@ extension CreateTrackerView: SheduleCategoryTableViewHelperDelegate {
         delegate?.showCategory()
     }
 }
+
+
