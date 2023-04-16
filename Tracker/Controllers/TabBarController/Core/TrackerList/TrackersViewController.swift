@@ -8,32 +8,28 @@ final class TrackersViewController: UIViewController {
     
     private var categories: [TrackerCategory] =
     [
-        TrackerCategory(
-            title: "Домашний уют",
-            trackers: [
-                Tracker(id: UUID().uuidString, name: "Поливать растения", color: .ypColorSelection5, emoji: "🙂", schedule: nil),
-                Tracker(id: UUID().uuidString, name: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection3, emoji: "🌺", schedule: nil)
-            ]),
-        TrackerCategory(
-            title: "Важное",
-            trackers: [
-                Tracker(id: UUID().uuidString, name: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection5, emoji: "🙂", schedule: nil),
-                Tracker(id: UUID().uuidString, name: "Поливать растения", color: .ypColorSelection3, emoji: "🌺", schedule: nil)
-            ])
-    ] {
-        didSet {
-            if !categories.isEmpty {
-                plugView.isHidden = false
-                plugView.config(title: TrackersListControllerConstants.plugLabelText, image: UIImage(named: "plug"))
-            } else {
-                plugView.isHidden = true
-            }
-        }
-    }
+//        TrackerCategory(
+//            title: "Домашний уют",
+//            trackers: [
+//                Tracker(id: UUID().uuidString, name: "Поливать растения", color: .ypColorSelection5, emoji: "🙂", schedule: nil),
+//                Tracker(id: UUID().uuidString, name: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection3, emoji: "🌺", schedule: nil)
+//            ]),
+//        TrackerCategory(
+//            title: "Важное",
+//            trackers: [
+//                Tracker(id: UUID().uuidString, name: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection5, emoji: "🙂", schedule: nil),
+//                Tracker(id: UUID().uuidString, name: "Поливать растения", color: .ypColorSelection3, emoji: "🌺", schedule: nil)
+//            ])
+    ]
     
     private let searchController = UISearchController(searchResultsController: nil)
     
     private var visibleCategories: [TrackerCategory] = []  // тут отфильтрованные трекеры
+    private var completedTrackers: Set<TrackerRecord> = []
+    
+    private var currentDate: Date {
+        return datePicker.date
+    }
     
     private var searchBarIsEmpty: Bool {
         guard let text = searchController.searchBar.text else { return false }
@@ -161,7 +157,7 @@ final class TrackersViewController: UIViewController {
     
     @objc
     private func valueChanged(_ sender: UIDatePicker) {
-       
+        presentedViewController?.dismiss(animated: false, completion: nil)
     }
 }
 
@@ -194,12 +190,7 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if isFiltering {
-            return visibleCategories[section].trackers.count
-        }
-        
-        return categories[section].trackers.count
-        
+        isFiltering ? visibleCategories[section].trackers.count : categories[section].trackers.count
     }
     
     func collectionView(
@@ -222,7 +213,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         }
         
         cell.delegate = self
-        cell.config(tracker: tracker)
+        cell.config(tracker: tracker, completedDaysCount: 0)
         return cell
     }
     
@@ -260,17 +251,43 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
     }
     
     func creactTrackerCategory(_ trackerCategory: TrackerCategory?) {
-        print(trackerCategory)
+        guard let trackerCategory else { return }
+        
+        guard !categories.contains(trackerCategory) else {
+            for (index, category) in categories.enumerated() {
+                if category.title == trackerCategory.title {
+                    let trackers = category.trackers + trackerCategory.trackers
+                    let newTrackerCategory = TrackerCategory(title: category.title, trackers: trackers)
+                    categories[index] = newTrackerCategory
+                    self.collectionView.reloadData()
+                }
+            }
+            dismiss(animated: true)
+            return
+        }
+        
+        categories.append(trackerCategory)
+
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+            
+            if !self.categories.isEmpty {
+                self.plugView.isHidden = true
+            }
+        }
+       
         dismiss(animated: true)
     }
 }
 
 // MARK: TrackerCollectionViewCellDelegate
 extension TrackersViewController: TrackerCollectionViewCellDelegate {
-    func checkTracker() {
-            
-    print("этот трекер нужно пометить как выполненный для даты, выбранной в UIDatePicker.")
-        
+    func checkTracker(id: String?, completed: Bool) {
+        if completed {
+            print("Поставить выполнено \(id)")
+        } else {
+            print("Снять выполнено для \(id)")
+        }
     }
 }
 

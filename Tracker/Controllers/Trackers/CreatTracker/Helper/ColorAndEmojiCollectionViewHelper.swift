@@ -1,6 +1,13 @@
 import UIKit
 
+protocol ColorAndEmojiCollectionViewHelperDelegate: AnyObject {
+    func sendSelectedEmoji(_ emoji: String?)
+    func sendSelectedColor(_ color: UIColor?)
+}
+
 final class ColorAndEmojiCollectionViewHelper: NSObject {
+    
+    weak var delegate: ColorAndEmojiCollectionViewHelperDelegate?
     
     private let emoji = [
         "🙂", "😻", "🌺", "🐶", "❤️", "😱",
@@ -38,7 +45,6 @@ final class ColorAndEmojiCollectionViewHelper: NSObject {
     private var emojiSelectedItem: Int?
     private var colorSelectedItem: Int?
     private var selectedItem: IndexPath?
-    
 }
 
 extension ColorAndEmojiCollectionViewHelper: UICollectionViewDataSource {
@@ -100,10 +106,17 @@ extension ColorAndEmojiCollectionViewHelper: UICollectionViewDelegate {
             let cell = collectionView.cellForItem(at: indexPath) as? EmojiCollectionViewCell
             cell?.cellIsSelected = true
             emojiSelectedItem = indexPath.item
+            
+            guard let emojiSelectedItem else { return }
+            delegate?.sendSelectedEmoji(emoji[safe: emojiSelectedItem])
+            
         case 1:
             let cell = collectionView.cellForItem(at: indexPath) as? ColorCollectionViewCell
             cell?.cellIsSelected = true
             colorSelectedItem = indexPath.item
+            
+            guard let colorSelectedItem else { return }
+            delegate?.sendSelectedColor(colors[safe: colorSelectedItem])
         default: break
         }
     }

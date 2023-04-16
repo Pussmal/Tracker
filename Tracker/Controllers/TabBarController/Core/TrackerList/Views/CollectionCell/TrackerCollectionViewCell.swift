@@ -1,7 +1,7 @@
 import UIKit
 
 protocol TrackerCollectionViewCellDelegate: AnyObject {
-    func checkTracker()
+    func checkTracker(id: String?, completed: Bool)
 }
 
 final class TrackerCollectionViewCell: UICollectionViewCell {
@@ -9,7 +9,17 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     
     weak var delegate: TrackerCollectionViewCellDelegate?
     
-    private var checkTracker = false
+    private var completedTracker = false {
+        didSet {
+            if completedTracker {
+                daysCount += 1
+            } else {
+                daysCount -= 1
+            }
+        }
+    }
+    private var idTracker: String?
+    private var daysCount: Int = 0
     
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
@@ -60,7 +70,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     private lazy var checkTrackerButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        let image = getButtonImage(checkTracker)
+        let image = getButtonImage(completedTracker)
         button.setImage(image, for: .normal)
         button.tintColor = .ypWhite
         button.addTarget(self, action: #selector(checkTrackerButtonTapped), for: .touchUpInside)
@@ -78,14 +88,16 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func config(tracker: Tracker) {
+    func config(tracker: Tracker, completedDaysCount: Int?) {
         emojiLabel.text = tracker.emoji
         nameTrackerLabel.text = tracker.name
-        
-        daysLabel.text = "5 дней"
-        
         nameAndEmojiView.backgroundColor = tracker.color
         checkTrackerButton.backgroundColor = getBackgroundButtonColor(color: tracker.color)
+        idTracker = tracker.id
+        
+        guard let completedDaysCount else { return }
+        daysCount = completedDaysCount
+        setDaysLabel()
     }
     
     private func setupCell() {
@@ -137,21 +149,31 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     private func getButtonImage(_ check: Bool) -> UIImage? {
-        check ? UIImage(named: "Done")?.withRenderingMode(.alwaysTemplate) : UIImage(systemName: "plus")?.withRenderingMode(.alwaysTemplate)
+        let doneImage = UIImage(named: "Done")?.withRenderingMode(.alwaysTemplate)
+        let plusImage = UIImage(systemName: "plus")?.withRenderingMode(.alwaysTemplate)
+        return check ? doneImage : plusImage
     }
     
     private func getBackgroundButtonColor(color: UIColor?) -> UIColor? {
-        checkTracker ? color?.withAlphaComponent(0.3) : color?.withAlphaComponent(1)
+        completedTracker ? color?.withAlphaComponent(0.3) : color?.withAlphaComponent(1)
     }
     
     @objc
     private func checkTrackerButtonTapped() {
-        checkTracker = !checkTracker
-        let image = getButtonImage(checkTracker)
+        completedTracker = !completedTracker
+        let image = getButtonImage(completedTracker)
         checkTrackerButton.setImage(image, for: .normal)
         let backgroundColor = getBackgroundButtonColor(color: checkTrackerButton.backgroundColor)
         checkTrackerButton.backgroundColor = backgroundColor
-        delegate?.checkTracker()
+        setDaysLabel()
+        delegate?.checkTracker(id: self.idTracker, completed: completedTracker)
+    }
+    
+    private func setDaysLabel() {
+        let stringDay = String.getDayAddition(int: daysCount)
+        daysLabel.text = "\(daysCount) \(stringDay)"
     }
 }
+
+
 

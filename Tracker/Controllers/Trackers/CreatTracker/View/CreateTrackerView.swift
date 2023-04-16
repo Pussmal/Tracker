@@ -1,17 +1,17 @@
 import UIKit
 
 protocol CreateTrackerViewDelegate: AnyObject {
-    func createTracker(nameTracker: String?)
+    func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String)
     func cancelCreate()
     func showCategory()
     func showShedule()
 }
 
 final class CreateTrackerView: UIView {
-
+    
     // MARK: -Delegate
     weak var delegate: CreateTrackerViewDelegate?
-
+    
     // MARK: -CreateTrackerViewConstants
     private struct CreateTrackerViewConstants {
         static let cancelButtonTitle = "Отменить"
@@ -21,20 +21,22 @@ final class CreateTrackerView: UIView {
         static let standartCellIdentifire = "cell"
         static let spacingConstant: CGFloat = 8
     }
-
+    
     // MARK: -Private properties
     private var typeTracer: TypeTracker
     private var contentSize: CGSize {
         CGSize(width: frame.width, height: 931)
     }
-
+    
     private var emojiCollectionViewHelper: ColorAndEmojiCollectionViewHelper
     private var sheduleCategoryTableViewHelper: SheduleCategoryTableViewHelper
-    
     private var nameTrackerTextFieldHelper =  NameTrackerTextFieldHelper()
     
+    private var emoji: String?
+    private var color: UIColor?
+    
     private var topViewConstraint: NSLayoutConstraint!
-
+    
     // MARK: UI
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -43,7 +45,7 @@ final class CreateTrackerView: UIView {
         scrollView.contentSize = contentSize
         return scrollView
     }()
-
+    
     private lazy var contentView: UIView = {
         let contentView = UIView()
         contentView.backgroundColor = .clear
@@ -51,7 +53,7 @@ final class CreateTrackerView: UIView {
         contentView.frame.size = contentSize
         return contentView
     }()
-
+    
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -60,7 +62,7 @@ final class CreateTrackerView: UIView {
         stackView.backgroundColor = .clear
         return stackView
     }()
-
+    
     private lazy var nameTrackerTextField: TrackerTextField = {
         let textField = TrackerTextField(
             frame: .zero,
@@ -71,7 +73,7 @@ final class CreateTrackerView: UIView {
     }()
     
     private lazy var errorLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.ypRegularSize17
         label.textColor = .ypRed
@@ -80,7 +82,7 @@ final class CreateTrackerView: UIView {
         label.alpha = 0
         return label
     }()
-
+    
     private lazy var sheduleCategoryTableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -92,7 +94,7 @@ final class CreateTrackerView: UIView {
         tableView.layer.cornerRadius = Constants.cornerRadius
         return tableView
     }()
-
+    
     private let colorAndEmojiCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -117,7 +119,7 @@ final class CreateTrackerView: UIView {
         collectionView.backgroundColor = .clear
         return collectionView
     }()
-
+    
     private lazy var buttonStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -126,7 +128,7 @@ final class CreateTrackerView: UIView {
         stackView.spacing = CreateTrackerViewConstants.spacingConstant
         return stackView
     }()
-
+    
     private lazy var cancelButton: TrackerButton = {
         let button = TrackerButton(
             frame: .zero,
@@ -143,7 +145,7 @@ final class CreateTrackerView: UIView {
         button.layer.borderWidth = 1
         return button
     }()
-
+    
     private lazy var createButton: TrackerButton = {
         let button = TrackerButton(
             frame: .zero,
@@ -158,7 +160,7 @@ final class CreateTrackerView: UIView {
         button.isEnabled = false
         return button
     }()
-
+    
     // MARK: -Initialization
     init(
         frame: CGRect,
@@ -170,23 +172,24 @@ final class CreateTrackerView: UIView {
         emojiCollectionViewHelper = ColorAndEmojiCollectionViewHelper()
         sheduleCategoryTableViewHelper = SheduleCategoryTableViewHelper(typeTracker: typeTracker)
         super.init(frame: frame)
-
+        
         colorAndEmojiCollectionView.dataSource = emojiCollectionViewHelper
         colorAndEmojiCollectionView.delegate = emojiCollectionViewHelper
-
+        
         sheduleCategoryTableView.dataSource = sheduleCategoryTableViewHelper
         sheduleCategoryTableView.delegate = sheduleCategoryTableViewHelper
         
         nameTrackerTextField.delegate = nameTrackerTextFieldHelper
+        emojiCollectionViewHelper.delegate = self
         
         nameTrackerTextFieldHelper.delegate = self
         sheduleCategoryTableViewHelper.delegate = self
-
+        
         setupView()
         addViews()
         activateConstraints()
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -198,17 +201,17 @@ final class CreateTrackerView: UIView {
     func setShedule(with shedule: String?) {
         sheduleCategoryTableViewHelper.setSchedule(schedule: shedule)
     }
-
+    
     // MARK: - Private methods
     private func setupView() {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .ypWhite
     }
-
+    
     private func addViews() {
         addSubview(scrollView)
         scrollView.addSubview(contentView)
-
+        
         contentView.addSubViews(
             nameTrackerTextField,
             errorLabel,
@@ -222,18 +225,18 @@ final class CreateTrackerView: UIView {
         buttonStackView.addArrangedSubview(cancelButton)
         buttonStackView.addArrangedSubview(createButton)
     }
-
+    
     private func activateConstraints() {
-
+        
         var tableViewHeight: CGFloat = Constants.hugHeight
-
+        
         switch typeTracer {
         case .Habit:
             tableViewHeight *= 2
         case .Event:
             break
         }
-
+        
         let buttonHeight: CGFloat = 60
         let verticalAxis: CGFloat = 10
         let edge = Constants.indentationFromEdges
@@ -248,12 +251,12 @@ final class CreateTrackerView: UIView {
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
-
+            
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-
+            
             nameTrackerTextField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: verticalAxis),
             nameTrackerTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: edge),
             nameTrackerTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -edge),
@@ -262,28 +265,36 @@ final class CreateTrackerView: UIView {
             errorLabel.leadingAnchor.constraint(equalTo: nameTrackerTextField.leadingAnchor),
             errorLabel.trailingAnchor.constraint(equalTo: nameTrackerTextField.trailingAnchor),
             errorLabel.topAnchor.constraint(equalTo: nameTrackerTextField.bottomAnchor, constant: 8),
- 
+            
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: edge),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -edge),
             stackView.bottomAnchor.constraint(equalTo: buttonStackView.topAnchor, constant: -10),
-
+            
             buttonStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             buttonStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: edge),
             buttonStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -edge),
             buttonStackView.heightAnchor.constraint(equalToConstant: buttonHeight),
-
+            
             sheduleCategoryTableView.heightAnchor.constraint(equalToConstant: tableViewHeight),
         ])
     }
-
+    
     @objc
     private func createButtonTapped() {
         createButton.showAnimation { [weak self] in
-            guard let self = self, self.nameTrackerTextField.text != "" else { return }
-            self.delegate?.createTracker(nameTracker: self.nameTrackerTextField.text)
+            guard
+                let self = self,
+                self.nameTrackerTextField.text != "",
+                let selectedEmoji = self.emoji,
+                let selectedColor = self.color else { return }
+            self.delegate?.sendTrackerSetup(
+                nameTracker: self.nameTrackerTextField.text,
+                color: selectedColor,
+                emoji: selectedEmoji
+            )
         }
     }
-
+    
     @objc private func textFieldChangeed() {
         if nameTrackerTextField.text?.isEmpty == false {
             createButton.backgroundColor = .ypBlack
@@ -337,4 +348,12 @@ extension CreateTrackerView: SheduleCategoryTableViewHelperDelegate {
     }
 }
 
-
+extension CreateTrackerView: ColorAndEmojiCollectionViewHelperDelegate {
+    func sendSelectedEmoji(_ emoji: String?) {
+        self.emoji = emoji
+    }
+    
+    func sendSelectedColor(_ color: UIColor?) {
+        self.color = color
+    }
+}
