@@ -6,25 +6,12 @@ final class TrackersViewController: UIViewController {
         static let plugLabelText = "Что будем отслеживать?"
     }
     
-    private var categories: [TrackerCategory] =
-    [
-        //        TrackerCategory(
-        //            title: "Домашний уют",
-        //            trackers: [
-        //                Tracker(id: UUID().uuidString, name: "Поливать растения", color: .ypColorSelection5, emoji: "🙂", schedule: nil),
-        //                Tracker(id: UUID().uuidString, name: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection3, emoji: "🌺", schedule: nil)
-        //            ]),
-        //        TrackerCategory(
-        //            title: "Важное",
-        //            trackers: [
-        //                Tracker(id: UUID().uuidString, name: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection5, emoji: "🙂", schedule: nil),
-        //                Tracker(id: UUID().uuidString, name: "Поливать растения", color: .ypColorSelection3, emoji: "🌺", schedule: nil)
-        //            ])
-    ]
+    private var categories: [TrackerCategory] = []
     
     private let searchController = UISearchController(searchResultsController: nil)
     
-    private var visibleCategories: [TrackerCategory] = []  // тут отфильтрованные трекеры
+    private var filteredCategories: [TrackerCategory] = [] // тут отфильтрованные трекеры
+    private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: Set<TrackerRecord> = []
     
     private var currentDate: Date {
@@ -66,7 +53,7 @@ final class TrackersViewController: UIViewController {
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .compact
         picker.locale = Locale(identifier: "ru_RU")
-        picker.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
+        picker.addTarget(self, action: #selector(changedDate), for: .valueChanged)
         return picker
     }()
     
@@ -112,6 +99,7 @@ final class TrackersViewController: UIViewController {
         addSubviews()
         activateConstraints()
         setupSearchController()
+        showVisibleTrackers()
     }
     
     // MARK: Private methods
@@ -123,15 +111,8 @@ final class TrackersViewController: UIViewController {
     }
     
     private func addSubviews() {
-        
-        view.addSubViews(
-            collectionView,
-            plugView
-        )
-        
-        if categories.isEmpty {
-            plugView.isHidden = false
-        }
+        view.addSubViews(collectionView, plugView)
+        if categories.isEmpty { plugView.isHidden = false }
     }
     
     private func activateConstraints() {
@@ -163,11 +144,11 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc
-    private func valueChanged(_ sender: UIDatePicker) {
-        presentedViewController?.dismiss(animated: false, completion: nil)
+    private func changedDate() {
+        showVisibleTrackers()
     }
     
-    private func getDayCount(id: String) -> Int {
+    private func getDayCount(for id: String) -> Int {
         var completedDaysCount = 0
         completedTrackers.forEach {
             if $0.trackerID == id { completedDaysCount += 1 }
@@ -175,8 +156,60 @@ final class TrackersViewController: UIViewController {
         return completedDaysCount
     }
     
-    private func getTracker(indexPath: IndexPath) -> Tracker {
-        isFiltering ? visibleCategories[indexPath.section].trackers[indexPath.row] : categories[indexPath.section].trackers[indexPath.row]
+    private func getTracker(for indexPath: IndexPath) -> Tracker {
+        isFiltering ? filteredCategories[indexPath.section].trackers[indexPath.row] : visibleCategories[indexPath.section].trackers[indexPath.row]
+    }
+    
+    private func showVisibleTrackers() {
+        visibleCategories = []
+        
+        let day = currentDate
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "E"
+        let date = dateFormatter.string(from: day)
+        print(date)
+        
+        var newCategories: [TrackerCategory] = []
+        
+        for (index, category) in categories.enumerated() {
+            var trackers: [Tracker] = []
+            for tracker in category.trackers {
+                guard let weekDays = tracker.schedule else { return }
+                for weekDay in weekDays {
+                    if weekDay == date {
+                        trackers.append(tracker)
+                    } else {
+                        continue
+                    }
+                }
+                guard !trackers.isEmpty else {
+                    presentedViewController?.dismiss(animated: false, completion: nil)
+                    plugView.isHidden = false
+                    continue
+                }
+                
+                let newCategory = TrackerCategory(title: category.title, trackers: trackers)
+                
+                if newCategories.contains(newCategory) {
+                    let trackers = newCategory.trackers
+                    let newTrackerCategory = TrackerCategory(title: category.title, trackers: trackers)
+                    newCategories[index] = newTrackerCategory
+                } else {
+                    newCategories.append(newCategory)
+                }
+            }
+        }
+ 
+        visibleCategories = newCategories
+        
+        if visibleCategories.isEmpty {
+            plugView.isHidden = false
+        } else {
+            plugView.isHidden = true
+        }
+        
+        collectionView.reloadData()
+        presentedViewController?.dismiss(animated: false, completion: nil)
     }
 }
 
@@ -200,11 +233,11 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        isFiltering ? visibleCategories.count : categories.count
+        isFiltering ? filteredCategories.count : visibleCategories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        isFiltering ? visibleCategories[section].trackers.count : categories[section].trackers.count
+        isFiltering ? filteredCategories[section].trackers.count : visibleCategories[section].trackers.count
     }
     
     func collectionView(
@@ -218,8 +251,8 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        let tracker = getTracker(indexPath: indexPath)
-        let completedDayCount = getDayCount(id: tracker.id)
+        let tracker = getTracker(for: indexPath)
+        let completedDayCount = getDayCount(for: tracker.id)
         cell.config(tracker: tracker, completedDaysCount: completedDayCount)
         cell.delegate = self
         return cell
@@ -233,9 +266,9 @@ extension TrackersViewController: UICollectionViewDataSource {
         let title: String
         
         if isFiltering {
-            title = visibleCategories[indexPath.section].title
+            title = filteredCategories[indexPath.section].title
         } else {
-            title = categories[indexPath.section].title
+            title = visibleCategories[indexPath.section].title
         }
         
         view.config(title: title)
@@ -260,6 +293,7 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
     
     func creactTrackerCategory(_ trackerCategory: TrackerCategory?) {
         guard let trackerCategory else { return }
+        print(trackerCategory.trackers)
         
         guard !categories.contains(trackerCategory) else {
             for (index, category) in categories.enumerated() {
@@ -267,16 +301,16 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
                     let trackers = category.trackers + trackerCategory.trackers
                     let newTrackerCategory = TrackerCategory(title: category.title, trackers: trackers)
                     categories[index] = newTrackerCategory
-                    self.collectionView.reloadData()
                 }
             }
+            showVisibleTrackers()
             dismiss(animated: true)
             return
         }
         
         categories.append(trackerCategory)
-        collectionView.reloadData()
         if !categories.isEmpty { plugView.isHidden = true }
+        showVisibleTrackers()
         dismiss(animated: true)
     }
 }
@@ -316,7 +350,7 @@ extension TrackersViewController {
 extension TrackersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         if searchController.searchBar.text == "" {
-            visibleCategories = []
+            filteredCategories = []
         } else {
             filterContentForSearchText(searchController.searchBar.text)
         }
@@ -327,7 +361,7 @@ extension TrackersViewController: UISearchResultsUpdating {
         
         // TODO: сделать поиск
         
-        if visibleCategories.isEmpty && searchText != "" {
+        if filteredCategories.isEmpty && searchText != "" {
             plugView.isHidden = false
             plugView.config(title: "Ничего не найдено", image: UIImage(named: "notFound"))
         } else {
@@ -340,8 +374,15 @@ extension TrackersViewController: UISearchResultsUpdating {
 
 extension TrackersViewController: UISearchControllerDelegate {
     func didDismissSearchController(_ searchController: UISearchController) {
-        visibleCategories = []
-        plugView.isHidden = true
+        filteredCategories = []
+        
+        if categories.isEmpty {
+            plugView.config(title: "plugLabelText", image: UIImage(named: "plug"))
+            plugView.isHidden = false
+        } else {
+            plugView.isHidden = true
+        }
+        
         collectionView.reloadData()
     }
 }
