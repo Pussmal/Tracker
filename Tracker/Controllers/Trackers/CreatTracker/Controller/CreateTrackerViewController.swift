@@ -2,12 +2,12 @@ import UIKit
 
 protocol CreateTrackerViewControllerDelegate: AnyObject {
     func dismissViewController(_ viewController: UIViewController)
+    func creatTrackerCategory(_ trackerCategory: TrackerCategory?)
 }
 
 final class CreateTrackerViewController: UIViewController {
     
-    public var typeTracker: TypeTracker?
-    
+    var typeTracker: TypeTracker?
     weak var delegate: CreateTrackerViewControllerDelegate?
     
     private enum SheduleCategory {
@@ -81,8 +81,7 @@ extension CreateTrackerViewController: CreateTrackerViewDelegate {
         guard let tracker = tracker else { return }
         trackerCategory = TrackerCategory(title: categoryString, trackers: [tracker])
         
-        print(trackerCategory)
-        dismiss(animated: true)
+        delegate?.creatTrackerCategory(trackerCategory)
     }
     
     func showShedule() {
@@ -99,7 +98,6 @@ extension CreateTrackerViewController: CreateTrackerViewDelegate {
         delegate?.dismissViewController(self)
     }
 }
-
 
 // MARK: create CategoryViewController
 extension CreateTrackerViewController {

@@ -15,7 +15,7 @@ final class TrackersViewController: UIViewController {
                 Tracker(id: UUID().uuidString, name: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection3, emoji: "🌺", schedule: nil)
             ]),
         TrackerCategory(
-            title: "Приколюхи",
+            title: "Важное",
             trackers: [
                 Tracker(id: UUID().uuidString, name: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection5, emoji: "🙂", schedule: nil),
                 Tracker(id: UUID().uuidString, name: "Поливать растения", color: .ypColorSelection3, emoji: "🌺", schedule: nil)
@@ -255,7 +255,12 @@ extension TrackersViewController {
 }
 
 extension TrackersViewController: TypeTrackerViewControllerDelegate {
-    func dismissViewController() {
+    func dismissViewController(_ viewController: UIViewController) {
+        dismiss(animated: true)
+    }
+    
+    func creactTrackerCategory(_ trackerCategory: TrackerCategory?) {
+        print(trackerCategory)
         dismiss(animated: true)
     }
 }
@@ -263,7 +268,9 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
 // MARK: TrackerCollectionViewCellDelegate
 extension TrackersViewController: TrackerCollectionViewCellDelegate {
     func checkTracker() {
-        print("Чекнул привычку")
+            
+    print("этот трекер нужно пометить как выполненный для даты, выбранной в UIDatePicker.")
+        
     }
 }
 
