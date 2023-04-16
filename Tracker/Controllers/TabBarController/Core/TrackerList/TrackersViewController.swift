@@ -8,18 +8,18 @@ final class TrackersViewController: UIViewController {
     
     private var categories: [TrackerCategory] =
     [
-//        TrackerCategory(
-//            title: "Домашний уют",
-//            trackers: [
-//                Tracker(id: UUID().uuidString, name: "Поливать растения", color: .ypColorSelection5, emoji: "🙂", schedule: nil),
-//                Tracker(id: UUID().uuidString, name: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection3, emoji: "🌺", schedule: nil)
-//            ]),
-//        TrackerCategory(
-//            title: "Важное",
-//            trackers: [
-//                Tracker(id: UUID().uuidString, name: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection5, emoji: "🙂", schedule: nil),
-//                Tracker(id: UUID().uuidString, name: "Поливать растения", color: .ypColorSelection3, emoji: "🌺", schedule: nil)
-//            ])
+        //        TrackerCategory(
+        //            title: "Домашний уют",
+        //            trackers: [
+        //                Tracker(id: UUID().uuidString, name: "Поливать растения", color: .ypColorSelection5, emoji: "🙂", schedule: nil),
+        //                Tracker(id: UUID().uuidString, name: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection3, emoji: "🌺", schedule: nil)
+        //            ]),
+        //        TrackerCategory(
+        //            title: "Важное",
+        //            trackers: [
+        //                Tracker(id: UUID().uuidString, name: "Бабушка прислала открытку в вотсапе", color: .ypColorSelection5, emoji: "🙂", schedule: nil),
+        //                Tracker(id: UUID().uuidString, name: "Поливать растения", color: .ypColorSelection3, emoji: "🌺", schedule: nil)
+        //            ])
     ]
     
     private let searchController = UISearchController(searchResultsController: nil)
@@ -29,6 +29,13 @@ final class TrackersViewController: UIViewController {
     
     private var currentDate: Date {
         return datePicker.date
+    }
+    
+    private var today: Date {
+        let date = Date()
+        let dateComponents = Calendar.current.dateComponents([.day, .month, .year], from: date)
+        let today = Calendar.current.date(from: dateComponents)
+        return today ?? Date()
     }
     
     private var searchBarIsEmpty: Bool {
@@ -159,6 +166,18 @@ final class TrackersViewController: UIViewController {
     private func valueChanged(_ sender: UIDatePicker) {
         presentedViewController?.dismiss(animated: false, completion: nil)
     }
+    
+    private func getDayCount(id: String) -> Int {
+        var completedDaysCount = 0
+        completedTrackers.forEach {
+            if $0.trackerID == id { completedDaysCount += 1 }
+        }
+        return completedDaysCount
+    }
+    
+    private func getTracker(indexPath: IndexPath) -> Tracker {
+        isFiltering ? visibleCategories[indexPath.section].trackers[indexPath.row] : categories[indexPath.section].trackers[indexPath.row]
+    }
 }
 
 // MARK: UICollectionView
@@ -180,13 +199,8 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension TrackersViewController: UICollectionViewDataSource {
-    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        if isFiltering {
-            return visibleCategories.count
-        }
-        
-        return categories.count
+        isFiltering ? visibleCategories.count : categories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -204,16 +218,10 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        let tracker: Tracker
-        
-        if isFiltering {
-            tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
-        } else {
-            tracker = categories[indexPath.section].trackers[indexPath.row]
-        }
-        
+        let tracker = getTracker(indexPath: indexPath)
+        let completedDayCount = getDayCount(id: tracker.id)
+        cell.config(tracker: tracker, completedDaysCount: completedDayCount)
         cell.delegate = self
-        cell.config(tracker: tracker, completedDaysCount: 0)
         return cell
     }
     
@@ -267,15 +275,8 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
         }
         
         categories.append(trackerCategory)
-
-        DispatchQueue.main.async {
-            self.collectionView.reloadData()
-            
-            if !self.categories.isEmpty {
-                self.plugView.isHidden = true
-            }
-        }
-       
+        collectionView.reloadData()
+        if !categories.isEmpty { plugView.isHidden = true }
         dismiss(animated: true)
     }
 }
@@ -283,14 +284,15 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
 // MARK: TrackerCollectionViewCellDelegate
 extension TrackersViewController: TrackerCollectionViewCellDelegate {
     func checkTracker(id: String?, completed: Bool) {
+        guard let id = id else { return }
+        let completedTracker = TrackerRecord(trackerID: id, checkDate: today)
         if completed {
-            print("Поставить выполнено \(id)")
+            completedTrackers.insert(completedTracker)
         } else {
-            print("Снять выполнено для \(id)")
+            completedTrackers.remove(completedTracker)
         }
     }
 }
-
 
 extension TrackersViewController {
     func createReusableView(
@@ -322,7 +324,7 @@ extension TrackersViewController: UISearchResultsUpdating {
     
     private func filterContentForSearchText (_ searchText: String?) {
         guard let searchText else { return }
-    
+        
         // TODO: сделать поиск
         
         if visibleCategories.isEmpty && searchText != "" {
