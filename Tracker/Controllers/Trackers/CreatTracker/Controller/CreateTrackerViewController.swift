@@ -72,7 +72,11 @@ final class CreateTrackerViewController: UIViewController {
 
 extension CreateTrackerViewController: CreateTrackerViewDelegate {
     func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String) {
-        guard let nameTracker, let categoryString else { return }
+        guard
+            let nameTracker,
+            let categoryString,
+            selectedDates != nil
+        else { return }
         tracker = Tracker(id: UUID().uuidString, name: nameTracker, color: color, emoji: emoji, schedule: selectedDates)
         guard let tracker = tracker else { return }
         trackerCategory = TrackerCategory(title: categoryString, trackers: [tracker])
