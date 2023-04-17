@@ -16,6 +16,7 @@
 		5B0662E629D6E8E6001A5A54 /* SheduleCollectionViewCellHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0662E529D6E8E6001A5A54 /* SheduleCollectionViewCellHelper.swift */; };
 		5B0662EA29D8632A001A5A54 /* PlugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0662E929D8632A001A5A54 /* PlugView.swift */; };
 		5B49C09029EBE60E008EE30A /* String+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B49C08F29EBE60E008EE30A /* String+extension.swift */; };
+		5B49C09229ED1BCE008EE30A /* Date+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B49C09129ED1BCE008EE30A /* Date+extension.swift */; };
 		5B6A1DF229D19784006BD980 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 5B6A1DF129D19784006BD980 /* .gitignore */; };
 		5B6A1DF629D19EDB006BD980 /* UIColor+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6A1DF529D19EDB006BD980 /* UIColor+extension.swift */; };
 		5B6A1DF829D1A804006BD980 /* UIFont+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6A1DF729D1A804006BD980 /* UIFont+extension.swift */; };
@@ -64,6 +65,7 @@
 		5B0662E529D6E8E6001A5A54 /* SheduleCollectionViewCellHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheduleCollectionViewCellHelper.swift; sourceTree = "<group>"; };
 		5B0662E929D8632A001A5A54 /* PlugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlugView.swift; sourceTree = "<group>"; };
 		5B49C08F29EBE60E008EE30A /* String+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+extension.swift"; sourceTree = "<group>"; };
+		5B49C09129ED1BCE008EE30A /* Date+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+extension.swift"; sourceTree = "<group>"; };
 		5B6A1DF129D19784006BD980 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		5B6A1DF529D19EDB006BD980 /* UIColor+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+extension.swift"; sourceTree = "<group>"; };
 		5B6A1DF729D1A804006BD980 /* UIFont+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+extension.swift"; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 				5B88D90B29D5786800A325E4 /* NameTrackerTextField.swift */,
 				5B0662E929D8632A001A5A54 /* PlugView.swift */,
 				5B88D8FC29D459F200A325E4 /* HeaderReusableView.swift */,
+				5B49C09129ED1BCE008EE30A /* Date+extension.swift */,
 			);
 			path = "Custom view";
 			sourceTree = "<group>";
@@ -450,6 +453,7 @@
 				5B88D8E729D34D7500A325E4 /* UIViewController+extension.swift in Sources */,
 				5B0662DE29D6A33E001A5A54 /* EditCategoryViewTextFieldHelper.swift in Sources */,
 				5BBB6AFC29E6952B00027985 /* ScheduleCategoryTableViewModel.swift in Sources */,
+				5B49C09229ED1BCE008EE30A /* Date+extension.swift in Sources */,
 				5B6A1DF829D1A804006BD980 /* UIFont+extension.swift in Sources */,
 				5B6A1E0329D1D645006BD980 /* UIView+extension.swift in Sources */,
 				5B88D8F429D412E100A325E4 /* CreateTrackerView.swift in Sources */,

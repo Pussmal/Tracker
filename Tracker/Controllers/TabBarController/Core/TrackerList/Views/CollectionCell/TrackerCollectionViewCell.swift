@@ -88,16 +88,21 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func config(tracker: Tracker, completedDaysCount: Int?) {
+    func config(tracker: Tracker, completedDaysCount: Int?, completed: Bool) {
         emojiLabel.text = tracker.emoji
         nameTrackerLabel.text = tracker.name
         nameAndEmojiView.backgroundColor = tracker.color
         checkTrackerButton.backgroundColor = getBackgroundButtonColor(color: tracker.color)
         idTracker = tracker.id
+        completedTracker = completed
         
         guard let completedDaysCount else { return }
         daysCount = completedDaysCount
         setDaysLabel()
+    }
+    
+    func enabledCheckTrackerButton(enabled: Bool) {
+        checkTrackerButton.isEnabled = enabled ? false : true
     }
     
     private func setupCell() {

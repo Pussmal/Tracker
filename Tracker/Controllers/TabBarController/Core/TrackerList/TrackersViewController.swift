@@ -5,24 +5,21 @@ final class TrackersViewController: UIViewController {
     private struct TrackersListControllerConstants {
         static let plugLabelText = "Что будем отслеживать?"
     }
-    
-    private var categories: [TrackerCategory] = []
-    
+
     private let searchController = UISearchController(searchResultsController: nil)
-    
+    private var categories: [TrackerCategory] = []
     private var filteredCategories: [TrackerCategory] = [] // тут отфильтрованные трекеры
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: Set<TrackerRecord> = []
     
     private var currentDate: Date {
-        return datePicker.date
+        let currentDate = Date().getDate(date: datePicker.date)
+        return currentDate
     }
     
     private var today: Date {
-        let date = Date()
-        let dateComponents = Calendar.current.dateComponents([.day, .month, .year], from: date)
-        let today = Calendar.current.date(from: dateComponents)
-        return today ?? Date()
+        let today = Date().getDate(date: Date())
+        return today
     }
     
     private var searchBarIsEmpty: Bool {
@@ -53,6 +50,7 @@ final class TrackersViewController: UIViewController {
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .compact
         picker.locale = Locale(identifier: "ru_RU")
+        picker.calendar = Calendar(identifier: .iso8601)
         picker.addTarget(self, action: #selector(changedDate), for: .valueChanged)
         return picker
     }()
@@ -146,6 +144,7 @@ final class TrackersViewController: UIViewController {
     @objc
     private func changedDate() {
         showVisibleTrackers()
+        print(completedTrackers)
     }
     
     private func getDayCount(for id: String) -> Int {
@@ -163,12 +162,10 @@ final class TrackersViewController: UIViewController {
     private func showVisibleTrackers() {
         visibleCategories = []
         
-        let day = currentDate
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "E"
-        let date = dateFormatter.string(from: day)
-        print(date)
-        
+        let date = dateFormatter.string(from: currentDate)
+       
         var newCategories: [TrackerCategory] = []
         
         for (index, category) in categories.enumerated() {
@@ -201,13 +198,8 @@ final class TrackersViewController: UIViewController {
         }
  
         visibleCategories = newCategories
-        
-        if visibleCategories.isEmpty {
-            plugView.isHidden = false
-        } else {
-            plugView.isHidden = true
-        }
-        
+        let plusIsHidden = visibleCategories.isEmpty ? false : true
+        plugView.isHidden = plusIsHidden        
         collectionView.reloadData()
         presentedViewController?.dismiss(animated: false, completion: nil)
     }
@@ -251,9 +243,19 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
+        
         let tracker = getTracker(for: indexPath)
         let completedDayCount = getDayCount(for: tracker.id)
-        cell.config(tracker: tracker, completedDaysCount: completedDayCount)
+        var completed = false
+        
+        completedTrackers.forEach { trackerRecord in
+            if trackerRecord.trackerID == tracker.id && trackerRecord.checkDate == currentDate {
+                completed = true
+            }
+        }
+           
+        cell.config(tracker: tracker, completedDaysCount: completedDayCount, completed: completed)
+        cell.enabledCheckTrackerButton(enabled: today < currentDate)
         cell.delegate = self
         return cell
     }
@@ -293,8 +295,6 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
     
     func creactTrackerCategory(_ trackerCategory: TrackerCategory?) {
         guard let trackerCategory else { return }
-        print(trackerCategory.trackers)
-        
         guard !categories.contains(trackerCategory) else {
             for (index, category) in categories.enumerated() {
                 if category.title == trackerCategory.title {
@@ -375,14 +375,9 @@ extension TrackersViewController: UISearchResultsUpdating {
 extension TrackersViewController: UISearchControllerDelegate {
     func didDismissSearchController(_ searchController: UISearchController) {
         filteredCategories = []
-        
-        if categories.isEmpty {
-            plugView.config(title: "plugLabelText", image: UIImage(named: "plug"))
-            plugView.isHidden = false
-        } else {
-            plugView.isHidden = true
-        }
-        
+        let plusIsHidden = categories.isEmpty ? false : true
+        plugView.isHidden = plusIsHidden
+        plugView.config(title: TrackersListControllerConstants.plugLabelText, image: UIImage(named: "plug"))
         collectionView.reloadData()
     }
 }
