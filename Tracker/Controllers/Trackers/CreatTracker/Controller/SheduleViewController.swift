@@ -37,7 +37,7 @@ final class SheduleViewController: UIViewController {
 
 extension SheduleViewController: SheduleViewDelegate {
     func setDates(dates: [String]?) {
-        guard let dates else { return }
+        guard let dates, !dates.isEmpty else { return }
         delegate?.setSelectedDates(dates: dates)
     }
 }

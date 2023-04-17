@@ -7,6 +7,6 @@ struct TrackerRecord: Hashable {
 
 extension TrackerRecord: Equatable {
     static func == (lrh: TrackerRecord, rhs: TrackerRecord) -> Bool {
-        lrh.trackerID == rhs.trackerID ? true : false
+        lrh.trackerID == rhs.trackerID && lrh.checkDate == rhs.checkDate ? true : false
     }
 }

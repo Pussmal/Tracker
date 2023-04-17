@@ -19,12 +19,14 @@ final class TrackersViewController: UIViewController {
     private var completedTrackers: Set<TrackerRecord> = []
     
     private var currentDate: Date {
-        let currentDate = Date().getDate(date: datePicker.date)
+        let date = datePicker.date
+        let currentDate = date.getDate
         return currentDate
     }
     
     private var today: Date {
-        let today = Date().getDate(date: Date())
+        let date = Date()
+        let today = date.getDate
         return today
     }
     
@@ -150,7 +152,6 @@ final class TrackersViewController: UIViewController {
     @objc
     private func changedDate() {
         showVisibleTrackers()
-        print(completedTrackers)
     }
     
     private func getDayCount(for id: String) -> Int {
@@ -170,7 +171,7 @@ final class TrackersViewController: UIViewController {
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "E"
-        let date = dateFormatter.string(from: currentDate)
+        let date = dateFormatter.string(from: datePicker.date)
         
         var newCategories: [TrackerCategory] = []
         
@@ -348,7 +349,7 @@ extension TrackersViewController: UISearchResultsUpdating {
         guard let searchText else { return }
         var newCategories: [TrackerCategory] = []
         
-        for category in categories {
+        for category in visibleCategories {
             var trackers: [Tracker] = []
             
             for (index, tracker) in category.trackers.enumerated() {

@@ -136,6 +136,7 @@
 				5B88D8E629D34D7500A325E4 /* UIViewController+extension.swift */,
 				5B88D8FA29D4487500A325E4 /* Collection+extension.swift */,
 				5B49C08F29EBE60E008EE30A /* String+extension.swift */,
+				5B49C09129ED1BCE008EE30A /* Date+extension.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -283,7 +284,6 @@
 				5B88D90B29D5786800A325E4 /* NameTrackerTextField.swift */,
 				5B0662E929D8632A001A5A54 /* PlugView.swift */,
 				5B88D8FC29D459F200A325E4 /* HeaderReusableView.swift */,
-				5B49C09129ED1BCE008EE30A /* Date+extension.swift */,
 			);
 			path = "Custom view";
 			sourceTree = "<group>";
