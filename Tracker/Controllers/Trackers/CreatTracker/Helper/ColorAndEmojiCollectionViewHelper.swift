@@ -206,7 +206,7 @@ extension ColorAndEmojiCollectionViewHelper {
             kind == UICollectionView.elementKindSectionHeader,
             let view = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
-                withReuseIdentifier: HeaderReusableView.reuseIdentifire,
+                withReuseIdentifier: HeaderReusableView.reuseIdentifier,
                 for: indexPath) as? HeaderReusableView
         else {
             return UICollectionReusableView()

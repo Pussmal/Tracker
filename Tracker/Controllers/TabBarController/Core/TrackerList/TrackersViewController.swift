@@ -3,10 +3,16 @@ import UIKit
 final class TrackersViewController: UIViewController {
     
     private struct TrackersListControllerConstants {
+        static let viewControllerTitle = "Трекеры"
         static let plugLabelText = "Что будем отслеживать?"
+        static let plugImageName = "plug"
+        static let addTrackerButtonImageName = "plus"
+        static let localeIdentifier = "ru_RU"
+        static let reuseIdentifierCell = "cell"
     }
-
+    
     private let searchController = UISearchController(searchResultsController: nil)
+    
     private var categories: [TrackerCategory] = []
     private var filteredCategories: [TrackerCategory] = [] // тут отфильтрованные трекеры
     private var visibleCategories: [TrackerCategory] = []
@@ -33,7 +39,7 @@ final class TrackersViewController: UIViewController {
     
     // MARK: UI
     private lazy var addTrackerButton: UIBarButtonItem = {
-        let imageButton = UIImage(named: "plus")?.withRenderingMode(.alwaysTemplate)
+        let imageButton = UIImage(named: TrackersListControllerConstants.addTrackerButtonImageName)?.withRenderingMode(.alwaysTemplate)
         let button = UIBarButtonItem(
             image: imageButton,
             style: .done,
@@ -49,7 +55,7 @@ final class TrackersViewController: UIViewController {
         picker.translatesAutoresizingMaskIntoConstraints = false
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .compact
-        picker.locale = Locale(identifier: "ru_RU")
+        picker.locale = Locale(identifier: TrackersListControllerConstants.localeIdentifier)
         picker.calendar = Calendar(identifier: .iso8601)
         picker.addTarget(self, action: #selector(changedDate), for: .valueChanged)
         return picker
@@ -61,7 +67,7 @@ final class TrackersViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(
             UICollectionViewCell.self,
-            forCellWithReuseIdentifier: "cell"
+            forCellWithReuseIdentifier: TrackersListControllerConstants.reuseIdentifierCell
         )
         collectionView.register(
             TrackerCollectionViewCell.self,
@@ -70,7 +76,7 @@ final class TrackersViewController: UIViewController {
         collectionView.register(
             HeaderReusableView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: HeaderReusableView.reuseIdentifire)
+            withReuseIdentifier: HeaderReusableView.reuseIdentifier)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .clear
         collectionView.showsVerticalScrollIndicator = false
@@ -84,7 +90,7 @@ final class TrackersViewController: UIViewController {
         let plugView = PlugView(
             frame: .zero,
             titleLabel: TrackersListControllerConstants.plugLabelText,
-            image: UIImage(named: "plug") ?? UIImage()
+            image: UIImage(named: TrackersListControllerConstants.plugImageName) ?? UIImage()
         )
         plugView.isHidden = true
         return plugView
@@ -103,7 +109,7 @@ final class TrackersViewController: UIViewController {
     // MARK: Private methods
     private func setupView() {
         view.backgroundColor = .ypWhite
-        title = "Трекеры"
+        title = TrackersListControllerConstants.viewControllerTitle
         navigationItem.leftBarButtonItem = addTrackerButton
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
     }
@@ -165,7 +171,7 @@ final class TrackersViewController: UIViewController {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "E"
         let date = dateFormatter.string(from: currentDate)
-       
+        
         var newCategories: [TrackerCategory] = []
         
         for (index, category) in categories.enumerated() {
@@ -196,10 +202,9 @@ final class TrackersViewController: UIViewController {
                 }
             }
         }
- 
+        
         visibleCategories = newCategories
-        let plusIsHidden = visibleCategories.isEmpty ? false : true
-        plugView.isHidden = plusIsHidden        
+        plugView.isHidden = visibleCategories.isEmpty ? false : true
         collectionView.reloadData()
         presentedViewController?.dismiss(animated: false, completion: nil)
     }
@@ -212,7 +217,8 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let bounds = UIScreen.main.bounds
         let width = (bounds.width - 44) / 2
-        let size = CGSize(width: width, height: 132)
+        let heightConstant: CGFloat = 132
+        let size = CGSize(width: width, height: heightConstant)
         return size
     }
     
@@ -253,7 +259,7 @@ extension TrackersViewController: UICollectionViewDataSource {
                 completed = true
             }
         }
-           
+        
         cell.config(tracker: tracker, completedDaysCount: completedDayCount, completed: completed)
         cell.enabledCheckTrackerButton(enabled: today < currentDate)
         cell.delegate = self
@@ -261,7 +267,7 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderReusableView.reuseIdentifire, for: indexPath) as? HeaderReusableView else {
+        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderReusableView.reuseIdentifier, for: indexPath) as? HeaderReusableView else {
             return UICollectionReusableView()
         }
         
@@ -293,7 +299,7 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
         dismiss(animated: true)
     }
     
-    func creactTrackerCategory(_ trackerCategory: TrackerCategory?) {
+    func createTrackerCategory(_ trackerCategory: TrackerCategory?) {
         guard let trackerCategory else { return }
         guard !categories.contains(trackerCategory) else {
             for (index, category) in categories.enumerated() {
@@ -319,30 +325,12 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
 extension TrackersViewController: TrackerCollectionViewCellDelegate {
     func checkTracker(id: String?, completed: Bool) {
         guard let id = id else { return }
-        let completedTracker = TrackerRecord(trackerID: id, checkDate: today)
+        let completedTracker = TrackerRecord(trackerID: id, checkDate: currentDate)
         if completed {
             completedTrackers.insert(completedTracker)
         } else {
             completedTrackers.remove(completedTracker)
         }
-    }
-}
-
-extension TrackersViewController {
-    func createReusableView(
-        _ collectionView: UICollectionView,
-        viewForSupplementaryElementOfKind kind: String,
-        at indexPath: IndexPath,
-        title: String
-    ) -> UICollectionReusableView {
-        guard kind == UICollectionView.elementKindSectionHeader,
-              let view = collectionView.dequeueReusableSupplementaryView(
-                ofKind: kind,
-                withReuseIdentifier: HeaderReusableView.reuseIdentifire,
-                for: indexPath) as? HeaderReusableView
-        else { return UICollectionReusableView() }
-        view.config(title: title)
-        return view
     }
 }
 
@@ -358,8 +346,33 @@ extension TrackersViewController: UISearchResultsUpdating {
     
     private func filterContentForSearchText (_ searchText: String?) {
         guard let searchText else { return }
+        var newCategories: [TrackerCategory] = []
         
-        // TODO: сделать поиск
+        for category in categories {
+            var trackers: [Tracker] = []
+            
+            for (index, tracker) in category.trackers.enumerated() {
+                if tracker.name.lowercased().contains(searchText.lowercased()){
+                    if trackers.contains(tracker) {
+                        trackers[index] = tracker
+                    } else {
+                        trackers.append(tracker)
+                    }
+                }
+            }
+            
+            let category = TrackerCategory(title: category.title, trackers: trackers)
+            
+            if newCategories.contains(category) {
+                guard let index = newCategories.firstIndex(of: category) else { return }
+                newCategories[index] = category
+            }
+            else {
+                newCategories.append(category)
+            }
+        }
+        
+        filteredCategories = newCategories
         
         if filteredCategories.isEmpty && searchText != "" {
             plugView.isHidden = false
@@ -367,7 +380,6 @@ extension TrackersViewController: UISearchResultsUpdating {
         } else {
             plugView.isHidden = true
         }
-        
         collectionView.reloadData()
     }
 }
@@ -377,7 +389,10 @@ extension TrackersViewController: UISearchControllerDelegate {
         filteredCategories = []
         let plusIsHidden = categories.isEmpty ? false : true
         plugView.isHidden = plusIsHidden
-        plugView.config(title: TrackersListControllerConstants.plugLabelText, image: UIImage(named: "plug"))
+        plugView.config(
+            title: TrackersListControllerConstants.plugLabelText,
+            image: UIImage(named: TrackersListControllerConstants.plugImageName)
+        )
         collectionView.reloadData()
     }
 }

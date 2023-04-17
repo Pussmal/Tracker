@@ -110,7 +110,7 @@ final class CreateTrackerView: UIView {
         collectionView.register(
             HeaderReusableView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: HeaderReusableView.reuseIdentifire)
+            withReuseIdentifier: HeaderReusableView.reuseIdentifier)
         collectionView.register(
             ColorCollectionViewCell.self,
             forCellWithReuseIdentifier: ColorCollectionViewCell.reuseIdentifire)

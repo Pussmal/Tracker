@@ -96,6 +96,11 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         idTracker = tracker.id
         completedTracker = completed
         
+        let image = getButtonImage(completedTracker)
+        checkTrackerButton.setImage(image, for: .normal)
+        let backgroundColor = getBackgroundButtonColor(color: checkTrackerButton.backgroundColor)
+        checkTrackerButton.backgroundColor = backgroundColor
+        
         guard let completedDaysCount else { return }
         daysCount = completedDaysCount
         setDaysLabel()
@@ -104,7 +109,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     func enabledCheckTrackerButton(enabled: Bool) {
         checkTrackerButton.isEnabled = enabled ? false : true
     }
-    
+        
     private func setupCell() {
         contentView.layer.cornerRadius = 16
         contentView.clipsToBounds = true

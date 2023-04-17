@@ -7,7 +7,7 @@ enum TypeTracker {
 
 protocol TypeTrackerViewControllerDelegate: AnyObject {
     func dismissViewController(_ viewController: UIViewController)
-    func creactTrackerCategory(_ trackerCategory: TrackerCategory?)
+    func createTrackerCategory(_ trackerCategory: TrackerCategory?)
 }
 
 final class TypeTrackerViewController: UIViewController {
@@ -63,7 +63,7 @@ extension TypeTrackerViewController {
 
 extension TypeTrackerViewController: CreateTrackerViewControllerDelegate {
     func creatTrackerCategory(_ trackerCategory: TrackerCategory?) {
-        delegate?.creactTrackerCategory(trackerCategory)
+        delegate?.createTrackerCategory(trackerCategory)
     }
     
     func dismissViewController(_ viewController: UIViewController) {
