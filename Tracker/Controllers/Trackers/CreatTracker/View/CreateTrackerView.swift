@@ -231,9 +231,9 @@ final class CreateTrackerView: UIView {
         var tableViewHeight: CGFloat = Constants.hugHeight
         
         switch typeTracer {
-        case .Habit:
+        case .habit:
             tableViewHeight *= 2
-        case .Event:
+        case .event:
             break
         }
         

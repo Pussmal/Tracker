@@ -6,8 +6,14 @@ protocol TrackerCollectionViewCellDelegate: AnyObject {
 
 final class TrackerCollectionViewCell: UICollectionViewCell {
     static let identifier = "TrackerCollectionViewCell"
-    
+
     weak var delegate: TrackerCollectionViewCellDelegate?
+    
+    private struct TrackerCollectionViewCellConstants {
+        static let emojiLabelSide: CGFloat = 30
+        static let checkTrackerButtonSide: CGFloat = 34
+        static let offset: CGFloat = 12
+    }
     
     private var completedTracker = false {
         didSet {
@@ -18,9 +24,11 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
             }
         }
     }
+    
     private var idTracker: String?
     private var daysCount: Int = 0
     
+    // MARK: UI
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -77,6 +85,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         return button
     }()
     
+    // MARK: Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -88,6 +97,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: Public methods
     func config(tracker: Tracker, completedDaysCount: Int?, completed: Bool) {
         emojiLabel.text = tracker.emoji
         nameTrackerLabel.text = tracker.name
@@ -109,9 +119,10 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     func enabledCheckTrackerButton(enabled: Bool) {
         checkTrackerButton.isEnabled = enabled ? false : true
     }
-        
+    
+    // MARK: Private methods
     private func setupCell() {
-        contentView.layer.cornerRadius = 16
+        contentView.layer.cornerRadius = Constants.cornerRadius
         contentView.clipsToBounds = true
         
         contentView.addSubViews(stackView)
@@ -123,13 +134,8 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     private func activateConstraints() {
-        
-        let emojiLabelSide: CGFloat = 30
-        let checkTrackerButtonSide: CGFloat = 34
-        let offset: CGFloat = 12
-        
-        emojiLabel.layer.cornerRadius = emojiLabelSide / 2
-        checkTrackerButton.layer.cornerRadius = checkTrackerButtonSide / 2
+        emojiLabel.layer.cornerRadius = TrackerCollectionViewCellConstants.emojiLabelSide / 2
+        checkTrackerButton.layer.cornerRadius = TrackerCollectionViewCellConstants.checkTrackerButtonSide / 2
         
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -137,22 +143,22 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
-            emojiLabel.topAnchor.constraint(equalTo: nameAndEmojiView.topAnchor, constant: offset),
-            emojiLabel.leftAnchor.constraint(equalTo: nameAndEmojiView.leftAnchor, constant: offset),
-            emojiLabel.heightAnchor.constraint(equalToConstant: emojiLabelSide),
-            emojiLabel.widthAnchor.constraint(equalToConstant: emojiLabelSide),
+            emojiLabel.topAnchor.constraint(equalTo: nameAndEmojiView.topAnchor, constant: TrackerCollectionViewCellConstants.offset),
+            emojiLabel.leftAnchor.constraint(equalTo: nameAndEmojiView.leftAnchor, constant: TrackerCollectionViewCellConstants.offset),
+            emojiLabel.heightAnchor.constraint(equalToConstant: TrackerCollectionViewCellConstants.emojiLabelSide),
+            emojiLabel.widthAnchor.constraint(equalToConstant: TrackerCollectionViewCellConstants.emojiLabelSide),
             
-            nameTrackerLabel.bottomAnchor.constraint(equalTo: nameAndEmojiView.bottomAnchor, constant: -offset),
-            nameTrackerLabel.leftAnchor.constraint(equalTo: nameAndEmojiView.leftAnchor, constant: offset),
-            nameTrackerLabel.rightAnchor.constraint(equalTo: nameAndEmojiView.rightAnchor, constant: -offset),
+            nameTrackerLabel.bottomAnchor.constraint(equalTo: nameAndEmojiView.bottomAnchor, constant: -TrackerCollectionViewCellConstants.offset),
+            nameTrackerLabel.leftAnchor.constraint(equalTo: nameAndEmojiView.leftAnchor, constant: TrackerCollectionViewCellConstants.offset),
+            nameTrackerLabel.rightAnchor.constraint(equalTo: nameAndEmojiView.rightAnchor, constant: -TrackerCollectionViewCellConstants.offset),
             
-            checkTrackerButton.widthAnchor.constraint(equalToConstant: checkTrackerButtonSide),
-            checkTrackerButton.heightAnchor.constraint(equalToConstant: checkTrackerButtonSide),
-            checkTrackerButton.rightAnchor.constraint(equalTo: daysPlusTrackerButtonView.rightAnchor, constant: -offset),
+            checkTrackerButton.widthAnchor.constraint(equalToConstant: TrackerCollectionViewCellConstants.checkTrackerButtonSide),
+            checkTrackerButton.heightAnchor.constraint(equalToConstant: TrackerCollectionViewCellConstants.checkTrackerButtonSide),
+            checkTrackerButton.rightAnchor.constraint(equalTo: daysPlusTrackerButtonView.rightAnchor, constant: -TrackerCollectionViewCellConstants.offset),
             checkTrackerButton.topAnchor.constraint(equalTo: daysPlusTrackerButtonView.topAnchor, constant: 9),
             checkTrackerButton.bottomAnchor.constraint(equalTo: daysPlusTrackerButtonView.bottomAnchor),
             
-            daysLabel.leftAnchor.constraint(equalTo: daysPlusTrackerButtonView.leftAnchor, constant: offset),
+            daysLabel.leftAnchor.constraint(equalTo: daysPlusTrackerButtonView.leftAnchor, constant: TrackerCollectionViewCellConstants.offset),
             daysLabel.rightAnchor.constraint(equalTo: checkTrackerButton.leftAnchor),
             daysLabel.centerYAnchor.constraint(equalTo: checkTrackerButton.centerYAnchor)
         ])

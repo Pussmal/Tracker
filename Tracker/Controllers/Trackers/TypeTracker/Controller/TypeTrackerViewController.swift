@@ -1,8 +1,8 @@
 import UIKit
 
 enum TypeTracker {
-    case Habit
-    case Event
+    case habit
+    case event
 }
 
 protocol TypeTrackerViewControllerDelegate: AnyObject {
@@ -11,14 +11,15 @@ protocol TypeTrackerViewControllerDelegate: AnyObject {
 }
 
 final class TypeTrackerViewController: UIViewController {
-    
-    private var typeTrackerView: TypeTrackerView!
-    
+
     weak var delegate: TypeTrackerViewControllerDelegate?
     
     private struct TypeTrackerViewControllerConstants {
         static let viewControllerTitle = "Создание трекера"
     }
+    
+    private var typeTrackerView: TypeTrackerView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,12 +41,12 @@ final class TypeTrackerViewController: UIViewController {
 // MARK: TypeTrackerViewDelegate
 extension TypeTrackerViewController: TypeTrackerViewDelegate {
     func showIirregularEvents() {
-        let viewController = createTrackerViewController(typeTracker: .Event)
+        let viewController = createTrackerViewController(typeTracker: .event)
         present(viewController, animated: true)
     }
     
     func showHabit() {
-        let viewController = createTrackerViewController(typeTracker: .Habit)
+        let viewController = createTrackerViewController(typeTracker: .habit)
         present(viewController, animated: true)
     }
 }

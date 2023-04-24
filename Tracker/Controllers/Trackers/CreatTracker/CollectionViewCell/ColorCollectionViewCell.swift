@@ -3,6 +3,11 @@ import UIKit
 final class ColorCollectionViewCell: UICollectionViewCell {
     static let reuseIdentifire = "ColorCollectionViewCell"
     
+    private struct ColorCollectionViewCellConstants {
+        static let viewCornerRadius: CGFloat = 9
+        static let edge: CGFloat = 5
+    }
+    
     var cellIsSelected = false {
         didSet {
             cellIsSelected ? showBorderCell() : hideBorderCell()
@@ -12,7 +17,7 @@ final class ColorCollectionViewCell: UICollectionViewCell {
     private lazy var colorView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 8
+        view.layer.cornerRadius = ColorCollectionViewCellConstants.viewCornerRadius
         return view
     }()
     
@@ -30,7 +35,7 @@ final class ColorCollectionViewCell: UICollectionViewCell {
     private func setupView() {
         backgroundColor = .clear
         contentView.backgroundColor = .clear
-        layer.cornerRadius = 8
+        layer.cornerRadius = ColorCollectionViewCellConstants.viewCornerRadius
     }
     
     func config(color: UIColor?) {
@@ -52,14 +57,11 @@ final class ColorCollectionViewCell: UICollectionViewCell {
     }
     
     private func activateConstraints() {
-        
-        let edge: CGFloat = 5
-        
         NSLayoutConstraint.activate([
-            colorView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: edge),
-            colorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: edge),
-            colorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -edge),
-            colorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -edge),
+            colorView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: ColorCollectionViewCellConstants.edge),
+            colorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: ColorCollectionViewCellConstants.edge),
+            colorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -ColorCollectionViewCellConstants.edge),
+            colorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -ColorCollectionViewCellConstants.edge),
         ])
     }
 }

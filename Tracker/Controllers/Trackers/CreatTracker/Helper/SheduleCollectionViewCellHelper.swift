@@ -1,17 +1,7 @@
 import UIKit
 
 final class SheduleCollectionViewCellHelper: NSObject {
-    
-    private enum WeekDays: String, CaseIterable {
-        case monday = "Понедельник"
-        case tuesday = "Вторник"
-        case wednesday = "Среда"
-        case thursday = "Четверг"
-        case friday = "Пятница"
-        case saturday = "Суббота"
-        case sunday = "Воскресенье"
-    }
-
+    private let daysArray = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
     private(set) var selectedDates: Set<String> = []
 }
 
@@ -27,7 +17,7 @@ extension SheduleCollectionViewCellHelper: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.config(day: WeekDays.allCases[indexPath.row].rawValue)
+        cell.config(day: daysArray[safe: indexPath.row])
         
         if indexPath.row == 0 {
             cell.layer.masksToBounds = true
@@ -35,7 +25,7 @@ extension SheduleCollectionViewCellHelper: UICollectionViewDataSource {
             cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         }
 
-        if indexPath.row == WeekDays.allCases.count - 1 {
+        if indexPath.row == daysArray.count - 1 {
             cell.layer.masksToBounds = true
             cell.layer.cornerRadius = Constants.cornerRadius
             cell.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
@@ -48,7 +38,7 @@ extension SheduleCollectionViewCellHelper: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        WeekDays.allCases.count
+        daysArray.count
     }
 }
 

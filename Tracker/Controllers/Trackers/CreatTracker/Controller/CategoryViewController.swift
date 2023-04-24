@@ -6,14 +6,17 @@ protocol CategoryViewControllerDelegate: AnyObject {
 
 final class CategoryViewController: UIViewController {
     
-    private var сategoryView: CategoryView!
     weak var delegate: CategoryViewControllerDelegate?
+    var category: String?
     
     private struct CategoryViewControllerConstants {
         static let title = "Категория"
+        static let deleteActionSheetMessage = "Эта категория точно не нужна?"
+        static let deleteActionTitle = "Удалить"
+        static let cancelActionTitle = "Отмена"
     }
     
-    var category: String?
+    private var сategoryView: CategoryView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,14 +40,9 @@ final class CategoryViewController: UIViewController {
         addScreenView(view: сategoryView)
     }
     
-    private func reloadCollectionView() {
-       
-    }
-    
     deinit {
         print("CategoryViewController deinit")
     }
-    
 }
 
 extension CategoryViewController: CategoryViewDelegate {
@@ -56,15 +54,14 @@ extension CategoryViewController: CategoryViewDelegate {
         self.category = category
         
         var deleteActionSheet: UIAlertController {
-            let message = "Эта категория точно не нужна?"
+            let message = CategoryViewControllerConstants.deleteActionSheetMessage
             let alertController = UIAlertController(
                 title: nil, message: message,
                 preferredStyle: .actionSheet
             )
             let deleteAction = UIAlertAction(
-                title: "Удалить",
+                title: CategoryViewControllerConstants.deleteActionTitle,
                 style: .destructive) { [weak self] _ in
-                    // TODO: удалить категорию обновить изображение
                     guard let self = self,
                           let category = self.category,
                           let index = CategoryStorage.shared.category.firstIndex(of: category)
@@ -73,17 +70,16 @@ extension CategoryViewController: CategoryViewDelegate {
                     self.сategoryView.reloadCollectionView()
                     print(CategoryStorage.shared.category.count)
                 }
-            let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+            let cancelAction = UIAlertAction(title: CategoryViewControllerConstants.cancelActionTitle, style: .cancel)
             alertController.addAction(deleteAction)
             alertController.addAction(cancelAction)
             return alertController
         }
         
-        
         let viewController = deleteActionSheet
         present(viewController, animated: true)
     }
-        
+    
     func showEditCategoryViewController(type: EditCategory, editCategoryString: String?) {
         let viewController = createEditCategoryViewController(type: type, editCategoryString: editCategoryString)
         present(viewController, animated: true)

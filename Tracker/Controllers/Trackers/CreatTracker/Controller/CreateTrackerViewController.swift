@@ -51,9 +51,9 @@ final class CreateTrackerViewController: UIViewController {
         )
         
         switch typeTracker {
-        case .Habit:
+        case .habit:
             setupView(with: CreateTrackerViewControllerConstants.habitTitle)
-        case .Event:
+        case .event:
             setupView(with: CreateTrackerViewControllerConstants.eventTitle)
         }
     }
