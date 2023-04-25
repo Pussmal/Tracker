@@ -15,6 +15,7 @@
 		5B0662E429D6E7DE001A5A54 /* SheduleCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0662E329D6E7DE001A5A54 /* SheduleCollectionViewCell.swift */; };
 		5B0662E629D6E8E6001A5A54 /* SheduleCollectionViewCellHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0662E529D6E8E6001A5A54 /* SheduleCollectionViewCellHelper.swift */; };
 		5B0662EA29D8632A001A5A54 /* PlugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0662E929D8632A001A5A54 /* PlugView.swift */; };
+		5B49769C29F7A8620072F9C0 /* ScheduleMarshalling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B49769B29F7A8620072F9C0 /* ScheduleMarshalling.swift */; };
 		5B49C09029EBE60E008EE30A /* String+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B49C08F29EBE60E008EE30A /* String+extension.swift */; };
 		5B49C09229ED1BCE008EE30A /* Date+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B49C09129ED1BCE008EE30A /* Date+extension.swift */; };
 		5B6A1DF229D19784006BD980 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 5B6A1DF129D19784006BD980 /* .gitignore */; };
@@ -69,6 +70,7 @@
 		5B0662E329D6E7DE001A5A54 /* SheduleCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheduleCollectionViewCell.swift; sourceTree = "<group>"; };
 		5B0662E529D6E8E6001A5A54 /* SheduleCollectionViewCellHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheduleCollectionViewCellHelper.swift; sourceTree = "<group>"; };
 		5B0662E929D8632A001A5A54 /* PlugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlugView.swift; sourceTree = "<group>"; };
+		5B49769B29F7A8620072F9C0 /* ScheduleMarshalling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleMarshalling.swift; sourceTree = "<group>"; };
 		5B49C08F29EBE60E008EE30A /* String+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+extension.swift"; sourceTree = "<group>"; };
 		5B49C09129ED1BCE008EE30A /* Date+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+extension.swift"; sourceTree = "<group>"; };
 		5B6A1DF129D19784006BD980 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
@@ -406,6 +408,7 @@
 			isa = PBXGroup;
 			children = (
 				5BF1822F29F6BC3A00AC5510 /* UIColorMarshalling.swift */,
+				5B49769B29F7A8620072F9C0 /* ScheduleMarshalling.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -515,6 +518,7 @@
 				5B88D8D829D2F41A00A325E4 /* TrackerCollectionViewCell.swift in Sources */,
 				5B88D8F629D442E900A325E4 /* ColorAndEmojiCollectionViewHelper.swift in Sources */,
 				5B6A1DF629D19EDB006BD980 /* UIColor+extension.swift in Sources */,
+				5B49769C29F7A8620072F9C0 /* ScheduleMarshalling.swift in Sources */,
 				5BF1823029F6BC3A00AC5510 /* UIColorMarshalling.swift in Sources */,
 				5B88D90129D47B5A00A325E4 /* EmojiCollectionViewCell.swift in Sources */,
 				5B88D91A29D5D87E00A325E4 /* CategoryView.swift in Sources */,

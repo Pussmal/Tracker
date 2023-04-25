@@ -77,7 +77,7 @@ extension CreateTrackerViewController: CreateTrackerViewDelegate {
             let categoryString,
             selectedDates != nil
         else { return }
-        tracker = Tracker(id: UUID().uuidString, name: nameTracker, color: color, emoji: emoji, schedule: selectedDates)
+        tracker = Tracker(id: UUID().uuidString, name: nameTracker, color: color, emoji: emoji, schedule: selectedDates, createdAt: Date())
         guard let tracker = tracker else { return }
         trackerCategory = TrackerCategory(title: categoryString, trackers: [tracker])
         delegate?.creatTrackerCategory(trackerCategory)
