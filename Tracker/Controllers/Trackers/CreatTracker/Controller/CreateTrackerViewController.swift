@@ -2,7 +2,6 @@ import UIKit
 
 protocol CreateTrackerViewControllerDelegate: AnyObject {
     func dismissViewController(_ viewController: UIViewController)
-    func creatTrackerCategory(_ trackerCategory: TrackerCategory?)
 }
 
 final class CreateTrackerViewController: UIViewController {
@@ -33,6 +32,8 @@ final class CreateTrackerViewController: UIViewController {
     
     private var trackerCategory: TrackerCategory?
     private var tracker: Tracker?
+    
+    private let dataProvider = DataProvider()
     
     private var createTrackerView: CreateTrackerView!
     
@@ -74,13 +75,24 @@ extension CreateTrackerViewController: CreateTrackerViewDelegate {
     func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String) {
         guard
             let nameTracker,
-            let categoryString,
             selectedDates != nil
         else { return }
-        tracker = Tracker(id: UUID().uuidString, name: nameTracker, color: color, emoji: emoji, schedule: selectedDates, createdAt: Date())
+        
+       
+        
+        tracker = Tracker(
+            id: UUID().uuidString,
+            name: nameTracker,
+            color: color,
+            emoji: emoji,
+            schedule: selectedDates
+        )
+                
         guard let tracker = tracker else { return }
-        trackerCategory = TrackerCategory(title: categoryString, trackers: [tracker])
-        delegate?.creatTrackerCategory(trackerCategory)
+        
+        try? dataProvider.saveTracker(tracker)
+        
+        delegate?.dismissViewController(self)
     }
     
     func showShedule() {

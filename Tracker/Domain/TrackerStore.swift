@@ -15,6 +15,7 @@ final class TrackerStore: NSObject {
         case errorDecodingEmoji
         case errorDecodingScheduleString
         case errorDecodingCreatedAt
+        case errorDecodingIdCategory
     }
     
     private let context: NSManagedObjectContext
@@ -22,27 +23,12 @@ final class TrackerStore: NSObject {
     private let scheduleMarshaling = ScheduleMarshalling()
     
     private var tracers: [Tracker] {
-        guard let objects = fetchedResultController.fetchedObjects,
-              let trackers = try? objects.map({ try self.creatTracker(from: $0) })
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        guard let objects = try? context.fetch(fetchRequest),
+              let trackers = try? objects.map({ try creatTracker(from: $0) })
         else { return [] }
         return trackers
     }
-
-    private lazy var fetchedResultController: NSFetchedResultsController<TrackerCoreData> = {
-        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: TrackerStoreConstants.entityName)
-        fetchRequest.sortDescriptors = [
-            NSSortDescriptor(keyPath: \TrackerCoreData.category?.categoryId, ascending: true),
-            NSSortDescriptor(keyPath: \TrackerCoreData.createdAt, ascending: true)
-        ]
-        let fetchedResultController = NSFetchedResultsController(
-            fetchRequest: fetchRequest,
-            managedObjectContext: context,
-            sectionNameKeyPath: TrackerStoreConstants.categorySectionNameKeyPath,
-            cacheName: nil)
-        fetchedResultController.delegate = self
-        try? fetchedResultController.performFetch()
-        return fetchedResultController
-    }()
     
     init(context: NSManagedObjectContext) {
         self.context = context
@@ -53,21 +39,21 @@ final class TrackerStore: NSObject {
         self.init(context: context)
     }
     
-    func addNewTracker(_ tracker: Tracker) {
-       creatTrackerCoreData(from: tracker)
-       saveContext()
+    func addNewTracker(_ tracker: Tracker, with category: TrackerCategoryCoreData) {
+        creatTrackerCoreData(from: tracker, with: category)
+        saveContext()
     }
     
-    private func creatTrackerCoreData(from tracker: Tracker) {
+    private func creatTrackerCoreData(from tracker: Tracker, with category: TrackerCategoryCoreData)  {
         let colorHex = colorMarshaling.hexStringFromColor(color: tracker.color ?? UIColor())
         let sheduleString = scheduleMarshaling.stringFromArray(array: tracker.schedule ?? [String]())
         let trackerCoreData = TrackerCoreData(context: context)
         trackerCoreData.colorHex = colorHex
-        trackerCoreData.createdAt = Date()
         trackerCoreData.emoji = tracker.emoji
         trackerCoreData.id = tracker.id
         trackerCoreData.name = tracker.name
         trackerCoreData.schedule = sheduleString
+        trackerCoreData.category = category
     }
     
     private func creatTracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
@@ -76,19 +62,17 @@ final class TrackerStore: NSObject {
         guard let colorHex = trackerCoreData.colorHex else { throw TrackerStoreError.errorDecodingColorHex }
         guard let emoji = trackerCoreData.emoji else { throw TrackerStoreError.errorDecodingEmoji }
         guard let scheduleString = trackerCoreData.schedule else { throw TrackerStoreError.errorDecodingScheduleString }
-        guard let createdAt = trackerCoreData.createdAt else { throw TrackerStoreError.errorDecodingCreatedAt }
-   
+       
         return Tracker(
             id: id,
             name: name,
             color: colorMarshaling.colorWithHexString(hexString: colorHex),
             emoji: emoji,
-            schedule: scheduleMarshaling.arrayFromString(string: scheduleString),
-            createdAt: createdAt
+            schedule: scheduleMarshaling.arrayFromString(string: scheduleString)
         )
     }
     
-   private func saveContext() {
+    private func saveContext() {
         if context.hasChanges {
             do {
                 try context.save()
@@ -99,5 +83,3 @@ final class TrackerStore: NSObject {
         }
     }
 }
-
-extension TrackerStore: NSFetchedResultsControllerDelegate {}

@@ -1,4 +1,5 @@
 import UIKit
+import CoreData
 
 final class TrackersViewController: UIViewController {
     
@@ -12,6 +13,53 @@ final class TrackersViewController: UIViewController {
     }
     
     private let searchController = UISearchController(searchResultsController: nil)
+    
+    private let dataProvider = DataProvider()
+    
+    
+    private func loadCategories() {
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        
+        let categoryIsLoaded = UserDefaults.standard.bool(forKey: "isLoaded")
+        
+        // создаем категорию для хранения привычек
+        if !categoryIsLoaded  {
+            let category = TrackerCategoryCoreData(context: context)
+            category.title = "Важное"
+            try? context.save()
+            UserDefaults.standard.set(true, forKey: "isLoaded")
+        }
+        
+        let fetchRequestCategory = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        guard let categories = try? context.fetch(fetchRequestCategory) else { return }
+        
+        if categories.isEmpty {
+            print("no categories")
+        } else {
+            print(categories.count)
+            
+            categories.forEach({
+                print($0.title)
+                print($0.objectID)
+            })
+            
+            (categories[0].trackers?.allObjects as? [TrackerCoreData])?.forEach({ value in
+                print(value.name)
+            })
+        }
+        
+//         удалить
+//                let fetchedRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+//                guard let objects = try? context.fetch(fetchedRequest) else { return }
+//                objects.forEach {  context.delete($0) }
+//
+//                let fetchedRequest1 = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+//                guard let objects = try? context.fetch(fetchedRequest1) else { return }
+//                objects.forEach {  context.delete($0) }
+//
+//                try? context.save()
+    }
+    
     
     private var categories: [TrackerCategory] = []
     private var filteredCategories: [TrackerCategory] = [] // тут отфильтрованные трекеры
@@ -101,6 +149,9 @@ final class TrackersViewController: UIViewController {
     // MARK: Override
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        loadCategories()
+        
         setupView()
         addSubviews()
         activateConstraints()
@@ -162,9 +213,12 @@ final class TrackersViewController: UIViewController {
         return completedDaysCount
     }
     
-    private func getTracker(for indexPath: IndexPath) -> Tracker {
-        isFiltering ? filteredCategories[indexPath.section].trackers[indexPath.row] : visibleCategories[indexPath.section].trackers[indexPath.row]
-    }
+        private func getTracker(for indexPath: IndexPath) -> Tracker {
+            
+            return Tracker(id: "", name: "", color: .blue, emoji: "", schedule: nil)
+            
+//            isFiltering ? filteredCategories[indexPath.section].trackers[indexPath.row] : visibleCategories[indexPath.section].trackers[indexPath.row]
+        }
     
     private func showVisibleTrackers() {
         visibleCategories = []
@@ -175,34 +229,34 @@ final class TrackersViewController: UIViewController {
         
         var newCategories: [TrackerCategory] = []
         
-        for (index, category) in categories.enumerated() {
-            var trackers: [Tracker] = []
-            for tracker in category.trackers {
-                guard let weekDays = tracker.schedule else { return }
-                for weekDay in weekDays {
-                    if weekDay == date {
-                        trackers.append(tracker)
-                    } else {
-                        continue
-                    }
-                }
-                guard !trackers.isEmpty else {
-                    presentedViewController?.dismiss(animated: false, completion: nil)
-                    plugView.isHidden = false
-                    continue
-                }
-                
-                let newCategory = TrackerCategory(title: category.title, trackers: trackers)
-                
-                if newCategories.contains(newCategory) {
-                    let trackers = newCategory.trackers
-                    let newTrackerCategory = TrackerCategory(title: category.title, trackers: trackers)
-                    newCategories[index] = newTrackerCategory
-                } else {
-                    newCategories.append(newCategory)
-                }
-            }
-        }
+//        for (index, category) in categories.enumerated() {
+//            var trackers: [Tracker] = []
+//            for tracker in category.trackers {
+//                guard let weekDays = tracker.schedule else { return }
+//                for weekDay in weekDays {
+//                    if weekDay == date {
+//                        trackers.append(tracker)
+//                    } else {
+//                        continue
+//                    }
+//                }
+//                guard !trackers.isEmpty else {
+//                    presentedViewController?.dismiss(animated: false, completion: nil)
+//                    plugView.isHidden = false
+//                    continue
+//                }
+//
+//                let newCategory = TrackerCategory(title: category.title, trackers: trackers)
+//
+//                if newCategories.contains(newCategory) {
+//                    let trackers = newCategory.trackers
+//                    let newTrackerCategory = TrackerCategory(title: category.title, trackers: trackers)
+//                    newCategories[index] = newTrackerCategory
+//                } else {
+//                    newCategories.append(newCategory)
+//                }
+//            }
+//        }
         
         visibleCategories = newCategories
         plugView.isHidden = visibleCategories.isEmpty ? false : true
@@ -236,7 +290,8 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        isFiltering ? filteredCategories[section].trackers.count : visibleCategories[section].trackers.count
+       0
+        // isFiltering ? filteredCategories[section].trackers.count : visibleCategories[section].trackers.count
     }
     
     func collectionView(
@@ -304,11 +359,11 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
         guard let trackerCategory else { return }
         guard !categories.contains(trackerCategory) else {
             for (index, category) in categories.enumerated() {
-                if category.title == trackerCategory.title {
-                    let trackers = category.trackers + trackerCategory.trackers
-                    let newTrackerCategory = TrackerCategory(title: category.title, trackers: trackers)
-                    categories[index] = newTrackerCategory
-                }
+//                if category.title == trackerCategory.title {
+//                    let trackers = category.trackers + trackerCategory.trackers
+//                    let newTrackerCategory = TrackerCategory(title: category.title, trackers: trackers)
+//                    categories[index] = newTrackerCategory
+//                }
             }
             showVisibleTrackers()
             dismiss(animated: true)
@@ -338,51 +393,51 @@ extension TrackersViewController: TrackerCollectionViewCellDelegate {
 // MARK: UISearchResultsUpdating, UISearchControllerDelegate
 extension TrackersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        if searchController.searchBar.text == "" {
-            filteredCategories = []
-        } else {
-            filterContentForSearchText(searchController.searchBar.text)
-        }
+//        if searchController.searchBar.text == "" {
+//            filteredCategories = []
+//        } else {
+//            filterContentForSearchText(searchController.searchBar.text)
+//        }
     }
     
-    private func filterContentForSearchText (_ searchText: String?) {
-        guard let searchText else { return }
-        var newCategories: [TrackerCategory] = []
-        
-        for category in visibleCategories {
-            var trackers: [Tracker] = []
-            
-            for (index, tracker) in category.trackers.enumerated() {
-                if tracker.name.lowercased().contains(searchText.lowercased()){
-                    if trackers.contains(tracker) {
-                        trackers[index] = tracker
-                    } else {
-                        trackers.append(tracker)
-                    }
-                }
-            }
-            
-            let category = TrackerCategory(title: category.title, trackers: trackers)
-            
-            if newCategories.contains(category) {
-                guard let index = newCategories.firstIndex(of: category) else { return }
-                newCategories[index] = category
-            }
-            else {
-                newCategories.append(category)
-            }
-        }
-        
-        filteredCategories = newCategories
-        
-        if filteredCategories.isEmpty && searchText != "" {
-            plugView.isHidden = false
-            plugView.config(title: "Ничего не найдено", image: UIImage(named: "notFound"))
-        } else {
-            plugView.isHidden = true
-        }
-        collectionView.reloadData()
-    }
+//    private func filterContentForSearchText (_ searchText: String?) {
+//        guard let searchText else { return }
+//        var newCategories: [TrackerCategory] = []
+//
+//        for category in visibleCategories {
+//            var trackers: [Tracker] = []
+//
+//            for (index, tracker) in category.trackers.enumerated() {
+//                if tracker.name.lowercased().contains(searchText.lowercased()){
+//                    if trackers.contains(tracker) {
+//                        trackers[index] = tracker
+//                    } else {
+//                        trackers.append(tracker)
+//                    }
+//                }
+//            }
+//
+//            let category = TrackerCategory(title: category.title, trackers: trackers)
+//
+//            if newCategories.contains(category) {
+//                guard let index = newCategories.firstIndex(of: category) else { return }
+//                newCategories[index] = category
+//            }
+//            else {
+//                newCategories.append(category)
+//            }
+//        }
+//
+//        filteredCategories = newCategories
+//
+//        if filteredCategories.isEmpty && searchText != "" {
+//            plugView.isHidden = false
+//            plugView.config(title: "Ничего не найдено", image: UIImage(named: "notFound"))
+//        } else {
+//            plugView.isHidden = true
+//        }
+//        collectionView.reloadData()
+//    }
 }
 
 extension TrackersViewController: UISearchControllerDelegate {
