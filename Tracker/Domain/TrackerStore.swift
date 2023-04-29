@@ -21,15 +21,7 @@ final class TrackerStore: NSObject {
     private let context: NSManagedObjectContext
     private let colorMarshaling = UIColorMarshalling()
     private let scheduleMarshaling = ScheduleMarshalling()
-    
-    private var tracers: [Tracker] {
-        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-        guard let objects = try? context.fetch(fetchRequest),
-              let trackers = try? objects.map({ try creatTracker(from: $0) })
-        else { return [] }
-        return trackers
-    }
-    
+        
     init(context: NSManagedObjectContext) {
         self.context = context
     }

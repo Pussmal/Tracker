@@ -23,8 +23,10 @@ final class TrackersViewController: UIViewController {
         
         // создаем категорию для хранения привычек
         if !categoryIsLoaded  {
-            let category = TrackerCategoryCoreData(context: context)
-            category.title = "Важное"
+            let categoryOne = TrackerCategoryCoreData(context: context)
+            categoryOne.title = "Важное"
+            let categoryTwo = TrackerCategoryCoreData(context: context)
+            categoryTwo.title = "Спорт"
             try? context.save()
             UserDefaults.standard.set(true, forKey: "isLoaded")
         }
@@ -65,11 +67,11 @@ final class TrackersViewController: UIViewController {
         //                guard let objects = try? context.fetch(fetchedRequest) else { return }
         //                objects.forEach {  context.delete($0) }
         //
-        //                let fetchedRequest1 = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-        //                guard let objects = try? context.fetch(fetchedRequest1) else { return }
-        //                objects.forEach {  context.delete($0) }
-        //
-        //                try? context.save()
+//                        let fetchedRequest1 = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+//                        guard let objects = try? context.fetch(fetchedRequest1) else { return }
+//                        objects.forEach {  context.delete($0) }
+//
+//                        try? context.save()
     }
     
     
@@ -159,9 +161,8 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //        loadCategories()
+        loadCategories()
         dataProvider = DataProvider()
-        
         
         setupView()
         addSubviews()
@@ -219,12 +220,10 @@ final class TrackersViewController: UIViewController {
         presentedViewController?.dismiss(animated: false, completion: nil)
     }
     
-    private func getDayCount(for id: String) -> Int {
-        var completedDaysCount = 0
-        completedTrackers.forEach {
-            if $0.trackerID == id { completedDaysCount += 1 }
-        }
-        return completedDaysCount
+    private func getDayCountAndDayCompleted(for trackerId: String) -> (count: Int, completed: Bool) {
+        let count = dataProvider.getCompletedDayCount(from: trackerId)
+        let completed = dataProvider.getCompletedDay(from: trackerId, currentDay: currentDate)
+        return (count, completed)
     }
 }
 
@@ -253,7 +252,6 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
         dataProvider.numberOfRowsInSection(section)
     }
     
@@ -270,20 +268,9 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        //        dataProvider.trackerFromCategory(row: indexPath.row)
-        
-        
-        //        let completedDayCount = getDayCount(for: tracker.id)
-        //        var completed = false
-        //
-        //        completedTrackers.forEach { trackerRecord in
-        //            if trackerRecord.trackerID == tracker.id && trackerRecord.checkDate == currentDate {
-        //                completed = true
-        //            }
-        //        }
-        
-        
-        cell.config(tracker: tracker, completedDaysCount: 0, completed: false)
+        let countAndCompleted = getDayCountAndDayCompleted(for: tracker.id)
+    
+        cell.config(tracker: tracker, completedDaysCount: countAndCompleted.count, completed: countAndCompleted.completed)
         cell.enabledCheckTrackerButton(enabled: today < currentDate)
         cell.delegate = self
         return cell
@@ -312,6 +299,7 @@ extension TrackersViewController {
 
 extension TrackersViewController: TypeTrackerViewControllerDelegate {
     func dismissViewController(_ viewController: UIViewController) {
+        try? dataProvider.loadTrackers(from: datePicker.date, with: nil)
         dismiss(animated: true)
     }
 }
@@ -319,13 +307,7 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
 // MARK: TrackerCollectionViewCellDelegate
 extension TrackersViewController: TrackerCollectionViewCellDelegate {
     func checkTracker(id: String?, completed: Bool) {
-        guard let id = id else { return }
-        let completedTracker = TrackerRecord(trackerID: id, checkDate: currentDate)
-        if completed {
-            completedTrackers.insert(completedTracker)
-        } else {
-            completedTrackers.remove(completedTracker)
-        }
+        dataProvider.checkTracker(for: id, completed: completed, with: currentDate)
     }
 }
 

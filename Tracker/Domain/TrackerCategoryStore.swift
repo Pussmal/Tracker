@@ -9,14 +9,6 @@ final class TrackerCategoryStore: NSObject {
         case errorDecodingId
     }
     
-    var categories: [TrackerCategory] {
-        let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
-        guard let objects = try? context.fetch(fetchRequest),
-              let categories = try? objects.map({ try creatTrackerCategory(from: $0) })
-        else { return [] }
-        return categories
-    }
-    
     init(context: NSManagedObjectContext) {
         self.context = context
     }
@@ -28,10 +20,7 @@ final class TrackerCategoryStore: NSObject {
     
     func creatTrackerCategory(from trackerCategoryCoreData:  TrackerCategoryCoreData) throws -> TrackerCategory {
         guard let title = trackerCategoryCoreData.title else { throw TrackerCategoryStoreError.errorDecodingTitle }
-                
-        return TrackerCategory(
-           title: title
-        )
+        return TrackerCategory(title: title )
     }
     
     func addTrackerCategoryCoreData(from trackerCategory: TrackerCategory) -> TrackerCategoryCoreData {
@@ -40,7 +29,6 @@ final class TrackerCategoryStore: NSObject {
         saveContext()
         return trackerCategoryCoreData
     }
-    
     
     private func saveContext() {
          if context.hasChanges {

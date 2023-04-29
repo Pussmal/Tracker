@@ -1,10 +1,6 @@
 import UIKit
 import CoreData
 
-struct DataProviderUpdate {
-    let insertedIndexes: IndexSet
-}
-
 protocol DataProviderDelegate: AnyObject {
     func didUpdate()
 }
@@ -17,13 +13,15 @@ protocol DataProviderProtocol {
     func numberOfRowsInSection(_ section: Int) -> Int
     func getTracker(at indexPath: IndexPath) -> Tracker?
     func getSectionTitle(at secrion: Int) -> String?
-   
+    
     func loadTrackers(from date: Date, with filterString: String?) throws
     
-   
+    func getCompletedDayCount(from trackerId: String) -> Int
+    func getCompletedDay(from trackerId: String, currentDay: Date) -> Bool
+    
+    func checkTracker( for trackerID: String?, completed: Bool, with date: Date)
     
     func saveTracker(_ tracker: Tracker) throws
-    func saveTrackerCategory(_ category: TrackerCategory) throws
 }
 
 final class DataProvider: NSObject {
@@ -36,9 +34,10 @@ final class DataProvider: NSObject {
     }
     
     private let context: NSManagedObjectContext
-    private var insertedIndexes: IndexSet?
+  
     private let trackerStore = TrackerStore()
     private let trackerCategoryStore = TrackerCategoryStore()
+    private let trackerRecordStore = TrackerRecordStore()
     
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: DataProviderConstants.entityName)
@@ -97,7 +96,7 @@ extension DataProvider: DataProviderProtocol {
         }
         return nil
     }
-
+    
     func loadTrackers(from date: Date, with filterString: String?) throws {
         let currentDayWeek = Date.getStringWeekday(from: date)
         var predicates: [NSPredicate] = []
@@ -111,12 +110,47 @@ extension DataProvider: DataProviderProtocol {
         }
         
         fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        
         try? fetchedResultsController.performFetch()
         delegate?.didUpdate()
     }
+    
+    func getCompletedDayCount(from trackerId: String) -> Int {
+        var count = 0
+
+        fetchedResultsController.fetchedObjects?.forEach({ tcd in
+            if tcd.id == trackerId {
+                count = tcd.records?.count ?? 0
+            }
+        })
         
-    func saveTrackerCategory(_ category: TrackerCategory) throws {
-        // trackerCategoryStore.addTrackerCategoryCoreData(from: category)
+        return count
+    }
+    
+    func getCompletedDay(from trackerId: String, currentDay: Date) -> Bool {
+        var completed = false
+        
+        guard let trackers = fetchedResultsController.fetchedObjects else { return false }
+        trackers.forEach { trackerCoreData in
+            if trackerCoreData.id == trackerId {
+                completed = trackerRecordStore.checkDate(from: trackerCoreData, with: currentDay)
+            }
+        }
+        return completed
+    }
+    
+    func checkTracker(for trackerID: String?, completed: Bool, with date: Date) {
+        guard let trackers = fetchedResultsController.fetchedObjects else { return }
+        trackers.forEach { trackerCoreData in
+            if trackerCoreData.id == trackerID {
+                switch completed {
+                case true:
+                    trackerRecordStore.saveRecord(for: trackerCoreData, with: date)
+                case false:
+                    trackerRecordStore.removeRecord(for: trackerCoreData, with: date)
+                }
+            }
+        }
     }
     
     func saveTracker(_ tracker: Tracker) throws {
