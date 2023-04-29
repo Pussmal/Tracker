@@ -56,7 +56,7 @@ final class TrackerStore: NSObject {
         trackerCoreData.category = category
     }
     
-    private func creatTracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
+    func creatTracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
         guard let id = trackerCoreData.id else { throw TrackerStoreError.errorDecodingId }
         guard let name = trackerCoreData.name else { throw TrackerStoreError.errorDecodingName }
         guard let colorHex = trackerCoreData.colorHex else { throw TrackerStoreError.errorDecodingColorHex }

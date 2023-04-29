@@ -6,13 +6,22 @@ struct DataProviderUpdate {
 }
 
 protocol DataProviderDelegate: AnyObject {
-    func didUpdate(_ update: DataProviderUpdate)
+    func didUpdate()
 }
 
 protocol DataProviderProtocol {
+    var delegate: DataProviderDelegate? { get set }
     var numberOfSections: Int { get }
+    var isTrackersForSelectedDate: Bool { get }
+    
     func numberOfRowsInSection(_ section: Int) -> Int
-    func object(at: IndexPath) -> TrackerCategory?
+    func getTracker(at indexPath: IndexPath) -> Tracker?
+    func getSectionTitle(at secrion: Int) -> String?
+   
+    func loadTrackers(from date: Date) throws
+    
+   
+    
     func saveTracker(_ tracker: Tracker) throws
     func saveTrackerCategory(_ category: TrackerCategory) throws
 }
@@ -22,7 +31,8 @@ final class DataProvider: NSObject {
     weak var delegate: DataProviderDelegate?
     
     private struct DataProviderConstants {
-        static let entityName = "TrackerCategoryCoreData"
+        static let entityName = "TrackerCoreData"
+        static let sectionNameKeyPath = "category"
     }
     
     private let context: NSManagedObjectContext
@@ -30,15 +40,15 @@ final class DataProvider: NSObject {
     private let trackerStore = TrackerStore()
     private let trackerCategoryStore = TrackerCategoryStore()
     
-    private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
-        let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: DataProviderConstants.entityName)
+    private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: DataProviderConstants.entityName)
         fetchRequest.sortDescriptors = [
-            NSSortDescriptor(keyPath: \TrackerCategoryCoreData.title, ascending: true)
+            NSSortDescriptor(keyPath: \TrackerCoreData.category, ascending: true)
         ]
         let fetchedResultController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
-            sectionNameKeyPath: nil,
+            sectionNameKeyPath: DataProviderConstants.sectionNameKeyPath,
             cacheName: nil)
         fetchedResultController.delegate = self
         try? fetchedResultController.performFetch()
@@ -56,37 +66,59 @@ final class DataProvider: NSObject {
 }
 
 extension DataProvider: DataProviderProtocol {
+    var isTrackersForSelectedDate: Bool {
+        guard let objects = fetchedResultsController.fetchedObjects else { return false }
+        return objects.isEmpty ? false : true
+    }
     
     var numberOfSections: Int {
-        fetchedResultsController.sections?.count ?? 0
+        return fetchedResultsController.sections?.count ?? 0
     }
     
     func numberOfRowsInSection(_ section: Int) -> Int {
-        fetchedResultsController.sections?[section].numberOfObjects ?? 0
+        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
-    func object(at indexPath: IndexPath) -> TrackerCategory? {
-        let object = fetchedResultsController.object(at: indexPath)
+    func getSectionTitle(at section: Int) -> String? {
+        let section = fetchedResultsController.sections?[section]
+        let trackerCoreData = section?.objects?.first as? TrackerCoreData
+        let categoryTitle = trackerCoreData?.category?.title
+        return categoryTitle
+    }
     
+    func getTracker(at indexPath: IndexPath) -> Tracker? {
+        let trackerCoreData = fetchedResultsController.object(at: indexPath)
+        
         do {
-            return try trackerCategoryStore.creatTrackerCategory(from: object)
+            let tracker = try trackerStore.creatTracker(from: trackerCoreData)
+            return tracker
         } catch {
-            assertionFailure("Error decoding TrackerCategory")
-            return nil
+            assertionFailure("Error decoding tracker from core data")
         }
+        return nil
     }
     
-    func saveTrackerCategory(_ category: TrackerCategory) throws {
-       // trackerCategoryStore.addTrackerCategoryCoreData(from: category)
+    func loadTrackers(from date: Date) throws {
+        let currentDayWeek = Date.getDayWeek(from: date)
+        
+        fetchedResultsController.fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), currentDayWeek)
+        
+        try? fetchedResultsController.performFetch()
+        delegate?.didUpdate()
     }
-
+    
+        
+    func saveTrackerCategory(_ category: TrackerCategory) throws {
+        // trackerCategoryStore.addTrackerCategoryCoreData(from: category)
+    }
+    
     func saveTracker(_ tracker: Tracker) throws {
         
-        // по заданию пока категории не реализовываем, поэтому все привычки сохраняю в одну категорию
+        // по заданию пока категории не реализовываем, поэтому все привычки сохраняю в одну рандомную категорию
         
         let fetchRequestCategory = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
-        guard let categories = try? context.fetch(fetchRequestCategory) else { return }
-        trackerStore.addNewTracker(tracker, with: categories[0])
+        guard let trackerCategoryCoreData = try? context.fetch(fetchRequestCategory).randomElement() else { return }
+        trackerStore.addNewTracker(tracker, with: trackerCategoryCoreData)
     }
 }
 
