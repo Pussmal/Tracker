@@ -15,68 +15,7 @@ final class TrackersViewController: UIViewController {
     private let searchController = UISearchController(searchResultsController: nil)
     
     private var dataProvider: DataProviderProtocol!
-    
-    private func loadCategories() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         
-        let categoryIsLoaded = UserDefaults.standard.bool(forKey: "isLoaded")
-        
-        // создаем категорию для хранения привычек
-        if !categoryIsLoaded  {
-            let categoryOne = TrackerCategoryCoreData(context: context)
-            categoryOne.title = "Важное"
-            let categoryTwo = TrackerCategoryCoreData(context: context)
-            categoryTwo.title = "Спорт"
-            try? context.save()
-            UserDefaults.standard.set(true, forKey: "isLoaded")
-        }
-        
-        //
-        //        let category = TrackerCategoryCoreData(context: context)
-        //        category.title = "Спорт"
-        //        try? context.save()
-        //
-        //        let category = TrackerCategoryCoreData(context: context)
-        //        category.title = "Отдых"
-        //        try? context.save()
-        //
-        //        let category = TrackerCategoryCoreData(context: context)
-        //        category.title = "Работа"
-        //        try? context.save()
-        
-        let fetchRequestCategory = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
-        guard let categories = try? context.fetch(fetchRequestCategory) else { return }
-        
-        if categories.isEmpty {
-            print("no categories")
-        } else {
-            print(categories.count)
-            
-            categories.forEach { coredata in
-                print("\(coredata.title) has \(coredata.trackers?.count) trackers")
-                (coredata.trackers?.allObjects as? [TrackerCoreData])?.forEach({ value in
-                    print("\(coredata.title) has \(value.name)")
-                })
-            }
-            
-            print("+++++++++")
-        }
-        
-        //         удалить
-        //                let fetchedRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
-        //                guard let objects = try? context.fetch(fetchedRequest) else { return }
-        //                objects.forEach {  context.delete($0) }
-        //
-//                        let fetchedRequest1 = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-//                        guard let objects = try? context.fetch(fetchedRequest1) else { return }
-//                        objects.forEach {  context.delete($0) }
-//
-//                        try? context.save()
-    }
-    
-    
-    private var completedTrackers: Set<TrackerRecord> = []
-    
     private var currentDate: Date {
         let date = datePicker.date
         let currentDate = date.getDate
@@ -161,7 +100,6 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadCategories()
         dataProvider = DataProvider()
         
         setupView()
