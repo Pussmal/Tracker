@@ -50,10 +50,6 @@ final class TrackersViewController: UIViewController {
         } else {
             print(categories.count)
             
-            //            categories.forEach({
-            //                print($0.title)
-            //            })
-            
             categories.forEach { coredata in
                 print("\(coredata.title) has \(coredata.trackers?.count) trackers")
                 (coredata.trackers?.allObjects as? [TrackerCoreData])?.forEach({ value in
@@ -62,14 +58,6 @@ final class TrackersViewController: UIViewController {
             }
             
             print("+++++++++")
-            
-            //            (categories[0].trackers?.allObjects as? [TrackerCoreData])?.forEach({ value in
-            //                print(value.name, value.category)
-            //            })
-            //
-            //            (categories[1].trackers?.allObjects as? [TrackerCoreData])?.forEach({ value in
-            //                print(value.schedule)
-            //            })
         }
         
         //         удалить
@@ -85,9 +73,6 @@ final class TrackersViewController: UIViewController {
     }
     
     
-    private var categories: [TrackerCategory] = []
-    private var filteredCategories: [TrackerCategory] = [] // тут отфильтрованные трекеры
-    private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: Set<TrackerRecord> = []
     
     private var currentDate: Date {
@@ -174,19 +159,18 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        loadCategories()
+        //        loadCategories()
         dataProvider = DataProvider()
-       
+        
         
         setupView()
         addSubviews()
         activateConstraints()
         setupSearchController()
-        showVisibleTrackers()
         
         dataProvider.delegate = self
         
-        try? dataProvider.loadTrackers(from: datePicker.date)
+        try? dataProvider.loadTrackers(from: datePicker.date, with: nil)
     }
     
     // MARK: Private methods
@@ -199,7 +183,6 @@ final class TrackersViewController: UIViewController {
     
     private func addSubviews() {
         view.addSubViews(collectionView, plugView)
-        if categories.isEmpty { plugView.isHidden = false }
     }
     
     private func activateConstraints() {
@@ -232,7 +215,7 @@ final class TrackersViewController: UIViewController {
     
     @objc
     private func changedDate() {
-        try? dataProvider.loadTrackers(from: datePicker.date)
+        try? dataProvider.loadTrackers(from: datePicker.date, with: nil)
         presentedViewController?.dismiss(animated: false, completion: nil)
     }
     
@@ -242,56 +225,6 @@ final class TrackersViewController: UIViewController {
             if $0.trackerID == id { completedDaysCount += 1 }
         }
         return completedDaysCount
-    }
-    
-    private func getTracker(for indexPath: IndexPath) -> Tracker {
-        
-        return Tracker(id: "", name: "", color: .blue, emoji: "", schedule: nil)
-        
-        //            isFiltering ? filteredCategories[indexPath.section].trackers[indexPath.row] : visibleCategories[indexPath.section].trackers[indexPath.row]
-    }
-    
-    private func showVisibleTrackers() {
-        visibleCategories = []
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "E"
-        let date = dateFormatter.string(from: datePicker.date)
-        
-        var newCategories: [TrackerCategory] = []
-        
-        //        for (index, category) in categories.enumerated() {
-        //            var trackers: [Tracker] = []
-        //            for tracker in category.trackers {
-        //                guard let weekDays = tracker.schedule else { return }
-        //                for weekDay in weekDays {
-        //                    if weekDay == date {
-        //                        trackers.append(tracker)
-        //                    } else {
-        //                        continue
-        //                    }
-        //                }
-        //                guard !trackers.isEmpty else {
-        //                    presentedViewController?.dismiss(animated: false, completion: nil)
-        //                    plugView.isHidden = false
-        //                    continue
-        //                }
-        //
-        //                let newCategory = TrackerCategory(title: category.title, trackers: trackers)
-        //
-        //                if newCategories.contains(newCategory) {
-        //                    let trackers = newCategory.trackers
-        //                    let newTrackerCategory = TrackerCategory(title: category.title, trackers: trackers)
-        //                    newCategories[index] = newTrackerCategory
-        //                } else {
-        //                    newCategories.append(newCategory)
-        //                }
-        //            }
-        //        }
-        
-        visibleCategories = newCategories
-        plugView.isHidden = visibleCategories.isEmpty ? false : true
-        collectionView.reloadData()
     }
 }
 
@@ -337,19 +270,19 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-//        dataProvider.trackerFromCategory(row: indexPath.row)
+        //        dataProvider.trackerFromCategory(row: indexPath.row)
         
         
-//        let completedDayCount = getDayCount(for: tracker.id)
-//        var completed = false
-//
-//        completedTrackers.forEach { trackerRecord in
-//            if trackerRecord.trackerID == tracker.id && trackerRecord.checkDate == currentDate {
-//                completed = true
-//            }
-//        }
+        //        let completedDayCount = getDayCount(for: tracker.id)
+        //        var completed = false
+        //
+        //        completedTrackers.forEach { trackerRecord in
+        //            if trackerRecord.trackerID == tracker.id && trackerRecord.checkDate == currentDate {
+        //                completed = true
+        //            }
+        //        }
         
-    
+        
         cell.config(tracker: tracker, completedDaysCount: 0, completed: false)
         cell.enabledCheckTrackerButton(enabled: today < currentDate)
         cell.delegate = self
@@ -381,27 +314,6 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
     func dismissViewController(_ viewController: UIViewController) {
         dismiss(animated: true)
     }
-    
-    func createTrackerCategory(_ trackerCategory: TrackerCategory?) {
-        guard let trackerCategory else { return }
-        guard !categories.contains(trackerCategory) else {
-            for (index, category) in categories.enumerated() {
-                //                if category.title == trackerCategory.title {
-                //                    let trackers = category.trackers + trackerCategory.trackers
-                //                    let newTrackerCategory = TrackerCategory(title: category.title, trackers: trackers)
-                //                    categories[index] = newTrackerCategory
-                //                }
-            }
-            showVisibleTrackers()
-            dismiss(animated: true)
-            return
-        }
-        
-        categories.append(trackerCategory)
-        if !categories.isEmpty { plugView.isHidden = true }
-        showVisibleTrackers()
-        dismiss(animated: true)
-    }
 }
 
 // MARK: TrackerCollectionViewCellDelegate
@@ -420,58 +332,24 @@ extension TrackersViewController: TrackerCollectionViewCellDelegate {
 // MARK: UISearchResultsUpdating, UISearchControllerDelegate
 extension TrackersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        //        if searchController.searchBar.text == "" {
-        //            filteredCategories = []
-        //        } else {
-        //            filterContentForSearchText(searchController.searchBar.text)
-        //        }
+        guard searchController.searchBar.text != ""  else { return }
+        filterContentForSearchText(searchController.searchBar.text)
     }
     
-    //    private func filterContentForSearchText (_ searchText: String?) {
-    //        guard let searchText else { return }
-    //        var newCategories: [TrackerCategory] = []
-    //
-    //        for category in visibleCategories {
-    //            var trackers: [Tracker] = []
-    //
-    //            for (index, tracker) in category.trackers.enumerated() {
-    //                if tracker.name.lowercased().contains(searchText.lowercased()){
-    //                    if trackers.contains(tracker) {
-    //                        trackers[index] = tracker
-    //                    } else {
-    //                        trackers.append(tracker)
-    //                    }
-    //                }
-    //            }
-    //
-    //            let category = TrackerCategory(title: category.title, trackers: trackers)
-    //
-    //            if newCategories.contains(category) {
-    //                guard let index = newCategories.firstIndex(of: category) else { return }
-    //                newCategories[index] = category
-    //            }
-    //            else {
-    //                newCategories.append(category)
-    //            }
-    //        }
-    //
-    //        filteredCategories = newCategories
-    //
-    //        if filteredCategories.isEmpty && searchText != "" {
-    //            plugView.isHidden = false
-    //            plugView.config(title: "Ничего не найдено", image: UIImage(named: "notFound"))
-    //        } else {
-    //            plugView.isHidden = true
-    //        }
-    //        collectionView.reloadData()
-    //    }
+    private func filterContentForSearchText (_ searchText: String?) {
+        try? dataProvider.loadTrackers(from: datePicker.date, with: searchText)
+    
+        if !dataProvider.isTrackersForSelectedDate && searchText != "" {
+            plugView.isHidden = false
+            plugView.config(title: "Ничего не найдено", image: UIImage(named: "notFound"))
+        }
+    }
 }
 
 extension TrackersViewController: UISearchControllerDelegate {
     func didDismissSearchController(_ searchController: UISearchController) {
-        filteredCategories = []
-        let plusIsHidden = categories.isEmpty ? false : true
-        plugView.isHidden = plusIsHidden
+        try? dataProvider.loadTrackers(from: datePicker.date, with: nil)
+        plugView.isHidden = dataProvider.isTrackersForSelectedDate ? true : false
         plugView.config(
             title: TrackersListControllerConstants.plugLabelText,
             image: UIImage(named: TrackersListControllerConstants.plugImageName)

@@ -18,7 +18,7 @@ protocol DataProviderProtocol {
     func getTracker(at indexPath: IndexPath) -> Tracker?
     func getSectionTitle(at secrion: Int) -> String?
    
-    func loadTrackers(from date: Date) throws
+    func loadTrackers(from date: Date, with filterString: String?) throws
     
    
     
@@ -97,16 +97,23 @@ extension DataProvider: DataProviderProtocol {
         }
         return nil
     }
-    
-    func loadTrackers(from date: Date) throws {
-        let currentDayWeek = Date.getDayWeek(from: date)
+
+    func loadTrackers(from date: Date, with filterString: String?) throws {
+        let currentDayWeek = Date.getStringWeekday(from: date)
+        var predicates: [NSPredicate] = []
         
-        fetchedResultsController.fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), currentDayWeek)
+        let weekdayPredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), currentDayWeek)
+        predicates.append(weekdayPredicate)
         
+        if let filterString {
+            let filterPredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.name), filterString)
+            predicates.append(filterPredicate)
+        }
+        
+        fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         try? fetchedResultsController.performFetch()
         delegate?.didUpdate()
     }
-    
         
     func saveTrackerCategory(_ category: TrackerCategory) throws {
         // trackerCategoryStore.addTrackerCategoryCoreData(from: category)
