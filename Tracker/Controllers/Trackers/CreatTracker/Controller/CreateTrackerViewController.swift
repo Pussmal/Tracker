@@ -2,7 +2,6 @@ import UIKit
 
 protocol CreateTrackerViewControllerDelegate: AnyObject {
     func dismissViewController(_ viewController: UIViewController)
-    func creatTrackerCategory(_ trackerCategory: TrackerCategory?)
 }
 
 final class CreateTrackerViewController: UIViewController {
@@ -18,6 +17,7 @@ final class CreateTrackerViewController: UIViewController {
     private struct CreateTrackerViewControllerConstants {
         static let habitTitle = "Новая привычка"
         static let eventTitle = "Новое нерегулярное событие"
+        static let weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
     }
     
     private var categoryString: String?
@@ -33,6 +33,8 @@ final class CreateTrackerViewController: UIViewController {
     
     private var trackerCategory: TrackerCategory?
     private var tracker: Tracker?
+    
+    private let dataProvider = DataProvider()
     
     private var createTrackerView: CreateTrackerView!
     
@@ -67,20 +69,32 @@ final class CreateTrackerViewController: UIViewController {
     deinit {
         print("CreateTrackerViewController deinit")
     }
-    
 }
 
 extension CreateTrackerViewController: CreateTrackerViewDelegate {
     func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String) {
+        if typeTracker == .event {
+            selectedDates = CreateTrackerViewControllerConstants.weekDays
+        }
+    
         guard
             let nameTracker,
-            let categoryString,
             selectedDates != nil
         else { return }
-        tracker = Tracker(id: UUID().uuidString, name: nameTracker, color: color, emoji: emoji, schedule: selectedDates)
+    
+        tracker = Tracker(
+            id: UUID().uuidString,
+            name: nameTracker,
+            color: color,
+            emoji: emoji,
+            schedule: selectedDates
+        )
+                
         guard let tracker = tracker else { return }
-        trackerCategory = TrackerCategory(title: categoryString, trackers: [tracker])
-        delegate?.creatTrackerCategory(trackerCategory)
+        
+        try? dataProvider.saveTracker(tracker)
+        
+        delegate?.dismissViewController(self)
     }
     
     func showShedule() {
