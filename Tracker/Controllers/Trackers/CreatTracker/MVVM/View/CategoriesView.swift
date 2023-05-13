@@ -20,7 +20,7 @@ final class CategoriesView: UIView {
     
     private struct CategoryViewConstant {
         static let collectionViewReuseIdentifier = "Cell"
-        static let addButtontitle = "Добавить категорию"
+        static let addButtonTitle = "Добавить категорию"
         static let plugLabelText = """
             Привычки и события можно
             объединить по смыслу
@@ -38,7 +38,7 @@ final class CategoriesView: UIView {
         return plugView
     }()
     
-    private let categoryCollectionView: UICollectionView = {
+    private lazy var categoryCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(
@@ -51,18 +51,20 @@ final class CategoriesView: UIView {
         )
         collectionView.register(
             CategoryCollectionViewCell.self,
-            forCellWithReuseIdentifier: CategoryCollectionViewCell.reuseIdentifire
+            forCellWithReuseIdentifier: CategoryCollectionViewCell.cellReuseIdentifier
         )
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.backgroundColor = .clear
+        collectionView.dataSource = self
+        collectionView.delegate = self
         return collectionView
     }()
     
     private lazy var addButton: TrackerButton = {
         let button = TrackerButton(
             frame: .zero,
-            title: CategoryViewConstant.addButtontitle
+            title: CategoryViewConstant.addButtonTitle
         )
         button.addTarget(
             self,
@@ -72,6 +74,7 @@ final class CategoriesView: UIView {
         return button
     }()
     
+    // MARK: - initializers
     init(
         frame: CGRect,
         delegate: CategoriesViewDelegate?,
@@ -80,24 +83,11 @@ final class CategoriesView: UIView {
         self.delegate = delegate
         
         super.init(frame: frame)
-        
+       
         viewModel = CategoriesViewModel(selectedCategory: category)
-        
-        viewModel?.hidePlugView = { [weak self] in
-            guard let self = self else { return }
-            self.plugView.isHidden = $0 ? true : false
-        }
-        
-        viewModel?.needToUpdateCollectionView = { [weak self] in
-            guard let self = self, $0 else { return }
-            self.categoryCollectionView.reloadData()
-        }
-        
+        bind()
         viewModel?.needToHidePlugView()
-        
-        categoryCollectionView.delegate = self
-        categoryCollectionView.dataSource = self
-        
+            
         setupView()
         addSubviews()
         activateConstraints()
@@ -107,10 +97,12 @@ final class CategoriesView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Public properties
     func reloadCollectionView() {
         viewModel?.updateCategories()
     }
     
+    // MARK: - Private properties
     private func setupView() {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .ypWhite
@@ -126,7 +118,6 @@ final class CategoriesView: UIView {
     
     private func activateConstraints() {
         let plugViewTopConstant = frame.height / 3.5
-        
         NSLayoutConstraint.activate([
             categoryCollectionView.topAnchor.constraint(equalTo: topAnchor),
             categoryCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.indentationFromEdges),
@@ -144,13 +135,24 @@ final class CategoriesView: UIView {
         ])
     }
     
+    private func bind() {
+        viewModel?.hidePlugView = { [weak self] in
+            guard let self = self else { return }
+            self.plugView.isHidden = $0 ? true : false
+        }
+        viewModel?.needToUpdateCollectionView = { [weak self] in
+            guard let self = self, $0 else { return }
+            self.categoryCollectionView.reloadData()
+        }
+    }
+    
     private func createContextMenu(indexPath: IndexPath) -> UIContextMenuConfiguration {
         return UIContextMenuConfiguration(actionProvider: { [weak self] actions in
             guard
                 let self = self,
                 let categoryCoreData = self.viewModel?.didSelectCategory(by: indexPath)
             else { return UIMenu() }
-           
+            
             return UIMenu(children: [
                 UIAction(title: "Редактировать") { _ in
                     self.delegate?.showEditCategoryViewController(type: .editCategory, editCategoryString: categoryCoreData.title, at: indexPath)
@@ -163,7 +165,7 @@ final class CategoriesView: UIView {
         })
     }
     
-    private func setCornerRadius(cell: CategoryCollectionViewCell, numberRow: Int) {
+    private func setCellCornerRadius(cell: CategoryCollectionViewCell, numberRow: Int) {
         cell.layer.masksToBounds = true
         
         guard let viewModel else { return }
@@ -177,9 +179,7 @@ final class CategoriesView: UIView {
             if numberRow == 0 {
                 cell.layer.cornerRadius = Constants.cornerRadius
                 cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-            }
-            
-            if numberRow == viewModel.numberOfRows - 1 {
+            } else if numberRow == viewModel.numberOfRows - 1 {
                 cell.layer.cornerRadius = Constants.cornerRadius
                 cell.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
                 cell.hideLineView()
@@ -196,6 +196,7 @@ final class CategoriesView: UIView {
     }
 }
 
+// MARK: UICollectionViewDataSource
 extension CategoriesView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         viewModel?.numberOfRows ?? 0
@@ -206,16 +207,17 @@ extension CategoriesView: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: CategoryCollectionViewCell.reuseIdentifire,
+            withReuseIdentifier: CategoryCollectionViewCell.cellReuseIdentifier,
             for: indexPath) as? CategoryCollectionViewCell else { return UICollectionViewCell() }
         
         let categoryCellViewModel = viewModel?.categoryCellViewModel(with: indexPath)
-        setCornerRadius(cell: cell, numberRow: indexPath.row)
+        setCellCornerRadius(cell: cell, numberRow: indexPath.row)
         cell.initialize(viewModel: categoryCellViewModel)
         return cell
     }
 }
 
+// MARK: UICollectionViewDelegate
 extension CategoriesView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let categoryCoreData = viewModel?.didSelectCategory(by: indexPath)
@@ -229,6 +231,7 @@ extension CategoriesView: UICollectionViewDelegate {
     }
 }
 
+// MARK: UICollectionViewDelegateFlowLayout
 extension CategoriesView: UICollectionViewDelegateFlowLayout {
     func collectionView(
         _ collectionView: UICollectionView,

@@ -1,7 +1,7 @@
 import UIKit
 
 final class CategoryCollectionViewCell: UICollectionViewCell {
-    static let reuseIdentifire = "CategoryCollectionViewCell"
+    static let cellReuseIdentifier = "CategoryCollectionViewCell"
     
     private var viewModel: CategoryCellViewModelProtocol?
     
