@@ -4,43 +4,31 @@ typealias Binding<T> = (T) -> Void
 
 protocol CategoriesViewModelProtocol {
     var numberOfRows: Int { get }
-    
     var hidePlugView: Binding<Bool>? { get set }
     var needToUpdateCollectionView: Binding<Bool>? { get set }
-    
-    var addNewCategoryToCollectionView: Binding<IndexPath>? { get set }
-    
     func categoryCellViewModel(with indexPath: IndexPath) -> CategoryCellViewModel?
     func getCategory(by indexPath: IndexPath) -> TrackerCategory?
     func didSelectCategory(by indexPath: IndexPath) -> TrackerCategoryCoreData?
-    
     func updateCategories()
+    func needToHidePlugView()
 }
 
 final class CategoriesViewModel {
-    
     var hidePlugView: Binding<Bool>?
     var needToUpdateCollectionView: Binding<Bool>?
-    var addNewCategoryToCollectionView: Binding<IndexPath>?
-    
-    private var countOfCategories: Int?
-            
-    private var isHidePlugView = false {
-        didSet {
-            hidePlugView?(isHidePlugView)
-        }
-    }
-        
-    private let categoryStore = TrackerCategoryStore()
-    
-    private var selectedCategory: String?
    
+    private let categoryStore = TrackerCategoryStore()
+    private var selectedCategory: String?
+    
     init(selectedCategory: String?) {
-        isHidePlugView = categoryStore.fetchedResultsController.sections?[0].numberOfObjects == 0
-        countOfCategories = categoryStore.fetchedResultsController.sections?[0].numberOfObjects
+        needToHidePlugView()
         self.selectedCategory = selectedCategory
     }
-
+    
+    func needToHidePlugView() {
+        let needToHidePlugView = categoryStore.fetchedResultsController.sections?[0].numberOfObjects != 0
+        needToHidePlugView ? hidePlugView?(true) : hidePlugView?(false)
+    }
     
     deinit{
         print("CategoriesViewModel deinit")
@@ -48,7 +36,7 @@ final class CategoriesViewModel {
 }
 
 extension CategoriesViewModel: CategoriesViewModelProtocol {
-
+    
     func didSelectCategory(by indexPath: IndexPath) -> TrackerCategoryCoreData? {
         categoryStore.getTrackerCategoryCoreData(by: indexPath)
     }
@@ -67,9 +55,9 @@ extension CategoriesViewModel: CategoriesViewModelProtocol {
         categoryStore.getTrackerCategory(by: indexPath)
     }
     
-    
     func updateCategories() {
-       try? categoryStore.fetchedResultsController.performFetch()
+        try? categoryStore.fetchedResultsController.performFetch()
+        needToHidePlugView()
         needToUpdateCollectionView?(true)
     }
 }

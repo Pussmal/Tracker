@@ -54,6 +54,10 @@ final class TrackerCategoryStore: NSObject {
         fetchedResultsController.object(at: indexPath)
     }
     
+    func deleteCategory(delete: TrackerCategoryCoreData) {
+        context.delete(delete)
+    }
+    
     
     private func saveContext() {
          if context.hasChanges {

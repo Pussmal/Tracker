@@ -7,7 +7,8 @@ enum EditCategory {
 
 protocol CategoriesViewDelegate: AnyObject {
     func showEditCategoryViewController(type: EditCategory, editCategoryString: String?)
-    func showDeleteActionSheet(category: String?)
+    func showDeleteActionSheet(deleteCategory: TrackerCategoryCoreData)
+    func showErrorAlert()
     func selectedCategory(categoryCoreData: TrackerCategoryCoreData?)
 }
 
@@ -27,7 +28,7 @@ final class CategoriesView: UIView {
             объединить по смыслу
         """
     }
-
+    
     //MARK: UI
     private lazy var plugView: PlugView = {
         let plugView = PlugView(
@@ -94,9 +95,7 @@ final class CategoriesView: UIView {
             self.categoryCollectionView.reloadData()
         }
         
-        if viewModel?.numberOfRows == 0 {
-            plugView.isHidden = false
-        }
+        viewModel?.needToHidePlugView()
         
         categoryCollectionView.delegate = self
         categoryCollectionView.dataSource = self
@@ -146,21 +145,53 @@ final class CategoriesView: UIView {
             plugView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
     }
-
+    
     private func createContextMenu(indexPath: IndexPath) -> UIContextMenuConfiguration {
         return UIContextMenuConfiguration(actionProvider: { [weak self] actions in
-            guard let self = self else { return UIMenu() }
-            let category = self.viewModel?.getCategory(by: indexPath)?.title
-    
+            guard
+                let self = self,
+                let categoryCoreData = self.viewModel?.didSelectCategory(by: indexPath)
+            else { return UIMenu() }
+           
             return UIMenu(children: [
                 UIAction(title: "Редактировать") { _ in
-                   // self.delegate?.editCategory(editCategoryString: string)
+                    // self.delegate?.editCategory(editCategoryString: string)
                 },
                 UIAction(title: "Удалить", attributes: .destructive, handler: { _ in
-                   // self.delegate?.deleteCategory(delete: string)
+                    guard let cell = self.viewModel?.categoryCellViewModel(with: indexPath) else { return }
+                    
+                    if cell.selectedCategory {
+                        self.delegate?.showErrorAlert()
+                    } else {
+                        self.delegate?.showDeleteActionSheet(deleteCategory: categoryCoreData)
+                    }
                 })
             ])
         })
+    }
+    
+    private func setCornerRadius(cell: CategoryCollectionViewCell, numberRow: Int) {
+        cell.layer.masksToBounds = true
+        
+        guard let viewModel else { return }
+        
+        switch viewModel.numberOfRows {
+        case 1:
+            cell.layer.cornerRadius = Constants.cornerRadius
+            cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+            cell.hideLineView()
+        default:
+            if numberRow == 0 {
+                cell.layer.cornerRadius = Constants.cornerRadius
+                cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            }
+            
+            if numberRow == viewModel.numberOfRows - 1 {
+                cell.layer.cornerRadius = Constants.cornerRadius
+                cell.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+                cell.hideLineView()
+            }
+        }
     }
     
     @objc
@@ -200,6 +231,7 @@ extension CategoriesView: UICollectionViewDataSource {
             for: indexPath) as? CategoryCollectionViewCell else { return UICollectionViewCell() }
         
         let categoryCellViewModel = viewModel?.categoryCellViewModel(with: indexPath)
+        setCornerRadius(cell: cell, numberRow: indexPath.row)
         cell.initialize(viewModel: categoryCellViewModel)
         return cell
     }
