@@ -8,7 +8,7 @@ final class TrackerCategoryStore: NSObject {
         case errorDecodingTitle
         case errorDecodingId
     }
-        
+    
     lazy var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
         let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
         fetchRequest.sortDescriptors = [
@@ -55,7 +55,19 @@ final class TrackerCategoryStore: NSObject {
     }
     
     func deleteCategory(delete: TrackerCategoryCoreData) {
+        delete.trackers?.forEach({ element in
+            guard let element = element as? NSManagedObject else { return }
+            context.delete(element)
+        })
         context.delete(delete)
+        saveContext()
+    }
+    
+    func changeCategory(at indexPath: IndexPath, newCategoryTitle: String?) -> TrackerCategoryCoreData {
+        let oldCategory = fetchedResultsController.object(at: indexPath)
+        oldCategory.title = newCategoryTitle
+        saveContext()
+        return fetchedResultsController.object(at: indexPath)
     }
     
     

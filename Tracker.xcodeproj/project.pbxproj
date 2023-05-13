@@ -49,7 +49,6 @@
 		5B88D91829D5D80E00A325E4 /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B88D91729D5D80E00A325E4 /* CategoriesViewController.swift */; };
 		5B88D91A29D5D87E00A325E4 /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B88D91929D5D87E00A325E4 /* CategoriesView.swift */; };
 		5B88D91C29D5EB6A00A325E4 /* CategoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B88D91B29D5EB6A00A325E4 /* CategoryCollectionViewCell.swift */; };
-		5B88D91E29D5F24600A325E4 /* CategoryCollectionViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B88D91D29D5F24600A325E4 /* CategoryCollectionViewHelper.swift */; };
 		5BB5F7AE2A0E0EB300670595 /* CategoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB5F7AD2A0E0EB300670595 /* CategoriesViewModel.swift */; };
 		5BB5F7B02A0E196300670595 /* CategoryCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB5F7AF2A0E196300670595 /* CategoryCellViewModel.swift */; };
 		5BBB6AF729E583DC00027985 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBB6AF629E583DC00027985 /* TrackerCategory.swift */; };
@@ -108,7 +107,6 @@
 		5B88D91729D5D80E00A325E4 /* CategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
 		5B88D91929D5D87E00A325E4 /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
 		5B88D91B29D5EB6A00A325E4 /* CategoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCollectionViewCell.swift; sourceTree = "<group>"; };
-		5B88D91D29D5F24600A325E4 /* CategoryCollectionViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCollectionViewHelper.swift; sourceTree = "<group>"; };
 		5BB5F7AD2A0E0EB300670595 /* CategoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewModel.swift; sourceTree = "<group>"; };
 		5BB5F7AF2A0E196300670595 /* CategoryCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCellViewModel.swift; sourceTree = "<group>"; };
 		5BBB6AF629E583DC00027985 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
@@ -371,7 +369,6 @@
 		5BB5F7A72A0E0C9E00670595 /* MVVM */ = {
 			isa = PBXGroup;
 			children = (
-				5B88D91D29D5F24600A325E4 /* CategoryCollectionViewHelper.swift */,
 				5BB5F7A82A0E0CAE00670595 /* Model */,
 				5BB5F7A92A0E0CB600670595 /* View */,
 				5BB5F7AA2A0E0CBB00670595 /* ViewModel */,
@@ -533,7 +530,6 @@
 				5B88D8F429D412E100A325E4 /* CreateTrackerView.swift in Sources */,
 				5B88D8E929D34F9D00A325E4 /* Constants.swift in Sources */,
 				5B7D879229D16EDD00765744 /* AppDelegate.swift in Sources */,
-				5B88D91E29D5F24600A325E4 /* CategoryCollectionViewHelper.swift in Sources */,
 				5B88D8F229D4103000A325E4 /* CreateTrackerViewController.swift in Sources */,
 				5B88D8E329D3498300A325E4 /* TypeTrackerView.swift in Sources */,
 				5B6A1DFA29D1AEE8006BD980 /* TabBarController.swift in Sources */,

@@ -100,15 +100,15 @@ extension CategoriesViewController: CategoriesViewDelegate {
         delegate?.setCategory(categoryCoreData: categoryCoreData)
     }
     
-    func showEditCategoryViewController(type: EditCategory, editCategoryString: String?) {
-        let viewController = createEditCategoryViewController(type: type, editCategoryString: editCategoryString)
+    func showEditCategoryViewController(type: EditCategory, editCategoryString: String?, at indexPath: IndexPath?) {
+        let viewController = createEditCategoryViewController(type: type, editCategoryString: editCategoryString, at: indexPath)
         present(viewController, animated: true)
     }
 }
 
 // MARK: create CategoryViewController
 extension CategoriesViewController {
-    private func createEditCategoryViewController(type: EditCategory, editCategoryString: String?) -> UINavigationController {
+    private func createEditCategoryViewController(type: EditCategory, editCategoryString: String?, at indexPath: IndexPath?) -> UINavigationController {
         let viewController = EditCategoryViewController()
         
         viewController.callBack = { [weak self] in
@@ -118,7 +118,7 @@ extension CategoriesViewController {
             self.categoryCoreData = $0
         }
         
-        viewController.setEditType(type: type, editCategoryString: editCategoryString)
+        viewController.setEditType(type: type, editCategoryString: editCategoryString, at: indexPath)
         let navigationViewController = UINavigationController(rootViewController: viewController)
         return navigationViewController
     }

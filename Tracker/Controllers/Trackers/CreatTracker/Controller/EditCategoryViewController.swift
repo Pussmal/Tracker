@@ -4,6 +4,7 @@ final class EditCategoryViewController: UIViewController {
 
     private var editCategoryView: EditCategoryView!
     private var editCategoryText: String?
+    private var indexPathEditCategory: IndexPath?
     
     private let categoryStory = TrackerCategoryStore()
     private var typeEditeCategory: EditCategory?
@@ -31,13 +32,14 @@ final class EditCategoryViewController: UIViewController {
         editCategoryView.setTextFieldText(text: editCategoryText)
     }
     
-    func setEditType(type: EditCategory, editCategoryString: String?) {
+    func setEditType(type: EditCategory, editCategoryString: String?, at indexPath: IndexPath?) {
         switch type {
         case .addCategory:
             title = CategoryViewControllerConstants.newCategoryTitle
         case .editCategory:
             title = CategoryViewControllerConstants.editCategoryTitle
             editCategoryText = editCategoryString
+            indexPathEditCategory = indexPath
         }
         
         typeEditeCategory = type
@@ -51,6 +53,10 @@ final class EditCategoryViewController: UIViewController {
         let newCategory = TrackerCategory(title: category)
         return categoryStory.addTrackerCategoryCoreData(from: newCategory)
     }
+    
+    private func editCategory(newTitle: String, at indexPath: IndexPath) -> TrackerCategoryCoreData {
+        categoryStory.changeCategory(at: indexPath, newCategoryTitle: newTitle)
+    }
 }
 
 extension EditCategoryViewController: EditCategoryViewDelegate {
@@ -63,9 +69,10 @@ extension EditCategoryViewController: EditCategoryViewDelegate {
         case .addCategory:
             categoryCoreData = creatNewCategory(category: categoryString)
         case .editCategory:
-            print("edit")
+            guard let indexPathEditCategory else { return }
+            categoryCoreData = editCategory(newTitle: categoryString, at: indexPathEditCategory)
         }
-    
+
         callBack?(categoryCoreData)
         dismiss(animated: true)
     }

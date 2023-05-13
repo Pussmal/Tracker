@@ -6,7 +6,7 @@ enum EditCategory {
 }
 
 protocol CategoriesViewDelegate: AnyObject {
-    func showEditCategoryViewController(type: EditCategory, editCategoryString: String?)
+    func showEditCategoryViewController(type: EditCategory, editCategoryString: String?, at indexPath: IndexPath?)
     func showDeleteActionSheet(deleteCategory: TrackerCategoryCoreData)
     func showErrorAlert()
     func selectedCategory(categoryCoreData: TrackerCategoryCoreData?)
@@ -17,8 +17,6 @@ final class CategoriesView: UIView {
     weak var delegate: CategoriesViewDelegate?
     
     private var viewModel: CategoriesViewModelProtocol?
-    
-    private var categoryCollectionViewCellHelperObserver: NSObjectProtocol?
     
     private struct CategoryViewConstant {
         static let collectionViewReuseIdentifier = "Cell"
@@ -155,16 +153,11 @@ final class CategoriesView: UIView {
            
             return UIMenu(children: [
                 UIAction(title: "Редактировать") { _ in
-                    // self.delegate?.editCategory(editCategoryString: string)
+                    self.delegate?.showEditCategoryViewController(type: .editCategory, editCategoryString: categoryCoreData.title, at: indexPath)
                 },
                 UIAction(title: "Удалить", attributes: .destructive, handler: { _ in
                     guard let cell = self.viewModel?.categoryCellViewModel(with: indexPath) else { return }
-                    
-                    if cell.selectedCategory {
-                        self.delegate?.showErrorAlert()
-                    } else {
-                        self.delegate?.showDeleteActionSheet(deleteCategory: categoryCoreData)
-                    }
+                    cell.selectedCategory ? self.delegate?.showErrorAlert() : self.delegate?.showDeleteActionSheet(deleteCategory: categoryCoreData)
                 })
             ])
         })
@@ -198,24 +191,10 @@ final class CategoriesView: UIView {
     private func addButtonTapped() {
         addButton.showAnimation { [weak self] in
             guard let self = self else { return }
-            self.delegate?.showEditCategoryViewController(type: .addCategory, editCategoryString: nil)
+            self.delegate?.showEditCategoryViewController(type: .addCategory, editCategoryString: nil, at: nil)
         }
     }
 }
-
-//extension CategoriesView: CategoryCollectionViewHelperDelegate {
-//    func selectCategory(category: String?) {
-//        delegate?.selectedCategoryName(category: category)
-//    }
-//
-//    func deleteCategory(delete: String?) {
-//        delegate?.showDeleteActionSheet(category: delete)
-//    }
-//
-//    func editCategory(editCategoryString: String?) {
-//        delegate?.showEditCategoryViewController(type: .editCategory, editCategoryString: editCategoryString)
-//    }
-//}
 
 extension CategoriesView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
