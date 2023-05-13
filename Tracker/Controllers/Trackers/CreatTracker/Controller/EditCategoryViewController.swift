@@ -5,6 +5,11 @@ final class EditCategoryViewController: UIViewController {
     private var editCategoryView: EditCategoryView!
     private var editCategoryText: String?
     
+    private let categoryStory = TrackerCategoryStore()
+    private var typeEditeCategory: EditCategory?
+    
+    var callBack:((TrackerCategoryCoreData?)->())?
+    
     private struct CategoryViewControllerConstants {
         static let newCategoryTitle = "Новая категория"
         static let editCategoryTitle = "Редактирование категории"
@@ -34,16 +39,34 @@ final class EditCategoryViewController: UIViewController {
             title = CategoryViewControllerConstants.editCategoryTitle
             editCategoryText = editCategoryString
         }
+        
+        typeEditeCategory = type
     }
     
     deinit {
         print("EditCategoryViewController deinit")
     }
+    
+    private func creatNewCategory(category: String) -> TrackerCategoryCoreData  {
+        let newCategory = TrackerCategory(title: category)
+        return categoryStory.addTrackerCategoryCoreData(from: newCategory)
+    }
 }
 
 extension EditCategoryViewController: EditCategoryViewDelegate {
     func editCategory(category: String?) {
-        print("изменили или создали категорию \(category ?? "Error")")
+        guard let typeEditeCategory, let categoryString = category else { return }
+        
+        var categoryCoreData: TrackerCategoryCoreData?
+        
+        switch typeEditeCategory {
+        case .addCategory:
+            categoryCoreData = creatNewCategory(category: categoryString)
+        case .editCategory:
+            print("edit")
+        }
+    
+        callBack?(categoryCoreData)
         dismiss(animated: true)
     }
 }

@@ -8,6 +8,21 @@ final class TrackerCategoryStore: NSObject {
         case errorDecodingTitle
         case errorDecodingId
     }
+        
+    lazy var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
+        let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(keyPath: \TrackerCategoryCoreData.title, ascending: true)
+        ]
+        let fetchedResultController = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        try? fetchedResultController.performFetch()
+        return fetchedResultController
+    }()
     
     init(context: NSManagedObjectContext) {
         self.context = context
@@ -20,7 +35,7 @@ final class TrackerCategoryStore: NSObject {
     
     func creatTrackerCategory(from trackerCategoryCoreData:  TrackerCategoryCoreData) throws -> TrackerCategory {
         guard let title = trackerCategoryCoreData.title else { throw TrackerCategoryStoreError.errorDecodingTitle }
-        return TrackerCategory(title: title )
+        return TrackerCategory(title: title)
     }
     
     func addTrackerCategoryCoreData(from trackerCategory: TrackerCategory) -> TrackerCategoryCoreData {
@@ -30,16 +45,25 @@ final class TrackerCategoryStore: NSObject {
         return trackerCategoryCoreData
     }
     
+    func getTrackerCategory(by indexPath: IndexPath) -> TrackerCategory? {
+        let object = fetchedResultsController.object(at: indexPath)
+        return try? creatTrackerCategory(from: object)
+    }
+    
+    func getTrackerCategoryCoreData(by indexPath: IndexPath) -> TrackerCategoryCoreData? {
+        fetchedResultsController.object(at: indexPath)
+    }
+    
+    
     private func saveContext() {
          if context.hasChanges {
              do {
                  try context.save()
              } catch {
                  let nserror = error as NSError
-                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                 assertionFailure("Unresolved error \(nserror), \(nserror.userInfo)")
              }
          }
      }
 }
 
-extension TrackerCategoryStore:  NSFetchedResultsControllerDelegate {}

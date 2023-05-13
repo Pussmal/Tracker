@@ -12,11 +12,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return container
     }()
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        //TODO: удалить после реализации создания категории
-        createdCategories()
-        
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {        
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = UIColor.ypWhite
         appearance.titleTextAttributes = [.foregroundColor: UIColor.ypBlack ?? UIColor.black]
@@ -50,20 +46,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let nserror = error as NSError
                 assertionFailure("Unresolved error \(nserror), \(nserror.userInfo)")
             }
-        }
-    }
-    
-    //TODO: удалить после реализации создания категории
-    private func createdCategories() {
-        let categoryIsLoaded = UserDefaults.standard.bool(forKey: "isLoaded")
-        // создаем категории для хранения привычек
-        if !categoryIsLoaded  {
-            let categoryOne = TrackerCategoryCoreData(context: persistentContainer.viewContext)
-            categoryOne.title = "Важное"
-            let categoryTwo = TrackerCategoryCoreData(context: persistentContainer.viewContext)
-            categoryTwo.title = "Спорт"
-            saveContext()
-            UserDefaults.standard.set(true, forKey: "isLoaded")
         }
     }
 }

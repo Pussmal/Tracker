@@ -20,7 +20,8 @@ final class CreateTrackerViewController: UIViewController {
         static let weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
     }
     
-    private var categoryString: String?
+    private var categoryCoreData: TrackerCategoryCoreData?
+  
     private var selectedDates: [String]?
     
     private var stringSelectedDates: String {
@@ -31,7 +32,7 @@ final class CreateTrackerViewController: UIViewController {
         }
     }
     
-    private var trackerCategory: TrackerCategory?
+   
     private var tracker: Tracker?
     
     private let dataProvider = DataProvider()
@@ -90,9 +91,11 @@ extension CreateTrackerViewController: CreateTrackerViewDelegate {
             schedule: selectedDates
         )
                 
-        guard let tracker = tracker else { return }
+        guard let tracker = tracker,
+              let categoryCoreData
+        else { return }
         
-        try? dataProvider.saveTracker(tracker)
+        try? dataProvider.saveTracker(tracker, in: categoryCoreData)
         
         delegate?.dismissViewController(self)
     }
@@ -123,12 +126,12 @@ extension CreateTrackerViewController {
             sheduleViewController.delegate = self
             viewController = sheduleViewController
         case .category:
-            let categoryViewController = CategoryViewController()
+            let categoryViewController = CategoriesViewController()
             categoryViewController.delegate = self
             viewController = categoryViewController
             
-            if let categoryString {
-                categoryViewController.category = categoryString
+            if let categoryCoreData {
+                categoryViewController.category = categoryCoreData.title
             }
         }
         
@@ -137,10 +140,10 @@ extension CreateTrackerViewController {
     }
 }
 
-extension CreateTrackerViewController: CategoryViewControllerDelegate {
-    func setCategory(category: String?) {
-        categoryString = category
-        createTrackerView.setCategory(with: category)
+extension CreateTrackerViewController: CategoriesViewControllerDelegate {
+    func setCategory(categoryCoreData: TrackerCategoryCoreData?) {
+        self.categoryCoreData = categoryCoreData
+        createTrackerView.setCategory(with: categoryCoreData?.title)
         dismiss(animated: true)
     }
 }

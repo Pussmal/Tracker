@@ -17,7 +17,6 @@ final class EditCategoryView: UIView {
     }
     
     private var editCategoryViewTextFieldHelper = EditCategoryViewTextFieldHelper()
-    private let categoryStorage = CategoryStorage.shared
     private var oldCategoryName: String?
     
     private lazy var editCategoryTextField: TrackerTextField = {
@@ -117,12 +116,12 @@ final class EditCategoryView: UIView {
               let categoryName = editCategoryTextField.text
         else { return }
         
-        if categoryStorage.category.contains(oldCategoryName) {
-            guard let index = categoryStorage.category.firstIndex(of: oldCategoryName) else { return }
-            categoryStorage.category[index] = categoryName
-        } else {
-            categoryStorage.category.append(categoryName)
-        }
+//        if categoryStorage.category.contains(oldCategoryName) {
+//            guard let index = categoryStorage.category.firstIndex(of: oldCategoryName) else { return }
+//            categoryStorage.category[index] = categoryName
+//        } else {
+//            categoryStorage.category.append(categoryName)
+//        }
         
         NotificationCenter.default.post(
             name: EditCategoryView.didChangeNotification,

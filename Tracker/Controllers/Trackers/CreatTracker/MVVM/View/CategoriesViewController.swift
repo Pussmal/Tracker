@@ -1,13 +1,17 @@
 import UIKit
 
-protocol CategoryViewControllerDelegate: AnyObject {
-    func setCategory(category: String?)
+protocol CategoriesViewControllerDelegate: AnyObject {
+    func setCategory(categoryCoreData: TrackerCategoryCoreData?)
 }
 
-final class CategoryViewController: UIViewController {
+final class CategoriesViewController: UIViewController {
     
-    weak var delegate: CategoryViewControllerDelegate?
+    // MARK: - public properties
+    weak var delegate: CategoriesViewControllerDelegate?
     var category: String?
+    
+    // MARK: - private properties
+    private var categoryCoreData: TrackerCategoryCoreData?
     
     private struct CategoryViewControllerConstants {
         static let title = "Категория"
@@ -16,12 +20,14 @@ final class CategoryViewController: UIViewController {
         static let cancelActionTitle = "Отмена"
     }
     
-    private var сategoryView: CategoryView!
+    // MARK: UI
+    private var сategoriesView: CategoriesView!
     
+    // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        сategoryView = CategoryView(
+        сategoriesView = CategoriesView(
             frame: view.bounds,
             delegate: self,
             category: category
@@ -29,15 +35,12 @@ final class CategoryViewController: UIViewController {
         
         setupView()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        сategoryView.reloadCollectionView()
-    }
-    
+
+    // MARK: - private methods
     private func setupView() {
         view.backgroundColor = .clear
         title = CategoryViewControllerConstants.title
-        addScreenView(view: сategoryView)
+        addScreenView(view: сategoriesView)
     }
     
     deinit {
@@ -45,11 +48,12 @@ final class CategoryViewController: UIViewController {
     }
 }
 
-extension CategoryViewController: CategoryViewDelegate {
-    func selectCategory(category: String?) {
-        delegate?.setCategory(category: category)
+// MARK: CategoriesViewDelegate
+extension CategoriesViewController: CategoriesViewDelegate {
+    func selectedCategory(categoryCoreData: TrackerCategoryCoreData?) {
+        delegate?.setCategory(categoryCoreData: categoryCoreData)
     }
-    
+        
     func showDeleteActionSheet(category: String?) {
         self.category = category
         
@@ -62,13 +66,10 @@ extension CategoryViewController: CategoryViewDelegate {
             let deleteAction = UIAlertAction(
                 title: CategoryViewControllerConstants.deleteActionTitle,
                 style: .destructive) { [weak self] _ in
-                    guard let self = self,
-                          let category = self.category,
-                          let index = CategoryStorage.shared.category.firstIndex(of: category)
+                    guard let self = self
+                         
                     else { return }
-                    CategoryStorage.shared.category.remove(at: index)
-                    self.сategoryView.reloadCollectionView()
-                    print(CategoryStorage.shared.category.count)
+                   
                 }
             let cancelAction = UIAlertAction(title: CategoryViewControllerConstants.cancelActionTitle, style: .cancel)
             alertController.addAction(deleteAction)
@@ -87,9 +88,17 @@ extension CategoryViewController: CategoryViewDelegate {
 }
 
 // MARK: create CategoryViewController
-extension CategoryViewController {
+extension CategoriesViewController {
     private func createEditCategoryViewController(type: EditCategory, editCategoryString: String?) -> UINavigationController {
         let viewController = EditCategoryViewController()
+        
+        viewController.callBack = { [weak self] in
+            guard let self = self else { return }
+                        
+            self.сategoriesView.reloadCollectionView()
+            self.categoryCoreData = $0
+        }
+        
         viewController.setEditType(type: type, editCategoryString: editCategoryString)
         let navigationViewController = UINavigationController(rootViewController: viewController)
         return navigationViewController

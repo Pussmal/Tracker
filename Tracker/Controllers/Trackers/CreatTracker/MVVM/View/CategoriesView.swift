@@ -1,4 +1,3 @@
-
 import UIKit
 
 enum EditCategory {
@@ -6,15 +5,17 @@ enum EditCategory {
     case editCategory
 }
 
-protocol CategoryViewDelegate: AnyObject {
+protocol CategoriesViewDelegate: AnyObject {
     func showEditCategoryViewController(type: EditCategory, editCategoryString: String?)
     func showDeleteActionSheet(category: String?)
-    func selectCategory(category: String?)
+    func selectedCategory(categoryCoreData: TrackerCategoryCoreData?)
 }
 
-final class CategoryView: UIView {
+final class CategoriesView: UIView {
     
-    weak var delegate: CategoryViewDelegate?
+    weak var delegate: CategoriesViewDelegate?
+    
+    private var viewModel: CategoriesViewModelProtocol?
     
     private var categoryCollectionViewCellHelperObserver: NSObjectProtocol?
     
@@ -26,9 +27,8 @@ final class CategoryView: UIView {
             объединить по смыслу
         """
     }
-    
-    private var сategoryCollectionViewCellHelper: CategoryCollectionViewCellHelper?
-    
+
+    //MARK: UI
     private lazy var plugView: PlugView = {
         let plugView = PlugView(
             frame: .zero,
@@ -75,33 +75,31 @@ final class CategoryView: UIView {
     
     init(
         frame: CGRect,
-        delegate: CategoryViewDelegate?,
+        delegate: CategoriesViewDelegate?,
         category: String? = nil
     ) {
         self.delegate = delegate
         
         super.init(frame: frame)
         
-        сategoryCollectionViewCellHelper = CategoryCollectionViewCellHelper(delegate: self, oldCategory: category)
-        categoryCollectionView.delegate = сategoryCollectionViewCellHelper
-        categoryCollectionView.dataSource = сategoryCollectionViewCellHelper
+        viewModel = CategoriesViewModel(selectedCategory: category)
         
-        if
-            let сategoryCollectionViewCellHelper = сategoryCollectionViewCellHelper,
-            сategoryCollectionViewCellHelper.categories.isEmpty {
+        viewModel?.hidePlugView = { [weak self] in
+            guard let self = self else { return }
+            self.plugView.isHidden = $0 ? true : false
+        }
+        
+        viewModel?.needToUpdateCollectionView = { [weak self] in
+            guard let self = self, $0 else { return }
+            self.categoryCollectionView.reloadData()
+        }
+        
+        if viewModel?.numberOfRows == 0 {
             plugView.isHidden = false
         }
         
-        categoryCollectionViewCellHelperObserver = NotificationCenter.default
-            .addObserver(forName: CategoryCollectionViewCellHelper.didChangeNotification,
-                         object: nil,
-                         queue: .main,
-                         using: { [weak self] _ in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.plugView.isHidden = true
-                }
-            })
+        categoryCollectionView.delegate = self
+        categoryCollectionView.dataSource = self
         
         setupView()
         addSubviews()
@@ -113,7 +111,7 @@ final class CategoryView: UIView {
     }
     
     func reloadCollectionView() {
-        categoryCollectionView.reloadData()
+        viewModel?.updateCategories()
     }
     
     private func setupView() {
@@ -130,7 +128,6 @@ final class CategoryView: UIView {
     }
     
     private func activateConstraints() {
-        
         let plugViewTopConstant = frame.height / 3.5
         
         NSLayoutConstraint.activate([
@@ -149,6 +146,22 @@ final class CategoryView: UIView {
             plugView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
     }
+
+    private func createContextMenu(indexPath: IndexPath) -> UIContextMenuConfiguration {
+        return UIContextMenuConfiguration(actionProvider: { [weak self] actions in
+            guard let self = self else { return UIMenu() }
+            let category = self.viewModel?.getCategory(by: indexPath)?.title
+    
+            return UIMenu(children: [
+                UIAction(title: "Редактировать") { _ in
+                   // self.delegate?.editCategory(editCategoryString: string)
+                },
+                UIAction(title: "Удалить", attributes: .destructive, handler: { _ in
+                   // self.delegate?.deleteCategory(delete: string)
+                })
+            ])
+        })
+    }
     
     @objc
     private func addButtonTapped() {
@@ -159,20 +172,68 @@ final class CategoryView: UIView {
     }
 }
 
-extension CategoryView: CategoryCollectionViewCellHelperDelegate {
-    func selectCategory(category: String?) {
-        delegate?.selectCategory(category: category)
+//extension CategoriesView: CategoryCollectionViewHelperDelegate {
+//    func selectCategory(category: String?) {
+//        delegate?.selectedCategoryName(category: category)
+//    }
+//
+//    func deleteCategory(delete: String?) {
+//        delegate?.showDeleteActionSheet(category: delete)
+//    }
+//
+//    func editCategory(editCategoryString: String?) {
+//        delegate?.showEditCategoryViewController(type: .editCategory, editCategoryString: editCategoryString)
+//    }
+//}
+
+extension CategoriesView: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        viewModel?.numberOfRows ?? 0
     }
     
-    func deleteCategory(delete: String?) {
-        delegate?.showDeleteActionSheet(category: delete)
-    }
-    
-    func updateCollectionView() {
-        categoryCollectionView.reloadData()
-    }
-    
-    func editCategory(editCategoryString: String?) {
-        delegate?.showEditCategoryViewController(type: .editCategory, editCategoryString: editCategoryString)
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: CategoryCollectionViewCell.reuseIdentifire,
+            for: indexPath) as? CategoryCollectionViewCell else { return UICollectionViewCell() }
+        
+        let categoryCellViewModel = viewModel?.categoryCellViewModel(with: indexPath)
+        cell.initialize(viewModel: categoryCellViewModel)
+        return cell
     }
 }
+
+extension CategoriesView: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let categoryCoreData = viewModel?.didSelectCategory(by: indexPath)
+        delegate?.selectedCategory(categoryCoreData: categoryCoreData)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        guard indexPaths.count > 0 else { return nil }
+        let indexPath = indexPaths[0]
+        return createContextMenu(indexPath: indexPath)
+    }
+}
+
+extension CategoriesView: UICollectionViewDelegateFlowLayout {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        let width = UIScreen.main.bounds.width - Constants.indentationFromEdges * 2
+        return CGSize(width: width, height: Constants.hugHeight)
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        minimumLineSpacingForSectionAt section: Int
+    ) -> CGFloat {
+        0
+    }
+}
+
