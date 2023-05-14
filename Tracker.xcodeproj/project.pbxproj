@@ -210,6 +210,7 @@
 		5B7D879029D16EDD00765744 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				5BB5F7A72A0E0C9E00670595 /* MVVM */,
 				5BB5F7B12A10C6E700670595 /* Onboarding */,
 				5B7D87A629D16F1500765744 /* Application */,
 				5B6A1DF329D197C1006BD980 /* Controllers */,
@@ -324,7 +325,6 @@
 		5B88D8EE29D40DE600A325E4 /* CreatTracker */ = {
 			isa = PBXGroup;
 			children = (
-				5BB5F7A72A0E0C9E00670595 /* MVVM */,
 				5B88D8F729D442EE00A325E4 /* Helper */,
 				5B88D8EF29D40E1A00A325E4 /* Controller */,
 				5B88D8F029D40E2200A325E4 /* View */,

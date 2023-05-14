@@ -52,11 +52,18 @@ final class OnboardingViewController: UIViewController {
            onboardingView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
+    
+    private func showMainMainViewController() {
+        guard let window = UIApplication.shared.windows.first else { fatalError("Invalid configuration")}
+        let tabBarVC = TabBarController()
+        window.rootViewController = tabBarVC
+        UserDefaults.standard.set(true, forKey: Constants.firstEnabledUserDefaultsKey)
+    }
 }
 
 // MARK: OnboardingViewDelegate
 extension OnboardingViewController: OnboardingViewDelegate {
     func onboardingButtonTapped() {
-        print("delegate")
+        showMainMainViewController()
     }
 }

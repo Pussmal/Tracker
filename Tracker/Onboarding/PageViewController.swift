@@ -5,10 +5,10 @@ final class PageViewController: UIPageViewController {
     // MARK: - private properties
     private let pagesFactory = PageViewControllerFactory()
     
-    private lazy var pages: [UIViewController] = {
-        let blueOnboardingViewController = pagesFactory.creatPageViewController(colorPage: .blue)
-        let redOnboardingViewController = pagesFactory.creatPageViewController(colorPage: .red)
-        return [blueOnboardingViewController, redOnboardingViewController]
+    private lazy var pages: [UIViewController] = { [
+        pagesFactory.creatPageViewController(colorPage: .blue),
+        pagesFactory.creatPageViewController(colorPage: .red)
+    ]
     }()
     
     // MARK: - UI
@@ -80,6 +80,6 @@ extension PageViewController: UIPageViewControllerDelegate {
                             transitionCompleted completed: Bool) {
         guard let currentViewController = pageViewController.viewControllers?.first,
               let currentIndex = pages.firstIndex(of: currentViewController) else { return }
-            pageControll.currentPage = currentIndex
+        pageControll.currentPage = currentIndex
     }
 }
