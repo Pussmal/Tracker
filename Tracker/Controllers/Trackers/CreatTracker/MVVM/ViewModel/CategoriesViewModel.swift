@@ -21,13 +21,7 @@ final class CategoriesViewModel {
     private var selectedCategory: String?
     
     init(selectedCategory: String?) {
-        needToHidePlugView()
         self.selectedCategory = selectedCategory
-    }
-    
-    func needToHidePlugView() {
-        let needToHidePlugView = categoryStore.fetchedResultsController.sections?[0].numberOfObjects != 0
-        needToHidePlugView ? hidePlugView?(true) : hidePlugView?(false)
     }
     
     deinit{
@@ -35,14 +29,14 @@ final class CategoriesViewModel {
     }
 }
 
+// MARK: CategoriesViewModelProtocol
 extension CategoriesViewModel: CategoriesViewModelProtocol {
+    var numberOfRows: Int {
+        categoryStore.fetchedResultsController.sections?[0].numberOfObjects ?? 0
+    }
     
     func didSelectCategory(by indexPath: IndexPath) -> TrackerCategoryCoreData? {
         categoryStore.getTrackerCategoryCoreData(by: indexPath)
-    }
-    
-    var numberOfRows: Int {
-        categoryStore.fetchedResultsController.sections?[0].numberOfObjects ?? 0
     }
     
     func categoryCellViewModel(with indexPath: IndexPath) -> CategoryCellViewModel? {
@@ -60,17 +54,10 @@ extension CategoriesViewModel: CategoriesViewModelProtocol {
         needToHidePlugView()
         needToUpdateCollectionView?(true)
     }
+    
+    func needToHidePlugView() {
+        let needToHidePlugView = categoryStore.fetchedResultsController.sections?[0].numberOfObjects != 0
+        needToHidePlugView ? hidePlugView?(true) : hidePlugView?(false)
+    }
 }
 
-//extension CategoriesViewModel: CategoryCollectionViewHelperDelegate {
-//    func editCategory(editCategoryString: String?) {}
-//    
-//    func deleteCategory(delete: String?) {}
-//    
-//    func updateCollectionView() {}
-//    
-//    func selectCategory(category: String?) {
-//        guard let category else { return }
-//        print(category)
-//    }
-//}
