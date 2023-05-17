@@ -138,7 +138,7 @@ final class CategoriesView: UIView {
     private func bind() {
         viewModel?.hidePlugView = { [weak self] in
             guard let self = self else { return }
-            self.plugView.isHidden = $0 ? true : false
+            self.plugView.isHidden = $0
         }
         viewModel?.needToUpdateCollectionView = { [weak self] in
             guard let self = self, $0 else { return }
@@ -149,7 +149,7 @@ final class CategoriesView: UIView {
     private func createContextMenu(indexPath: IndexPath) -> UIContextMenuConfiguration {
         return UIContextMenuConfiguration(actionProvider: { [weak self] actions in
             guard
-                let self = self,
+                let self,
                 let categoryCoreData = self.viewModel?.didSelectCategory(by: indexPath)
             else { return UIMenu() }
             

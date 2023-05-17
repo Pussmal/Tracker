@@ -3,23 +3,21 @@ import UIKit
 final class OnboardingViewController: UIViewController {
     
     //MARK: - private properties
-    private var backgroundImageName: String?
-    private var onboardingInfoText: String?
+    private var colorPage: ColorPage
     
     //MARK: UI
     private lazy var onboardingView: OnboardingView = {
         let view = OnboardingView(
             frame: view.frame,
-            imageNamed: backgroundImageName,
-            infoLabelText: onboardingInfoText)
+            imageNamed: colorPage.backgroundImageName,
+            infoLabelText: colorPage.onboardingInfoText)
         view.delegate = self
         return view
     }()
     
     // MARK: - initialization
-    init(backgroundImageName: String, onboardingInfoText: String ) {
-        self.backgroundImageName = backgroundImageName
-        self.onboardingInfoText = onboardingInfoText
+    init(colorPage: ColorPage) {
+        self.colorPage = colorPage
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -53,7 +51,7 @@ final class OnboardingViewController: UIViewController {
         ])
     }
     
-    private func showMainMainViewController() {
+    private func showMainViewController() {
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid configuration")}
         let tabBarVC = TabBarController()
         window.rootViewController = tabBarVC
@@ -64,6 +62,6 @@ final class OnboardingViewController: UIViewController {
 // MARK: OnboardingViewDelegate
 extension OnboardingViewController: OnboardingViewDelegate {
     func onboardingButtonTapped() {
-        showMainMainViewController()
+        showMainViewController()
     }
 }

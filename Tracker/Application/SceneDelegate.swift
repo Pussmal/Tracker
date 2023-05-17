@@ -14,7 +14,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private func creatViewController() -> UIViewController {
         let isEnabled = UserDefaults.standard.bool(forKey: Constants.firstEnabledUserDefaultsKey)
-        return isEnabled ? TabBarController() : PageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
+        
+        if isEnabled {
+            return TabBarController()
+        } else {
+            let pagesFactory = PageViewControllerFactory()
+            let pageViewController = PageViewController(pagesFactory: pagesFactory)
+            return pageViewController
+        }
     }
 }
 

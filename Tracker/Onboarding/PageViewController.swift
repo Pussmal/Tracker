@@ -3,30 +3,36 @@ import UIKit
 final class PageViewController: UIPageViewController {
     
     // MARK: - private properties
-    private let pagesFactory = PageViewControllerFactory()
-    
-    private lazy var pages: [UIViewController] = { [
-        pagesFactory.creatPageViewController(colorPage: .blue),
-        pagesFactory.creatPageViewController(colorPage: .red)
-    ]
-    }()
+    private var pagesFactory: PageViewControllerFactoryProtocol?
     
     // MARK: - UI
-    private lazy var pageControll: UIPageControl = {
-        let pageControll = UIPageControl()
-        pageControll.translatesAutoresizingMaskIntoConstraints = false
-        pageControll.numberOfPages = pages.count
-        pageControll.currentPage = 0
-        pageControll.currentPageIndicatorTintColor = .ypBlack
-        pageControll.pageIndicatorTintColor = .ypGray
-        pageControll.isEnabled = false
-        return pageControll
+    private lazy var pageControl: UIPageControl = {
+        let pageControl = UIPageControl()
+        pageControl.translatesAutoresizingMaskIntoConstraints = false
+        pageControl.numberOfPages = pagesFactory?.numberOfPages ?? 0
+        pageControl.currentPage = 0
+        pageControl.currentPageIndicatorTintColor = .ypBlack
+        pageControl.pageIndicatorTintColor = .ypGray
+        pageControl.isEnabled = false
+        return pageControl
     }()
+    
+    // MARK: - initialization
+    init(pagesFactory: PageViewControllerFactoryProtocol) {
+        super.init(
+            transitionStyle: .scroll,
+            navigationOrientation: .horizontal
+        )
+        self.pagesFactory = pagesFactory
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupPageViewController()
         addViews()
         activateConstraints()
@@ -36,39 +42,47 @@ final class PageViewController: UIPageViewController {
     private func setupPageViewController() {
         dataSource = self
         delegate = self
-        if let first = pages.first {
-            setViewControllers([first], direction: .forward, animated: true)
-        }
+        
+        guard let firstViewController = pagesFactory?.firstViewController else { return }
+        
+        setViewControllers(
+            [firstViewController],
+            direction: .forward,
+            animated: true
+        )
     }
     
     private func addViews() {
-        view.addSubview(pageControll)
+        view.addSubview(pageControl)
     }
     
     private func activateConstraints() {
-        let pageControllTopConstant = view.frame.height / 1.45
+        let pageControlTopConstant = view.frame.height / 1.45
         
         NSLayoutConstraint.activate([
-            pageControll.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: pageControllTopConstant),
-            pageControll.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            pageControl.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor,
+                constant: pageControlTopConstant
+            ),
+            pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
 }
 
 // MARK: UIPageViewControllerDataSource
 extension PageViewController: UIPageViewControllerDataSource {
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        guard let viewControllerIndex = pages.firstIndex(of: viewController) else { return nil }
-        let previousIndex = viewControllerIndex - 1
-        guard previousIndex >= 0 else { return nil }
-        return pages[previousIndex]
+    func pageViewController(
+        _ pageViewController: UIPageViewController,
+        viewControllerBefore viewController: UIViewController
+    ) -> UIViewController? {
+        return pagesFactory?.prevViewController
     }
     
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        guard let viewControllerIndex = pages.firstIndex(of: viewController) else { return nil }
-        let nextIndex = viewControllerIndex + 1
-        guard nextIndex < pages.count else { return nil }
-        return pages[nextIndex]
+    func pageViewController(
+        _ pageViewController: UIPageViewController,
+        viewControllerAfter viewController: UIViewController
+    ) -> UIViewController? {
+        return pagesFactory?.nextViewController
     }
 }
 
@@ -78,8 +92,7 @@ extension PageViewController: UIPageViewControllerDelegate {
                             didFinishAnimating finished: Bool,
                             previousViewControllers: [UIViewController],
                             transitionCompleted completed: Bool) {
-        guard let currentViewController = pageViewController.viewControllers?.first,
-              let currentIndex = pages.firstIndex(of: currentViewController) else { return }
-        pageControll.currentPage = currentIndex
+        
+        pageControl.currentPage = pagesFactory?.currentNumberPage ?? 0
     }
 }
