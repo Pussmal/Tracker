@@ -17,11 +17,12 @@ final class CategoriesViewModel {
     var hidePlugView: Binding<Bool>?
     var needToUpdateCollectionView: Binding<Bool>?
    
-    private let categoryStore = TrackerCategoryStore()
+    private let categoryStore: TrackerCategoryStoreProtocol
     private var selectedCategory: String?
     
-    init(selectedCategory: String?) {
+    init(selectedCategory: String?, categoryStore: TrackerCategoryStoreProtocol) {
         self.selectedCategory = selectedCategory
+        self.categoryStore = categoryStore
     }
     
     deinit{

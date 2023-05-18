@@ -84,7 +84,8 @@ final class CategoriesView: UIView {
         
         super.init(frame: frame)
        
-        viewModel = CategoriesViewModel(selectedCategory: category)
+        let categoryStore = TrackerCategoryStore()
+        viewModel = CategoriesViewModel(selectedCategory: category, categoryStore: categoryStore)
         bind()
         viewModel?.needToHidePlugView()
             

@@ -75,6 +75,7 @@ extension PageViewController: UIPageViewControllerDataSource {
         _ pageViewController: UIPageViewController,
         viewControllerBefore viewController: UIViewController
     ) -> UIViewController? {
+        print("work before VC")
         return pagesFactory?.prevViewController
     }
     
@@ -82,6 +83,7 @@ extension PageViewController: UIPageViewControllerDataSource {
         _ pageViewController: UIPageViewController,
         viewControllerAfter viewController: UIViewController
     ) -> UIViewController? {
+        print("work after VC")
         return pagesFactory?.nextViewController
     }
 }

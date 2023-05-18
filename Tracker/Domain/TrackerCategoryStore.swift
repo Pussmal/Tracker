@@ -1,6 +1,16 @@
 import UIKit
 import CoreData
 
+protocol TrackerCategoryStoreProtocol: AnyObject {
+    var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData> { get }
+    func creatTrackerCategory(from trackerCategoryCoreData:  TrackerCategoryCoreData) throws -> TrackerCategory
+    func addTrackerCategoryCoreData(from trackerCategory: TrackerCategory) -> TrackerCategoryCoreData
+    func getTrackerCategory(by indexPath: IndexPath) -> TrackerCategory?
+    func getTrackerCategoryCoreData(by indexPath: IndexPath) -> TrackerCategoryCoreData?
+    func deleteCategory(delete: TrackerCategoryCoreData)
+    func changeCategory(at indexPath: IndexPath, newCategoryTitle: String?) -> TrackerCategoryCoreData
+}
+
 final class TrackerCategoryStore: NSObject {
     private let context: NSManagedObjectContext
     
@@ -32,6 +42,22 @@ final class TrackerCategoryStore: NSObject {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         self.init(context: context)
     }
+    
+    
+    private func saveContext() {
+         if context.hasChanges {
+             do {
+                 try context.save()
+             } catch {
+                 let nserror = error as NSError
+                 assertionFailure("Unresolved error \(nserror), \(nserror.userInfo)")
+             }
+         }
+     }
+}
+
+extension TrackerCategoryStore: TrackerCategoryStoreProtocol {
+    
     
     func creatTrackerCategory(from trackerCategoryCoreData:  TrackerCategoryCoreData) throws -> TrackerCategory {
         guard let title = trackerCategoryCoreData.title else { throw TrackerCategoryStoreError.errorDecodingTitle }
@@ -69,17 +95,4 @@ final class TrackerCategoryStore: NSObject {
         saveContext()
         return fetchedResultsController.object(at: indexPath)
     }
-    
-    
-    private func saveContext() {
-         if context.hasChanges {
-             do {
-                 try context.save()
-             } catch {
-                 let nserror = error as NSError
-                 assertionFailure("Unresolved error \(nserror), \(nserror.userInfo)")
-             }
-         }
-     }
 }
-

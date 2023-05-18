@@ -3,6 +3,8 @@ import Foundation
 enum ColorPageType: CaseIterable {
     case blue
     case red
+    case three
+    case foure
     
     var imageName: String {
         switch self {
@@ -10,15 +12,23 @@ enum ColorPageType: CaseIterable {
             return "BlueOnboardingBackground"
         case .red:
             return "RedOnboardingBackground"
+        case .three:
+            return "BlueOnboardingBackground"
+        case .foure:
+            return "RedOnboardingBackground"
         }
     }
     
     var infoText: String {
         switch self {
         case .blue:
-            return "Отслеживайте только то, что хотите"
+            return "1"
         case .red:
-            return "Даже если это не литры воды и йога"
+            return "2"
+        case .three:
+            return "3"
+        case .foure:
+            return "4"
         }
     }
 }

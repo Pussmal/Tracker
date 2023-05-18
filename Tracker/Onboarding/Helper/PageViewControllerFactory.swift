@@ -2,7 +2,7 @@ import UIKit
 
 protocol PageViewControllerFactoryProtocol {
     var numberOfPages: Int { get }
-    var currentNumberPage: Int? { get }
+    var currentNumberPage: Int { get }
     var prevViewController: UIViewController? { get }
     var nextViewController: UIViewController? { get }
     var firstViewController: UIViewController? { get }
@@ -10,9 +10,15 @@ protocol PageViewControllerFactoryProtocol {
 
 final class PageViewControllerFactory {
     
-    private var prevColorPageTypeIndex: Int?
-    private var nextColorPageTypeIndex: Int?
-    private var currentColorPageTypeIndex: Int?
+    private var prevColorPageTypeIndex = 0
+    private var nextColorPageTypeIndex = 0
+    
+    private var currentColorPageTypeIndex = 0 {
+        didSet {
+            prevColorPageTypeIndex = currentColorPageTypeIndex - 1
+            nextColorPageTypeIndex = currentColorPageTypeIndex + 1
+        }
+    }
     
     private func createPageViewController(colorPageType: ColorPageType) -> UIViewController {
         let colorPage = ColorPage(
@@ -26,30 +32,25 @@ extension PageViewControllerFactory: PageViewControllerFactoryProtocol {
     var numberOfPages: Int { return ColorPageType.allCases.count }
     
     var prevViewController: UIViewController? {
-        guard let currentColorPageTypeIndex else { return nil }
-        let previousIndex = currentColorPageTypeIndex - 1
-        guard previousIndex > 0 else { return nil }
-        let colorPageType = ColorPageType.allCases[previousIndex]
-        self.currentColorPageTypeIndex = previousIndex
+        guard prevColorPageTypeIndex >= 0 else { return nil }
+        let colorPageType = ColorPageType.allCases[prevColorPageTypeIndex]
+        self.currentColorPageTypeIndex -= 1
         return createPageViewController(colorPageType: colorPageType)
     }
     
     var nextViewController: UIViewController? {
-        guard let currentColorPageTypeIndex else { return nil }
-        let nextIndex = currentColorPageTypeIndex + 1
-        guard nextIndex < ColorPageType.allCases.count else { return nil }
-        let colorPageType = ColorPageType.allCases[nextIndex]
-        self.currentColorPageTypeIndex = nextIndex
+        guard nextColorPageTypeIndex < ColorPageType.allCases.count else { return nil }
+        let colorPageType = ColorPageType.allCases[nextColorPageTypeIndex]
+        self.currentColorPageTypeIndex += 1
         return createPageViewController(colorPageType: colorPageType)
     }
     
     var firstViewController: UIViewController? {
         guard let firstColorPageType = ColorPageType.allCases.first else { return nil }
-        self.currentColorPageTypeIndex = ColorPageType.allCases.firstIndex(of: firstColorPageType)
         return createPageViewController(colorPageType: firstColorPageType)
     }
     
-    var currentNumberPage: Int? {
+    var currentNumberPage: Int {
         currentColorPageTypeIndex
     }
 }
