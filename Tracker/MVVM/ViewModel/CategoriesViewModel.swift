@@ -6,7 +6,7 @@ protocol CategoriesViewModelProtocol {
     var numberOfRows: Int { get }
     var hidePlugView: Binding<Bool>? { get set }
     var needToUpdateCollectionView: Binding<Bool>? { get set }
-    func categoryCellViewModel(with indexPath: IndexPath) -> CategoryCellViewModel?
+    func categoryCellViewModel(at indexPath: IndexPath) -> CategoryCellViewModel?
     func getCategory(by indexPath: IndexPath) -> TrackerCategory?
     func didSelectCategory(by indexPath: IndexPath) -> TrackerCategoryCoreData?
     func updateCategories()
@@ -40,7 +40,7 @@ extension CategoriesViewModel: CategoriesViewModelProtocol {
         categoryStore.getTrackerCategoryCoreData(by: indexPath)
     }
     
-    func categoryCellViewModel(with indexPath: IndexPath) -> CategoryCellViewModel? {
+    func categoryCellViewModel(at indexPath: IndexPath) -> CategoryCellViewModel? {
         guard let category = categoryStore.getTrackerCategory(by: indexPath) else { return nil }
         let isSelected = selectedCategory == category.title ? true : false
         return CategoryCellViewModel(category: category, isSelect: isSelected)

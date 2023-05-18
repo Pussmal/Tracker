@@ -4,11 +4,11 @@ import CoreData
 protocol TrackerCategoryStoreProtocol: AnyObject {
     var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData> { get }
     func creatTrackerCategory(from trackerCategoryCoreData:  TrackerCategoryCoreData) throws -> TrackerCategory
-    func addTrackerCategoryCoreData(from trackerCategory: TrackerCategory) -> TrackerCategoryCoreData
+    func addTrackerCategoryCoreData(from trackerCategory: TrackerCategory)
     func getTrackerCategory(by indexPath: IndexPath) -> TrackerCategory?
     func getTrackerCategoryCoreData(by indexPath: IndexPath) -> TrackerCategoryCoreData?
     func deleteCategory(delete: TrackerCategoryCoreData)
-    func changeCategory(at indexPath: IndexPath, newCategoryTitle: String?) -> TrackerCategoryCoreData
+    func changeCategory(at indexPath: IndexPath, newCategoryTitle: String?)
 }
 
 final class TrackerCategoryStore: NSObject {
@@ -57,18 +57,15 @@ final class TrackerCategoryStore: NSObject {
 }
 
 extension TrackerCategoryStore: TrackerCategoryStoreProtocol {
-    
-    
     func creatTrackerCategory(from trackerCategoryCoreData:  TrackerCategoryCoreData) throws -> TrackerCategory {
         guard let title = trackerCategoryCoreData.title else { throw TrackerCategoryStoreError.errorDecodingTitle }
         return TrackerCategory(title: title)
     }
     
-    func addTrackerCategoryCoreData(from trackerCategory: TrackerCategory) -> TrackerCategoryCoreData {
+    func addTrackerCategoryCoreData(from trackerCategory: TrackerCategory) {
         let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
         trackerCategoryCoreData.title = trackerCategory.title
         saveContext()
-        return trackerCategoryCoreData
     }
     
     func getTrackerCategory(by indexPath: IndexPath) -> TrackerCategory? {
@@ -89,10 +86,9 @@ extension TrackerCategoryStore: TrackerCategoryStoreProtocol {
         saveContext()
     }
     
-    func changeCategory(at indexPath: IndexPath, newCategoryTitle: String?) -> TrackerCategoryCoreData {
+    func changeCategory(at indexPath: IndexPath, newCategoryTitle: String?) {
         let oldCategory = fetchedResultsController.object(at: indexPath)
         oldCategory.title = newCategoryTitle
         saveContext()
-        return fetchedResultsController.object(at: indexPath)
     }
 }

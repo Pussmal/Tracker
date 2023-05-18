@@ -15,7 +15,6 @@ protocol CategoriesViewDelegate: AnyObject {
 final class CategoriesView: UIView {
     
     weak var delegate: CategoriesViewDelegate?
-    
     private var viewModel: CategoriesViewModelProtocol?
     
     private struct CategoryViewConstant {
@@ -78,16 +77,15 @@ final class CategoriesView: UIView {
     init(
         frame: CGRect,
         delegate: CategoriesViewDelegate?,
-        category: String? = nil
+        viewModel: CategoriesViewModelProtocol
     ) {
         self.delegate = delegate
+        self.viewModel = viewModel
         
         super.init(frame: frame)
        
-        let categoryStore = TrackerCategoryStore()
-        viewModel = CategoriesViewModel(selectedCategory: category, categoryStore: categoryStore)
         bind()
-        viewModel?.needToHidePlugView()
+        viewModel.needToHidePlugView()
             
         setupView()
         addSubviews()
@@ -119,6 +117,8 @@ final class CategoriesView: UIView {
     
     private func activateConstraints() {
         let plugViewTopConstant = frame.height / 3.5
+        let addButtonBottomAnchorConstant: CGFloat = -50
+        
         NSLayoutConstraint.activate([
             categoryCollectionView.topAnchor.constraint(equalTo: topAnchor),
             categoryCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.indentationFromEdges),
@@ -128,7 +128,7 @@ final class CategoriesView: UIView {
             addButton.heightAnchor.constraint(equalToConstant: Constants.hugHeight),
             addButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.indentationFromEdges),
             addButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.indentationFromEdges),
-            addButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
+            addButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: addButtonBottomAnchorConstant),
             
             plugView.topAnchor.constraint(equalTo: topAnchor, constant: plugViewTopConstant),
             plugView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -151,16 +151,20 @@ final class CategoriesView: UIView {
         return UIContextMenuConfiguration(actionProvider: { [weak self] actions in
             guard
                 let self,
-                let categoryCoreData = self.viewModel?.didSelectCategory(by: indexPath)
+                let selectedCategory = self.viewModel?.didSelectCategory(by: indexPath)
             else { return UIMenu() }
             
             return UIMenu(children: [
                 UIAction(title: "Редактировать") { _ in
-                    self.delegate?.showEditCategoryViewController(type: .editCategory, editCategoryString: categoryCoreData.title, at: indexPath)
+                    self.delegate?.showEditCategoryViewController(
+                        type: .editCategory,
+                        editCategoryString: selectedCategory.title,
+                        at: indexPath
+                    )
                 },
                 UIAction(title: "Удалить", attributes: .destructive, handler: { _ in
-                    guard let cell = self.viewModel?.categoryCellViewModel(with: indexPath) else { return }
-                    cell.selectedCategory ? self.delegate?.showErrorAlert() : self.delegate?.showDeleteActionSheet(deleteCategory: categoryCoreData)
+                    guard let cell = self.viewModel?.categoryCellViewModel(at: indexPath) else { return }
+                    cell.selectedCategory ? self.delegate?.showErrorAlert() : self.delegate?.showDeleteActionSheet(deleteCategory: selectedCategory)
                 })
             ])
         })
@@ -211,7 +215,7 @@ extension CategoriesView: UICollectionViewDataSource {
             withReuseIdentifier: CategoryCollectionViewCell.cellReuseIdentifier,
             for: indexPath) as? CategoryCollectionViewCell else { return UICollectionViewCell() }
         
-        let categoryCellViewModel = viewModel?.categoryCellViewModel(with: indexPath)
+        let categoryCellViewModel = viewModel?.categoryCellViewModel(at: indexPath)
         setCellCornerRadius(cell: cell, numberRow: indexPath.row)
         cell.initialize(viewModel: categoryCellViewModel)
         return cell

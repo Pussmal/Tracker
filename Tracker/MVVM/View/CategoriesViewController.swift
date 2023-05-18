@@ -8,10 +8,10 @@ final class CategoriesViewController: UIViewController {
     
     // MARK: - public properties
     weak var delegate: CategoriesViewControllerDelegate?
-    var category: String?
+    var selectedCategoryTitle: String?
     
     // MARK: - private properties
-    private var categoryCoreData: TrackerCategoryCoreData?
+    private var viewModel: CategoriesViewControllerViewModelProtocol
     
     private struct CategoryViewControllerConstants {
         static let title = "Категория"
@@ -27,16 +27,28 @@ final class CategoriesViewController: UIViewController {
     // MARK: UI
     private var сategoriesView: CategoriesView!
     
+    //MARK: - initialization
+    init(viewModel: CategoriesViewControllerViewModelProtocol, delegate: CategoriesViewControllerDelegate) {
+        self.delegate = delegate
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
+    
+        let categoriesViewModel = viewModel.categoriesViewModel(with: selectedCategoryTitle)
         
         сategoriesView = CategoriesView(
             frame: view.bounds,
             delegate: self,
-            category: category
+            viewModel: categoriesViewModel
         )
-        
         setupView()
     }
     
@@ -111,11 +123,9 @@ extension CategoriesViewController {
     private func createEditCategoryViewController(type: EditCategory, editCategoryString: String?, at indexPath: IndexPath?) -> UINavigationController {
         let viewController = EditCategoryViewController()
         
-        viewController.callBack = { [weak self] in
-            guard let self = self else { return }
-            
+        viewController.updateWithNewCategory = { [weak self] in
+            guard let self else { return }
             self.сategoriesView.reloadCollectionView()
-            self.categoryCoreData = $0
         }
         
         viewController.setEditType(type: type, editCategoryString: editCategoryString, at: indexPath)

@@ -9,8 +9,6 @@ final class EditCategoryView: UIView {
     
     weak var delegate: EditCategoryViewDelegate?
     
-    static let didChangeNotification = Notification.Name(rawValue: "CategoryDidChange")
-    
     private struct CategoryViewConstant {
         static let editButtonTitle = "Готово"
         static let editCategoryTextFieldPlaceholderText = "Введите название категории"
@@ -115,18 +113,6 @@ final class EditCategoryView: UIView {
         guard editCategoryTextField.text != "",
               let categoryName = editCategoryTextField.text
         else { return }
-        
-//        if categoryStorage.category.contains(oldCategoryName) {
-//            guard let index = categoryStorage.category.firstIndex(of: oldCategoryName) else { return }
-//            categoryStorage.category[index] = categoryName
-//        } else {
-//            categoryStorage.category.append(categoryName)
-//        }
-        
-        NotificationCenter.default.post(
-            name: EditCategoryView.didChangeNotification,
-            object: self,
-            userInfo: nil)
         delegate?.editCategory(category: categoryName)
     }
 }
