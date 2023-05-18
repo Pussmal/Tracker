@@ -1,34 +1,37 @@
-import Foundation
+import UIKit
 
 enum ColorPageType: CaseIterable {
     case blue
     case red
-    case three
-    case foure
+ 
+    var viewController: UIViewController {
+        switch self {
+        case .blue:
+            return OnboardingViewController(colorPage: self.colorPage)
+        case .red:
+            return OnboardingViewController(colorPage: self.colorPage)
+        }
+    }
+
+    private var colorPage: ColorPage {
+        ColorPage(backgroundImageName: self.imageName, onboardingInfoText: self.infoText)
+    }
     
-    var imageName: String {
+    private var imageName: String {
         switch self {
         case .blue:
             return "BlueOnboardingBackground"
         case .red:
-            return "RedOnboardingBackground"
-        case .three:
-            return "BlueOnboardingBackground"
-        case .foure:
             return "RedOnboardingBackground"
         }
     }
     
-    var infoText: String {
+    private var infoText: String {
         switch self {
         case .blue:
-            return "1"
+            return "Отслеживайте только то, что хотите"
         case .red:
-            return "2"
-        case .three:
-            return "3"
-        case .foure:
-            return "4"
+            return "Даже если это не литры воды и йога"
         }
     }
 }
