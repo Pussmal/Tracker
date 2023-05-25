@@ -3,13 +3,13 @@ import UIKit
 final class PageViewController: UIPageViewController {
     
     // MARK: - private properties
-    private var pagesFactory: PageViewControllerFactoryProtocol?
+    private var pagesProvider: PageViewControllerProviderProtocol?
     
     // MARK: - UI
     private lazy var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.translatesAutoresizingMaskIntoConstraints = false
-        pageControl.numberOfPages = pagesFactory?.numberOfPages ?? 0
+        pageControl.numberOfPages = pagesProvider?.numberOfPages ?? 0
         pageControl.currentPage = 0
         pageControl.currentPageIndicatorTintColor = .ypBlack
         pageControl.pageIndicatorTintColor = .ypGray
@@ -18,12 +18,12 @@ final class PageViewController: UIPageViewController {
     }()
     
     // MARK: - initialization
-    init(pagesFactory: PageViewControllerFactoryProtocol) {
+    init(pagesFactory: PageViewControllerProviderProtocol) {
         super.init(
             transitionStyle: .scroll,
             navigationOrientation: .horizontal
         )
-        self.pagesFactory = pagesFactory
+        self.pagesProvider = pagesFactory
     }
     
     required init?(coder: NSCoder) {
@@ -43,7 +43,7 @@ final class PageViewController: UIPageViewController {
         dataSource = self
         delegate = self
     
-        guard let firstViewController = pagesFactory?.getViewController(at: 0) else { return }
+        guard let firstViewController = pagesProvider?.getViewController(at: 0) else { return }
         
         setViewControllers(
             [firstViewController],
@@ -75,20 +75,22 @@ extension PageViewController: UIPageViewControllerDataSource {
         _ pageViewController: UIPageViewController,
         viewControllerBefore viewController: UIViewController
     ) -> UIViewController? {
-        guard let viewControllerIndex = pagesFactory?.getViewControllerIndex(of: viewController) else { return nil}
+        guard let viewControllerIndex = pagesProvider?.getViewControllerIndex(of: viewController) else { return nil }
         let prevIndex = viewControllerIndex - 1
-        guard prevIndex >= 0 else { return nil}
-        return pagesFactory?.getViewController(at: prevIndex)
+        guard prevIndex >= 0 else { return nil }
+        return pagesProvider?.getViewController(at: prevIndex)
     }
     
     func pageViewController(
         _ pageViewController: UIPageViewController,
         viewControllerAfter viewController: UIViewController
     ) -> UIViewController? {
-        guard let viewControllerIndex = pagesFactory?.getViewControllerIndex(of: viewController), let pagesFactory else { return nil}
+        guard
+            let viewControllerIndex = pagesProvider?.getViewControllerIndex(of: viewController),
+            let pagesProvider else { return nil }
         let nextIndex = viewControllerIndex + 1
-        guard nextIndex < pagesFactory.numberOfPages else { return nil }
-        return pagesFactory.getViewController(at: nextIndex)
+        guard nextIndex < pagesProvider.numberOfPages else { return nil }
+        return pagesProvider.getViewController(at: nextIndex)
     }
 }
 
@@ -99,8 +101,8 @@ extension PageViewController: UIPageViewControllerDelegate {
                             previousViewControllers: [UIViewController],
                             transitionCompleted completed: Bool) {
         guard completed else { return }
-        guard let currenViewController = pageViewController.viewControllers?.first,
-              let currentIndex = pagesFactory?.getViewControllerIndex(of: currenViewController) else { return }
+        guard let currentViewController = pageViewController.viewControllers?.first,
+              let currentIndex = pagesProvider?.getViewControllerIndex(of: currentViewController) else { return }
         pageControl.currentPage = currentIndex
     }
 }

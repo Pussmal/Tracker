@@ -1,23 +1,23 @@
 import UIKit
 
-protocol PageViewControllerFactoryProtocol {
+protocol PageViewControllerProviderProtocol {
     var numberOfPages: Int { get }
     func getViewControllerIndex(of: UIViewController) -> Int?
     func getViewController(at index: Int) -> UIViewController?
 }
 
-final class PageViewControllerFactory {
-    private var viewControllres: [UIViewController] = ColorPageType.allCases.compactMap { $0.viewController }
+final class PageViewControllerProvider {
+    private var viewControllers: [UIViewController] = ColorPageType.allCases.compactMap { $0.viewController }
 }
 
-extension PageViewControllerFactory: PageViewControllerFactoryProtocol {
+extension PageViewControllerProvider: PageViewControllerProviderProtocol {
     var numberOfPages: Int { return ColorPageType.allCases.count }
 
     func getViewController(at index: Int) -> UIViewController? {
-        viewControllres[safe: index]
+        viewControllers[safe: index]
     }
     
     func getViewControllerIndex(of viewController: UIViewController) -> Int? {
-        viewControllres.firstIndex(of: viewController)
+        viewControllers.firstIndex(of: viewController)
     }
 }

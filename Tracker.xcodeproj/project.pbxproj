@@ -54,7 +54,7 @@
 		5BB5F7B32A10C81000670595 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB5F7B22A10C81000670595 /* OnboardingViewController.swift */; };
 		5BB5F7B72A10CB6700670595 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB5F7B62A10CB6700670595 /* OnboardingView.swift */; };
 		5BB5F7B92A10D9A700670595 /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB5F7B82A10D9A700670595 /* PageViewController.swift */; };
-		5BB5F7BB2A10E33600670595 /* PageViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB5F7BA2A10E33600670595 /* PageViewControllerFactory.swift */; };
+		5BB5F7BB2A10E33600670595 /* PageViewControllerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB5F7BA2A10E33600670595 /* PageViewControllerProvider.swift */; };
 		5BBB6AF729E583DC00027985 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBB6AF629E583DC00027985 /* TrackerCategory.swift */; };
 		5BBB6AF929E5842200027985 /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBB6AF829E5842200027985 /* TrackerRecord.swift */; };
 		5BBB6AFC29E6952B00027985 /* ScheduleCategoryTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBB6AFB29E6952B00027985 /* ScheduleCategoryTableViewModel.swift */; };
@@ -119,7 +119,7 @@
 		5BB5F7B22A10C81000670595 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		5BB5F7B62A10CB6700670595 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		5BB5F7B82A10D9A700670595 /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
-		5BB5F7BA2A10E33600670595 /* PageViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewControllerFactory.swift; sourceTree = "<group>"; };
+		5BB5F7BA2A10E33600670595 /* PageViewControllerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewControllerProvider.swift; sourceTree = "<group>"; };
 		5BBB6AF629E583DC00027985 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		5BBB6AF829E5842200027985 /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
 		5BBB6AFB29E6952B00027985 /* ScheduleCategoryTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCategoryTableViewModel.swift; sourceTree = "<group>"; };
@@ -216,9 +216,9 @@
 		5B7D879029D16EDD00765744 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
-				5BB5F7A72A0E0C9E00670595 /* MVVM */,
-				5BB5F7B12A10C6E700670595 /* Onboarding */,
 				5B7D87A629D16F1500765744 /* Application */,
+				5BB5F7B12A10C6E700670595 /* Onboarding */,
+				5BB5F7A72A0E0C9E00670595 /* MVVM */,
 				5B6A1DF329D197C1006BD980 /* Controllers */,
 				5BF181FD29F6A06300AC5510 /* Domain */,
 				5BF1820429F6A0EE00AC5510 /* CoreData */,
@@ -434,7 +434,7 @@
 		5BB5F7BC2A10E4D900670595 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
-				5BB5F7BA2A10E33600670595 /* PageViewControllerFactory.swift */,
+				5BB5F7BA2A10E33600670595 /* PageViewControllerProvider.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -609,7 +609,7 @@
 				5B0662DA29D6A096001A5A54 /* EditCategoryViewController.swift in Sources */,
 				5BF1820129F6A08E00AC5510 /* TrackerCategoryStore.swift in Sources */,
 				5BF1820729F6A10D00AC5510 /* Model.xcdatamodeld in Sources */,
-				5BB5F7BB2A10E33600670595 /* PageViewControllerFactory.swift in Sources */,
+				5BB5F7BB2A10E33600670595 /* PageViewControllerProvider.swift in Sources */,
 				5B88D8E129D3492B00A325E4 /* TypeTrackerViewController.swift in Sources */,
 				5B88D90A29D5619400A325E4 /* SheduleCategoryTableViewHelper.swift in Sources */,
 				5B88D8FF29D473D300A325E4 /* ColorCollectionViewCell.swift in Sources */,

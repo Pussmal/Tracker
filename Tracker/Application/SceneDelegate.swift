@@ -18,7 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if isEnabled {
             return TabBarController()
         } else {
-            let pagesFactory = PageViewControllerFactory()
+            let pagesFactory = PageViewControllerProvider()
             let pageViewController = PageViewController(pagesFactory: pagesFactory)
             return pageViewController
         }
