@@ -62,6 +62,7 @@
 		5BD58D602A14A60100D9B4DC /* ColorPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD58D5F2A14A60100D9B4DC /* ColorPage.swift */; };
 		5BD58D632A14CEFB00D9B4DC /* ColorPageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD58D622A14CEFB00D9B4DC /* ColorPageType.swift */; };
 		5BD58D652A15F9D400D9B4DC /* CategoriesViewControllerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD58D642A15F9D400D9B4DC /* CategoriesViewControllerViewModel.swift */; };
+		5BE404D12A1F5313009A7CBE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5BE404D32A1F5313009A7CBE /* Localizable.strings */; };
 		5BF181FF29F6A07C00AC5510 /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF181FE29F6A07C00AC5510 /* TrackerStore.swift */; };
 		5BF1820129F6A08E00AC5510 /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF1820029F6A08E00AC5510 /* TrackerCategoryStore.swift */; };
 		5BF1820329F6A09E00AC5510 /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF1820229F6A09E00AC5510 /* TrackerRecordStore.swift */; };
@@ -127,6 +128,9 @@
 		5BD58D5F2A14A60100D9B4DC /* ColorPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPage.swift; sourceTree = "<group>"; };
 		5BD58D622A14CEFB00D9B4DC /* ColorPageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPageType.swift; sourceTree = "<group>"; };
 		5BD58D642A15F9D400D9B4DC /* CategoriesViewControllerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewControllerViewModel.swift; sourceTree = "<group>"; };
+		5BE404D22A1F5313009A7CBE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		5BE404D42A1F532E009A7CBE /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		5BE404D52A1F533D009A7CBE /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5BF181FE29F6A07C00AC5510 /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		5BF1820029F6A08E00AC5510 /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		5BF1820229F6A09E00AC5510 /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
@@ -149,7 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				5B88D8DF29D3490300A325E4 /* TabBarController */,
-				5B88D8DE29D348EE00A325E4 /* Trackers */,
+				5B88D8DE29D348EE00A325E4 /* CreateTrackers */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -223,6 +227,7 @@
 				5BF181FD29F6A06300AC5510 /* Domain */,
 				5BF1820429F6A0EE00AC5510 /* CoreData */,
 				5B6A1DF429D19EC3006BD980 /* Helpers */,
+				5BE404D62A1F536F009A7CBE /* Localizable */,
 				5B7D87A529D16F0300765744 /* Resources */,
 			);
 			path = Tracker;
@@ -273,13 +278,13 @@
 			path = Statistic;
 			sourceTree = "<group>";
 		};
-		5B88D8DE29D348EE00A325E4 /* Trackers */ = {
+		5B88D8DE29D348EE00A325E4 /* CreateTrackers */ = {
 			isa = PBXGroup;
 			children = (
 				5B88D8ED29D40DC800A325E4 /* TypeTracker */,
 				5B88D8EE29D40DE600A325E4 /* CreatTracker */,
 			);
-			path = Trackers;
+			path = CreateTrackers;
 			sourceTree = "<group>";
 		};
 		5B88D8DF29D3490300A325E4 /* TabBarController */ = {
@@ -456,6 +461,14 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		5BE404D62A1F536F009A7CBE /* Localizable */ = {
+			isa = PBXGroup;
+			children = (
+				5BE404D32A1F5313009A7CBE /* Localizable.strings */,
+			);
+			path = Localizable;
+			sourceTree = "<group>";
+		};
 		5BF181FD29F6A06300AC5510 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
@@ -527,6 +540,8 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
+				fr,
 			);
 			mainGroup = 5B7D878529D16EDD00765744;
 			productRefGroup = 5B7D878F29D16EDD00765744 /* Products */;
@@ -544,6 +559,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B7D879E29D16EDE00765744 /* LaunchScreen.storyboard in Resources */,
+				5BE404D12A1F5313009A7CBE /* Localizable.strings in Resources */,
 				5B6A1DF229D19784006BD980 /* .gitignore in Resources */,
 				5B7D879B29D16EDE00765744 /* Assets.xcassets in Resources */,
 			);
@@ -627,6 +643,16 @@
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
+		5BE404D32A1F5313009A7CBE /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5BE404D22A1F5313009A7CBE /* en */,
+				5BE404D42A1F532E009A7CBE /* ru */,
+				5BE404D52A1F533D009A7CBE /* fr */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -634,6 +660,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -694,6 +721,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

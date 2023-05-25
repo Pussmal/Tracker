@@ -11,7 +11,7 @@ final class OnboardingView: UIView {
     
     //MARK: - viewConstants
     private struct viewConstants {
-        static let okButtonTitle = "Вот это технологии!"
+        static let okButtonTitle = NSLocalizedString("Button title", comment: "Title for okButton")
     }
     
     // MARK: - UI

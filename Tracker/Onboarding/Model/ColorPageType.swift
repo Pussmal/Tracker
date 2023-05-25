@@ -1,6 +1,14 @@
 import UIKit
 
 enum ColorPageType: CaseIterable {
+    
+    private struct ColorPageTypeConstants {
+        static let blueOnbordingimageName = "BlueOnboardingBackground"
+        static let redOnbordingimageName = "RedOnboardingBackground"
+        static let blueInfoText = NSLocalizedString("First label onboarding text", comment: "text for first onboarding label")
+        static let redInfoText = NSLocalizedString("Second label onboarding text", comment: "text for second onboarding label")
+    }
+    
     case blue
     case red
  
@@ -20,18 +28,18 @@ enum ColorPageType: CaseIterable {
     private var imageName: String {
         switch self {
         case .blue:
-            return "BlueOnboardingBackground"
+            return ColorPageTypeConstants.blueOnbordingimageName
         case .red:
-            return "RedOnboardingBackground"
+            return ColorPageTypeConstants.redOnbordingimageName
         }
     }
     
     private var infoText: String {
         switch self {
         case .blue:
-            return "Отслеживайте только то, что хотите"
+            return ColorPageTypeConstants.blueInfoText
         case .red:
-            return "Даже если это не литры воды и йога"
+            return ColorPageTypeConstants.redInfoText
         }
     }
 }
