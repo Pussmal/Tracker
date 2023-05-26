@@ -2,3 +2,23 @@
 "First label onboarding text" = "Отслеживайте только то, что хотите";
 "Second label onboarding text" = "Даже если это не литры воды и йога";
 "Button title" = "Вот это технологии!";
+
+// PlugViewType
+"Trackers plug" = "Что будем отслеживать?";
+"Search plug" = "Ничего не найдено";
+"Category plug" = "Привычки и события можно объединить по смыслу";
+
+//TabBarController
+"TabBarItemTracker" = "Трекеры";
+"TabBarItemStatistics" = "Статистика";
+
+//TypeTrackerViewController
+TypeTrackerViewControllerTitle = "Создание трекера";
+
+//TypeTrackerView
+habbitButtonTitle = "Привычка";
+eventButtonTitle = "Нерегулярное событие";
+
+//TrackersViewController
+SearchBarPlaceholderText = "Поиск";
+SearchBarCancelButtonText = "Отмена";

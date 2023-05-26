@@ -14,7 +14,7 @@ final class TypeTrackerViewController: UIViewController {
     weak var delegate: TypeTrackerViewControllerDelegate?
     
     private struct TypeTrackerViewControllerConstants {
-        static let viewControllerTitle = "Создание трекера"
+        static let viewControllerTitle = NSLocalizedString("TypeTrackerViewControllerTitle", comment: "View Controller's title")
     }
     
     private var typeTrackerView: TypeTrackerView!
@@ -39,7 +39,7 @@ final class TypeTrackerViewController: UIViewController {
 
 // MARK: TypeTrackerViewDelegate
 extension TypeTrackerViewController: TypeTrackerViewDelegate {
-    func showIirregularEvents() {
+    func showEvent() {
         let viewController = createTrackerViewController(typeTracker: .event)
         present(viewController, animated: true)
     }

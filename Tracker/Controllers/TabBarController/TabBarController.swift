@@ -9,9 +9,9 @@ final class TabBarController: UITabBarController {
         var title: String {
             switch self {
             case .tracker:
-                return "Трекеры"
+                return NSLocalizedString("TabBarItemTracker", comment: "Tracker item title")
             case .statistic:
-                return "Статистика"
+                return NSLocalizedString("TabBarItemStatistics", comment: "Statistic item title")
             }
         }
         
@@ -38,7 +38,8 @@ final class TabBarController: UITabBarController {
         viewControllers = tabBarItems.compactMap({ item in
             switch item {
             case .tracker:
-                let viewController = TrackersViewController()
+                let dataProvider = DataProvider()
+                let viewController = TrackersViewController(dataProvider: dataProvider)
                 return creatNavigationController(vc: viewController, title: item.title)
             case .statistic:
                 let viewController = StatisticViewController()

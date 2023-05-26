@@ -130,7 +130,6 @@
 		5BD58D642A15F9D400D9B4DC /* CategoriesViewControllerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewControllerViewModel.swift; sourceTree = "<group>"; };
 		5BE404D22A1F5313009A7CBE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5BE404D42A1F532E009A7CBE /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
-		5BE404D52A1F533D009A7CBE /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5BF181FE29F6A07C00AC5510 /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		5BF1820029F6A08E00AC5510 /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		5BF1820229F6A09E00AC5510 /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
@@ -541,7 +540,6 @@
 				en,
 				Base,
 				ru,
-				fr,
 			);
 			mainGroup = 5B7D878529D16EDD00765744;
 			productRefGroup = 5B7D878F29D16EDD00765744 /* Products */;
@@ -648,7 +646,6 @@
 			children = (
 				5BE404D22A1F5313009A7CBE /* en */,
 				5BE404D42A1F532E009A7CBE /* ru */,
-				5BE404D52A1F533D009A7CBE /* fr */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";

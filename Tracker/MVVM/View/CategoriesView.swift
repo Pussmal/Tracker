@@ -28,11 +28,7 @@ final class CategoriesView: UIView {
     
     //MARK: UI
     private lazy var plugView: PlugView = {
-        let plugView = PlugView(
-            frame: .zero,
-            titleLabel: CategoryViewConstant.plugLabelText,
-            image: UIImage(named: "plug") ?? UIImage()
-        )
+        let plugView = PlugView(frame: .zero, plug: .category)
         plugView.isHidden = true
         return plugView
     }()
@@ -118,6 +114,7 @@ final class CategoriesView: UIView {
     private func activateConstraints() {
         let plugViewTopConstant = frame.height / 3.5
         let addButtonBottomAnchorConstant: CGFloat = -50
+        let widthPlugViewAnchorMultiplier: CGFloat = 0.7
         
         NSLayoutConstraint.activate([
             categoryCollectionView.topAnchor.constraint(equalTo: topAnchor),
@@ -130,9 +127,9 @@ final class CategoriesView: UIView {
             addButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.indentationFromEdges),
             addButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: addButtonBottomAnchorConstant),
             
+            plugView.centerXAnchor.constraint(equalTo: centerXAnchor),
             plugView.topAnchor.constraint(equalTo: topAnchor, constant: plugViewTopConstant),
-            plugView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            plugView.trailingAnchor.constraint(equalTo: trailingAnchor)
+            plugView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: widthPlugViewAnchorMultiplier)
         ])
     }
     
