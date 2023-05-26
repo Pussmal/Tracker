@@ -150,6 +150,18 @@ final class TrackersViewController: UIViewController {
         definesPresentationContext = true
     }
     
+    private func createContextMenu(indexPath: IndexPath) -> UIContextMenuConfiguration {
+        return UIContextMenuConfiguration(actionProvider: { [weak self] actions in
+            guard let self else { return UIMenu() }
+            
+            return UIMenu(children: [
+                UIAction(title: "Закрепить") { _ in },
+                UIAction(title: "Редактировать") { _ in },
+                UIAction(title: "Удалить", attributes: .destructive, handler: { _ in } )
+            ])
+        })
+    }
+    
     @objc
     private func addTrackerButtonTapped() {
         showTypeTrackerViewController()
@@ -168,8 +180,14 @@ final class TrackersViewController: UIViewController {
     }
 }
 
-// MARK: UICollectionView
-extension TrackersViewController: UICollectionViewDelegate {}
+// MARK: UICollectionViewDelegate
+extension TrackersViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        guard indexPaths.count > 0 else { return nil }
+        let indexPath = indexPaths[0]
+        return createContextMenu(indexPath: indexPath)
+    }
+}
 
 // MARK: UICollectionViewDelegateFlowLayout
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {

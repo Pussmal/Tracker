@@ -34,18 +34,20 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.distribution = .fill
+        stackView.backgroundColor = .clear
         return stackView
     }()
     
     private lazy var nameAndEmojiView: UIView = {
         let view = UIView()
-        view.backgroundColor = .ypColorSelection2
+        view.backgroundColor = .clear
         view.layer.cornerRadius = Constants.cornerRadius
         return view
     }()
     
     private lazy var daysPlusTrackerButtonView: UIView = {
         let view = UIView()
+        view.backgroundColor = .clear
         return view
     }()
     
@@ -117,11 +119,12 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     func enabledCheckTrackerButton(enabled: Bool) {
-        checkTrackerButton.isEnabled = enabled ? false : true
+        checkTrackerButton.isEnabled = !enabled
     }
     
     // MARK: Private methods
     private func setupCell() {
+        contentView.backgroundColor = .clear
         contentView.layer.cornerRadius = Constants.cornerRadius
         contentView.clipsToBounds = true
         
@@ -165,8 +168,8 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     private func getButtonImage(_ check: Bool) -> UIImage? {
-        let doneImage = UIImage(named: "Done")?.withRenderingMode(.alwaysTemplate)
-        let plusImage = UIImage(systemName: "plus")?.withRenderingMode(.alwaysTemplate)
+        let doneImage = UIImage(named: "Done")
+        let plusImage = UIImage(systemName: "plus")
         return check ? doneImage : plusImage
     }
     
@@ -186,8 +189,10 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     private func setDaysLabel() {
-        let stringDay = String.getDayAddition(int: daysCount)
-        daysLabel.text = "\(daysCount) \(stringDay)"
+        daysLabel.text = String.localizedStringWithFormat(
+            NSLocalizedString("CountDay", comment: "count check days"),
+            daysCount
+        )
     }
 }
 

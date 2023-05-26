@@ -16,7 +16,7 @@
 TypeTrackerViewControllerTitle = "Create tracker";
 
 //TypeTrackerView
-HabitButtonTitle = Habit;
+HabitButtonTitle = "Habit";
 EventButtonTitle = "Not a regular event";
 
 //TrackersViewController

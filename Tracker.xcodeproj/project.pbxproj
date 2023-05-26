@@ -16,8 +16,9 @@
 		5B0662E629D6E8E6001A5A54 /* SheduleCollectionViewCellHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0662E529D6E8E6001A5A54 /* SheduleCollectionViewCellHelper.swift */; };
 		5B0662EA29D8632A001A5A54 /* PlugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0662E929D8632A001A5A54 /* PlugView.swift */; };
 		5B49769C29F7A8620072F9C0 /* ScheduleMarshalling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B49769B29F7A8620072F9C0 /* ScheduleMarshalling.swift */; };
-		5B49C09029EBE60E008EE30A /* String+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B49C08F29EBE60E008EE30A /* String+extension.swift */; };
 		5B49C09229ED1BCE008EE30A /* Date+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B49C09129ED1BCE008EE30A /* Date+extension.swift */; };
+		5B5C03762A20949D002B7452 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 5B5C03782A20949D002B7452 /* Localizable.stringsdict */; };
+		5B5C037B2A2095F7002B7452 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 5B5C037D2A2095F7002B7452 /* Localizable.stringsdict */; };
 		5B6A1DF229D19784006BD980 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 5B6A1DF129D19784006BD980 /* .gitignore */; };
 		5B6A1DF629D19EDB006BD980 /* UIColor+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6A1DF529D19EDB006BD980 /* UIColor+extension.swift */; };
 		5B6A1DF829D1A804006BD980 /* UIFont+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6A1DF729D1A804006BD980 /* UIFont+extension.swift */; };
@@ -80,8 +81,9 @@
 		5B0662E529D6E8E6001A5A54 /* SheduleCollectionViewCellHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheduleCollectionViewCellHelper.swift; sourceTree = "<group>"; };
 		5B0662E929D8632A001A5A54 /* PlugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlugView.swift; sourceTree = "<group>"; };
 		5B49769B29F7A8620072F9C0 /* ScheduleMarshalling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleMarshalling.swift; sourceTree = "<group>"; };
-		5B49C08F29EBE60E008EE30A /* String+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+extension.swift"; sourceTree = "<group>"; };
 		5B49C09129ED1BCE008EE30A /* Date+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+extension.swift"; sourceTree = "<group>"; };
+		5B5C03772A20949D002B7452 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		5B5C037C2A2095F7002B7452 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		5B6A1DF129D19784006BD980 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		5B6A1DF529D19EDB006BD980 /* UIColor+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+extension.swift"; sourceTree = "<group>"; };
 		5B6A1DF729D1A804006BD980 /* UIFont+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+extension.swift"; sourceTree = "<group>"; };
@@ -148,6 +150,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5B5C037E2A209609002B7452 /* Stringsdict */ = {
+			isa = PBXGroup;
+			children = (
+				5B5C03782A20949D002B7452 /* Localizable.stringsdict */,
+				5B5C037D2A2095F7002B7452 /* Localizable.stringsdict */,
+			);
+			path = Stringsdict;
+			sourceTree = "<group>";
+		};
 		5B6A1DF329D197C1006BD980 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -166,7 +177,6 @@
 				5B6A1E0229D1D645006BD980 /* UIView+extension.swift */,
 				5B88D8E629D34D7500A325E4 /* UIViewController+extension.swift */,
 				5B88D8FA29D4487500A325E4 /* Collection+extension.swift */,
-				5B49C08F29EBE60E008EE30A /* String+extension.swift */,
 				5B49C09129ED1BCE008EE30A /* Date+extension.swift */,
 			);
 			path = Helpers;
@@ -463,6 +473,7 @@
 		5BE404D62A1F536F009A7CBE /* Localizable */ = {
 			isa = PBXGroup;
 			children = (
+				5B5C037E2A209609002B7452 /* Stringsdict */,
 				5BE404D32A1F5313009A7CBE /* Localizable.strings */,
 			);
 			path = Localizable;
@@ -559,7 +570,9 @@
 				5B7D879E29D16EDE00765744 /* LaunchScreen.storyboard in Resources */,
 				5BE404D12A1F5313009A7CBE /* Localizable.strings in Resources */,
 				5B6A1DF229D19784006BD980 /* .gitignore in Resources */,
+				5B5C03762A20949D002B7452 /* Localizable.stringsdict in Resources */,
 				5B7D879B29D16EDE00765744 /* Assets.xcassets in Resources */,
+				5B5C037B2A2095F7002B7452 /* Localizable.stringsdict in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -602,7 +615,6 @@
 				5B88D91C29D5EB6A00A325E4 /* CategoryCollectionViewCell.swift in Sources */,
 				5B88D91829D5D80E00A325E4 /* CategoriesViewController.swift in Sources */,
 				5B0662E229D6E53D001A5A54 /* SheduleView.swift in Sources */,
-				5B49C09029EBE60E008EE30A /* String+extension.swift in Sources */,
 				5B7D879429D16EDD00765744 /* SceneDelegate.swift in Sources */,
 				5B88D8D829D2F41A00A325E4 /* TrackerCollectionViewCell.swift in Sources */,
 				5BB5F7B92A10D9A700670595 /* PageViewController.swift in Sources */,
@@ -633,6 +645,22 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		5B5C03782A20949D002B7452 /* Localizable.stringsdict */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5B5C03772A20949D002B7452 /* en */,
+			);
+			name = Localizable.stringsdict;
+			sourceTree = "<group>";
+		};
+		5B5C037D2A2095F7002B7452 /* Localizable.stringsdict */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5B5C037C2A2095F7002B7452 /* ru */,
+			);
+			name = Localizable.stringsdict;
+			sourceTree = "<group>";
+		};
 		5B7D879C29D16EDE00765744 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

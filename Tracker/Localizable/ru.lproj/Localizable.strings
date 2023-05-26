@@ -16,8 +16,8 @@
 TypeTrackerViewControllerTitle = "Создание трекера";
 
 //TypeTrackerView
-habbitButtonTitle = "Привычка";
-eventButtonTitle = "Нерегулярное событие";
+HabitButtonTitle = "Привычка";
+EventButtonTitle = "Нерегулярное событие";
 
 //TrackersViewController
 SearchBarPlaceholderText = "Поиск";
