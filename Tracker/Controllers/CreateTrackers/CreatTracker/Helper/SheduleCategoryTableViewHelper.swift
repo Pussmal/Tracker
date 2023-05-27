@@ -49,9 +49,9 @@ extension SheduleCategoryTableViewHelper: UITableViewDelegate {
 extension SheduleCategoryTableViewHelper: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch typeTracker {
-        case .habit:
+        case .habit, .editHabit:
             return 2
-        case .event:
+        case .event, .editEvent:
             return 1
         }
     }

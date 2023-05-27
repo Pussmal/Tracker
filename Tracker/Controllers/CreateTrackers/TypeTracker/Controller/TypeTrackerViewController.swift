@@ -3,6 +3,8 @@ import UIKit
 enum TypeTracker {
     case habit
     case event
+    case editHabit
+    case editEvent
 }
 
 protocol TypeTrackerViewControllerDelegate: AnyObject {

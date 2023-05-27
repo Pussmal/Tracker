@@ -51,6 +51,8 @@
 		5B88D91A29D5D87E00A325E4 /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B88D91929D5D87E00A325E4 /* CategoriesView.swift */; };
 		5B88D91C29D5EB6A00A325E4 /* CategoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B88D91B29D5EB6A00A325E4 /* CategoryCollectionViewCell.swift */; };
 		5BAAF5582A209E89002A23AA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5BAAF55A2A209E89002A23AA /* InfoPlist.strings */; };
+		5BAAF55D2A20E6DD002A23AA /* EditCountDaysView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BAAF55C2A20E6DD002A23AA /* EditCountDaysView.swift */; };
+		5BAAF55F2A20E83B002A23AA /* CountButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BAAF55E2A20E83B002A23AA /* CountButton.swift */; };
 		5BB5F7AE2A0E0EB300670595 /* CategoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB5F7AD2A0E0EB300670595 /* CategoriesViewModel.swift */; };
 		5BB5F7B02A0E196300670595 /* CategoryCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB5F7AF2A0E196300670595 /* CategoryCellViewModel.swift */; };
 		5BB5F7B32A10C81000670595 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BB5F7B22A10C81000670595 /* OnboardingViewController.swift */; };
@@ -120,6 +122,8 @@
 		5B88D91B29D5EB6A00A325E4 /* CategoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCollectionViewCell.swift; sourceTree = "<group>"; };
 		5BAAF5592A209E89002A23AA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5BAAF55B2A209E8D002A23AA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		5BAAF55C2A20E6DD002A23AA /* EditCountDaysView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCountDaysView.swift; sourceTree = "<group>"; };
+		5BAAF55E2A20E83B002A23AA /* CountButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountButton.swift; sourceTree = "<group>"; };
 		5BB5F7AD2A0E0EB300670595 /* CategoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewModel.swift; sourceTree = "<group>"; };
 		5BB5F7AF2A0E196300670595 /* CategoryCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCellViewModel.swift; sourceTree = "<group>"; };
 		5BB5F7B22A10C81000670595 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
@@ -332,6 +336,8 @@
 				5B0662E929D8632A001A5A54 /* PlugView.swift */,
 				5B88D8FC29D459F200A325E4 /* HeaderReusableView.swift */,
 				5BB5F7B62A10CB6700670595 /* OnboardingView.swift */,
+				5BAAF55C2A20E6DD002A23AA /* EditCountDaysView.swift */,
+				5BAAF55E2A20E83B002A23AA /* CountButton.swift */,
 			);
 			path = "Custom view";
 			sourceTree = "<group>";
@@ -607,6 +613,7 @@
 				5B6A1DF829D1A804006BD980 /* UIFont+extension.swift in Sources */,
 				5B6A1E0329D1D645006BD980 /* UIView+extension.swift in Sources */,
 				5B88D8F429D412E100A325E4 /* CreateTrackerView.swift in Sources */,
+				5BAAF55F2A20E83B002A23AA /* CountButton.swift in Sources */,
 				5B88D8E929D34F9D00A325E4 /* Constants.swift in Sources */,
 				5B7D879229D16EDD00765744 /* AppDelegate.swift in Sources */,
 				5B88D8F229D4103000A325E4 /* CreateTrackerViewController.swift in Sources */,
@@ -640,6 +647,7 @@
 				5B0662DA29D6A096001A5A54 /* EditCategoryViewController.swift in Sources */,
 				5BF1820129F6A08E00AC5510 /* TrackerCategoryStore.swift in Sources */,
 				5BF1820729F6A10D00AC5510 /* Model.xcdatamodeld in Sources */,
+				5BAAF55D2A20E6DD002A23AA /* EditCountDaysView.swift in Sources */,
 				5BB5F7BB2A10E33600670595 /* PageViewControllerProvider.swift in Sources */,
 				5B88D8E129D3492B00A325E4 /* TypeTrackerViewController.swift in Sources */,
 				5B88D90A29D5619400A325E4 /* SheduleCategoryTableViewHelper.swift in Sources */,

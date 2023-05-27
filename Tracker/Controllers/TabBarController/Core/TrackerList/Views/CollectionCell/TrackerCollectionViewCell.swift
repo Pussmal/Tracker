@@ -6,8 +6,13 @@ protocol TrackerCollectionViewCellDelegate: AnyObject {
 
 final class TrackerCollectionViewCell: UICollectionViewCell {
     static let identifier = "TrackerCollectionViewCell"
-
+    
     weak var delegate: TrackerCollectionViewCellDelegate?
+    var interaction: UIContextMenuInteraction? {
+        didSet {
+            if let interaction { nameAndEmojiView.addInteraction(interaction) }
+        }
+    }
     
     private struct TrackerCollectionViewCellConstants {
         static let emojiLabelSide: CGFloat = 30

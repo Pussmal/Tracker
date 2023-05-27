@@ -19,6 +19,8 @@ final class CreateTrackerViewController: UIViewController {
     private struct CreateTrackerViewControllerConstants {
         static let habitTitle = "Новая привычка"
         static let eventTitle = "Новое нерегулярное событие"
+        static let editHabitTitle = "Редактирование привычкы"
+        static let editEventTitle = "Редактирование нерегулярного события"
         static let weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
     }
     
@@ -60,7 +62,12 @@ final class CreateTrackerViewController: UIViewController {
             setupView(with: CreateTrackerViewControllerConstants.habitTitle)
         case .event:
             setupView(with: CreateTrackerViewControllerConstants.eventTitle)
+        case .editHabit:
+            setupView(with: CreateTrackerViewControllerConstants.editHabitTitle)
+        case .editEvent:
+            setupView(with: CreateTrackerViewControllerConstants.editEventTitle)
         }
+        
     }
     
     // MARK: private methods

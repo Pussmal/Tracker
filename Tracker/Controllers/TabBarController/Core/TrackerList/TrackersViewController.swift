@@ -149,19 +149,7 @@ final class TrackersViewController: UIViewController {
         navigationItem.searchController = searchController
         definesPresentationContext = true
     }
-    
-    private func createContextMenu(indexPath: IndexPath) -> UIContextMenuConfiguration {
-        return UIContextMenuConfiguration(actionProvider: { [weak self] actions in
-            guard let self else { return UIMenu() }
-            
-            return UIMenu(children: [
-                UIAction(title: "Закрепить") { _ in },
-                UIAction(title: "Редактировать") { _ in },
-                UIAction(title: "Удалить", attributes: .destructive, handler: { _ in } )
-            ])
-        })
-    }
-    
+        
     @objc
     private func addTrackerButtonTapped() {
         showTypeTrackerViewController()
@@ -177,15 +165,6 @@ final class TrackersViewController: UIViewController {
         let count = dataProvider.getCompletedDayCount(from: trackerId)
         let completed = dataProvider.getCompletedDay(from: trackerId, currentDay: currentDate)
         return (count, completed)
-    }
-}
-
-// MARK: UICollectionViewDelegate
-extension TrackersViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
-        guard indexPaths.count > 0 else { return nil }
-        let indexPath = indexPaths[0]
-        return createContextMenu(indexPath: indexPath)
     }
 }
 
@@ -231,6 +210,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell.config(tracker: tracker, completedDaysCount: countAndCompleted.count, completed: countAndCompleted.completed)
         cell.enabledCheckTrackerButton(enabled: today < currentDate)
         cell.delegate = self
+        cell.interaction = UIContextMenuInteraction( delegate: self)
         return cell
     }
     
@@ -303,5 +283,23 @@ extension TrackersViewController: DataProviderDelegate {
     func didUpdate() {
         plugView.isHidden = dataProvider.isTrackersForSelectedDate
         collectionView.reloadData()
+    }
+}
+
+extension TrackersViewController: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        
+        guard let location = interaction.view?.convert(location, to: collectionView),
+              let indexPath = collectionView.indexPathForItem(at: location) else { return UIContextMenuConfiguration() }
+        
+        return UIContextMenuConfiguration(actionProvider: { [weak self] actions in
+            guard let self else { return UIMenu() }
+            
+            return UIMenu(children: [
+                UIAction(title: "Закрепить") { _ in },
+                UIAction(title: "Редактировать") { _ in },
+                UIAction(title: "Удалить", attributes: .destructive, handler: { _ in } )
+            ])
+        })
     }
 }

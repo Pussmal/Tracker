@@ -26,10 +26,12 @@ final class CreateTrackerView: UIView {
     private var typeTracer: TypeTracker
     private var contentSize: CGSize {
         switch typeTracer {
-        case .habit:
+        case .habit, .editEvent:
             return CGSize(width: frame.width, height: 931)
         case .event:
             return CGSize(width: frame.width, height: 841)
+        case .editHabit:
+            return CGSize(width: frame.width, height: 1031)
         }
     }
     
@@ -43,6 +45,12 @@ final class CreateTrackerView: UIView {
     private var topViewConstraint: NSLayoutConstraint!
     
     // MARK: UI
+    private lazy var editCountDaysView: EditCountDaysView = {
+        let view = EditCountDaysView()
+        view.config(coundDay: 10, isCheked: true)
+        return view
+    }()
+    
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -214,10 +222,11 @@ final class CreateTrackerView: UIView {
     }
     
     private func addViews() {
-        addSubview(scrollView)
+        addSubViews(scrollView)
         scrollView.addSubview(contentView)
         
         contentView.addSubViews(
+            editCountDaysView,
             nameTrackerTextField,
             errorLabel,
             stackView,
@@ -236,9 +245,9 @@ final class CreateTrackerView: UIView {
         var tableViewHeight: CGFloat = Constants.hugHeight
         
         switch typeTracer {
-        case .habit:
+        case .habit, .editHabit:
             tableViewHeight *= 2
-        case .event:
+        case .event, .editEvent:
             break
         }
         
@@ -251,6 +260,14 @@ final class CreateTrackerView: UIView {
         topViewConstraint = stackView.topAnchor.constraint(equalTo: nameTrackerTextField.bottomAnchor, constant: insetBetweenNameTextFieldAndStackView)
         topViewConstraint.isActive = true
         
+        switch typeTracer {
+        case .habit, .event:
+            editCountDaysView.isHidden = true
+            nameTrackerTextField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: verticalAxis).isActive = true
+        case .editHabit, .editEvent:
+            nameTrackerTextField.topAnchor.constraint(equalTo: editCountDaysView.bottomAnchor, constant: 42).isActive = true
+        }
+        
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -262,7 +279,9 @@ final class CreateTrackerView: UIView {
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
-            nameTrackerTextField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: verticalAxis),
+            editCountDaysView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: verticalAxis),
+            editCountDaysView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            
             nameTrackerTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: edge),
             nameTrackerTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -edge),
             nameTrackerTextField.heightAnchor.constraint(equalToConstant: Constants.hugHeight),
