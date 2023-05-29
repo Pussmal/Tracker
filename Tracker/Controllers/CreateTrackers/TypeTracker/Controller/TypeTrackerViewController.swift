@@ -3,8 +3,6 @@ import UIKit
 enum TypeTracker {
     case habit
     case event
-    case editHabit
-    case editEvent
 }
 
 protocol TypeTrackerViewControllerDelegate: AnyObject {
@@ -55,8 +53,7 @@ extension TypeTrackerViewController: TypeTrackerViewDelegate {
 // MARK: create TrackerViewController
 extension TypeTrackerViewController {
     private func createTrackerViewController(typeTracker: TypeTracker) -> UINavigationController {
-        let viewController = CreateTrackerViewController()
-        viewController.typeTracker = typeTracker
+        let viewController = CreateTrackerViewController(typeTracker: typeTracker)
         viewController.delegate = self
         let navigationViewController = UINavigationController(rootViewController: viewController)
         return navigationViewController

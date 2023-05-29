@@ -28,8 +28,7 @@ final class CategoriesViewController: UIViewController {
     private var сategoriesView: CategoriesView!
     
     //MARK: - initialization
-    init(viewModel: CategoriesViewControllerViewModelProtocol, delegate: CategoriesViewControllerDelegate) {
-        self.delegate = delegate
+    init(viewModel: CategoriesViewControllerViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }

@@ -8,6 +8,12 @@ final class EditCountDaysView: UIStackView {
         static let countButtonSide: CGFloat = 34
     }
     
+    private var countDay: Int = 0 {
+        didSet {
+            if countDay < 0 { countDay = 0 }
+        }
+    }
+    
     private lazy var minusButton: CountButton = {
         let button = CountButton(
             frame: .zero,
@@ -46,14 +52,23 @@ final class EditCountDaysView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func config(coundDay: Int, isCheked: Bool) {
+    func config(coundDay: Int, isChecked: Bool, canCheck: Bool) {
+        self.countDay =  coundDay
+        setCountLabelText(with: self.countDay)
         
-        //TODO: включить или выключить кнопки плюса или минуса
+        guard !canCheck else {
+            minusButton.isEnabled = false
+            plusButton.isEnabled = false
+            return
+        }
         
-        countLabel.text = String.localizedStringWithFormat(
-            NSLocalizedString("CountDay", comment: "count check days"),
-            coundDay
-        )
+        if isChecked {
+            minusButton.isEnabled = true
+            plusButton.isEnabled = false
+        } else {
+            minusButton.isEnabled = false
+            plusButton.isEnabled = true
+        }
     }
     
     private func setupView() {
@@ -72,10 +87,35 @@ final class EditCountDaysView: UIStackView {
         })
     }
     
-    @objc
-    private func minusButtonTapped() {}
+    private func setCountLabelText(with count: Int) {
+        countLabel.text = String.localizedStringWithFormat(
+            NSLocalizedString("CountDay", comment: "count check days"),
+            count
+        )
+    }
     
     @objc
-    private func plusButtonTapped() {}
+    private func minusButtonTapped() {
+        minusButton.showAnimation { [weak self] in
+            guard let self else { return }
+            self.countDay -= 1
+            self.setCountLabelText(with: self.countDay)
+            self.minusButton.isEnabled = false
+            self.plusButton.isEnabled = true
+            print("work minus")
+        }
+    }
+    
+    @objc
+    private func plusButtonTapped() {
+        plusButton.showAnimation { [weak self] in
+            guard let self else { return }
+            self.countDay += 1
+            self.setCountLabelText(with: self.countDay)
+            self.minusButton.isEnabled = true
+            self.plusButton.isEnabled = false
+            print("work plus")
+        }
+    }
 }
 

@@ -16,6 +16,7 @@ final class TrackerStore: NSObject {
         case errorDecodingScheduleString
         case errorDecodingCreatedAt
         case errorDecodingIdCategory
+        case errorDecodingIsHabit
     }
     
     private let context: NSManagedObjectContext
@@ -46,6 +47,7 @@ final class TrackerStore: NSObject {
         trackerCoreData.name = tracker.name
         trackerCoreData.schedule = sheduleString
         trackerCoreData.category = category
+        trackerCoreData.isHabit = tracker.isHabit
     }
     
     func creatTracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
@@ -60,7 +62,8 @@ final class TrackerStore: NSObject {
             name: name,
             color: colorMarshaling.colorWithHexString(hexString: colorHex),
             emoji: emoji,
-            schedule: scheduleMarshaling.arrayFromString(string: scheduleString)
+            schedule: scheduleMarshaling.arrayFromString(string: scheduleString),
+            isHabit: trackerCoreData.isHabit
         )
     }
     

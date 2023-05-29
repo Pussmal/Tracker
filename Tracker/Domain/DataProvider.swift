@@ -12,6 +12,7 @@ protocol DataProviderProtocol {
     
     func numberOfRowsInSection(_ section: Int) -> Int
     func getTracker(at indexPath: IndexPath) -> Tracker?
+    func getTrackersCategory(atTrackerIndexPath indexPath: IndexPath) -> TrackerCategoryCoreData?
     func getSectionTitle(at secrion: Int) -> String?
     
     func loadTrackers(from date: Date, with filterString: String?) throws
@@ -87,6 +88,7 @@ extension DataProvider: DataProviderProtocol {
     
     func getTracker(at indexPath: IndexPath) -> Tracker? {
         let trackerCoreData = fetchedResultsController.object(at: indexPath)
+       
         
         do {
             let tracker = try trackerStore.creatTracker(from: trackerCoreData)
@@ -95,6 +97,10 @@ extension DataProvider: DataProviderProtocol {
             assertionFailure("Error decoding tracker from core data")
         }
         return nil
+    }
+    
+    func getTrackersCategory(atTrackerIndexPath indexPath: IndexPath) -> TrackerCategoryCoreData? {
+        fetchedResultsController.object(at: indexPath).category
     }
     
     func loadTrackers(from date: Date, with filterString: String?) throws {

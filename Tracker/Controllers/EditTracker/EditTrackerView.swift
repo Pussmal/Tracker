@@ -1,16 +1,16 @@
 import UIKit
 
-protocol CreateTrackerViewDelegate: AnyObject {
+protocol EditTrackerViewDelegate: AnyObject {
     func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String)
     func cancelCreate()
     func showCategory()
     func showSchedule()
 }
 
-final class CreateTrackerView: UIView {
+final class EditTrackerView: UIView {
     
     // MARK: -Delegate
-    weak var delegate: CreateTrackerViewDelegate?
+    weak var delegate: EditTrackerViewDelegate?
     
     // MARK: -CreateTrackerViewConstants
     private struct CreateTrackerViewConstants {
@@ -23,15 +23,17 @@ final class CreateTrackerView: UIView {
     }
     
     // MARK: -Private properties
-    private var typeTracer: TypeTracker
+    private var editTypeTracker: EditTypeTracker
     private var contentSize: CGSize {
-        switch typeTracer {
-        case .habit:
+        switch editTypeTracker {
+        case .editEvent:
             return CGSize(width: frame.width, height: 931)
-        case .event:
-            return CGSize(width: frame.width, height: 841)
+        case .editHabit:
+            return CGSize(width: frame.width, height: 1031)
         }
     }
+    
+    private let editTracker: EditTracker
     
     private var emojiCollectionViewHelper: ColorAndEmojiCollectionViewHelper
     private var sheduleCategoryTableViewHelper: ScheduleCategoryTableViewHelper
@@ -43,6 +45,11 @@ final class CreateTrackerView: UIView {
     private var topViewConstraint: NSLayoutConstraint!
     
     // MARK: UI
+    private lazy var editCountDaysView: EditCountDaysView = {
+        let view = EditCountDaysView()
+        return view
+    }()
+    
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -169,13 +176,13 @@ final class CreateTrackerView: UIView {
     // MARK: -Initialization
     init(
         frame: CGRect,
-        delegate: CreateTrackerViewDelegate?,
-        typeTracker: TypeTracker
+        editTypeTracker: EditTypeTracker,
+        editTracker: EditTracker
     ) {
-        self.delegate = delegate
-        self.typeTracer = typeTracker
+        self.editTypeTracker = editTypeTracker
+        self.editTracker = editTracker
         emojiCollectionViewHelper = ColorAndEmojiCollectionViewHelper()
-        sheduleCategoryTableViewHelper = ScheduleCategoryTableViewHelper(typeTracker: typeTracker)
+        sheduleCategoryTableViewHelper = ScheduleCategoryTableViewHelper(editTypeTracker: editTypeTracker)
         super.init(frame: frame)
         
         colorAndEmojiCollectionView.dataSource = emojiCollectionViewHelper
@@ -190,7 +197,7 @@ final class CreateTrackerView: UIView {
         nameTrackerTextFieldHelper.delegate = self
         sheduleCategoryTableViewHelper.delegate = self
         
-        setupView()
+        setupView(with: editTracker)
         addViews()
         activateConstraints()
     }
@@ -203,12 +210,20 @@ final class CreateTrackerView: UIView {
         sheduleCategoryTableViewHelper.setCategory(category: category)
     }
     
-    func setShedule(with shedule: String?) {
+    func setSchedule(with shedule: String?) {
         sheduleCategoryTableViewHelper.setSchedule(schedule: shedule)
     }
-        
+    
     // MARK: - Private methods
-    private func setupView() {
+    private func setupView(with editTracker: EditTracker) {
+        editCountDaysView.config(
+            coundDay: editTracker.checkCountDay,
+            isChecked: editTracker.isChecked,
+            canCheck: editTracker.canCheck
+        )
+        nameTrackerTextField.text = editTracker.tracker.name
+        
+        
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .ypWhite
     }
@@ -218,6 +233,7 @@ final class CreateTrackerView: UIView {
         scrollView.addSubview(contentView)
         
         contentView.addSubViews(
+            editCountDaysView,
             nameTrackerTextField,
             errorLabel,
             stackView,
@@ -235,10 +251,10 @@ final class CreateTrackerView: UIView {
         
         var tableViewHeight: CGFloat = Constants.hugHeight
         
-        switch typeTracer {
-        case .habit:
+        switch editTypeTracker {
+        case .editHabit:
             tableViewHeight *= 2
-        case .event:
+        case .editEvent:
             break
         }
         
@@ -247,10 +263,11 @@ final class CreateTrackerView: UIView {
         let edge = Constants.indentationFromEdges
         
         let insetBetweenNameTextFieldAndStackView: CGFloat = 24
+        let nameTrackerTextFieldTopAnchorConstant: CGFloat = 42
         
         topViewConstraint = stackView.topAnchor.constraint(equalTo: nameTrackerTextField.bottomAnchor, constant: insetBetweenNameTextFieldAndStackView)
         topViewConstraint.isActive = true
-        
+    
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -261,8 +278,11 @@ final class CreateTrackerView: UIView {
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-           
-            nameTrackerTextField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: verticalAxis),
+            
+            editCountDaysView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: verticalAxis),
+            editCountDaysView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            
+            nameTrackerTextField.topAnchor.constraint(equalTo: editCountDaysView.bottomAnchor, constant: nameTrackerTextFieldTopAnchorConstant),
             nameTrackerTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: edge),
             nameTrackerTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -edge),
             nameTrackerTextField.heightAnchor.constraint(equalToConstant: Constants.hugHeight),
@@ -319,7 +339,7 @@ final class CreateTrackerView: UIView {
     }
 }
 
-extension CreateTrackerView: NameTrackerTextFieldHelperDelegate {
+extension EditTrackerView: NameTrackerTextFieldHelperDelegate {
     func noLimitedCharacters() {
         topViewConstraint.constant = 24
         UIView.animate(withDuration: 0.3) { [weak self] in
@@ -339,7 +359,7 @@ extension CreateTrackerView: NameTrackerTextFieldHelperDelegate {
     }
 }
 
-extension CreateTrackerView: ScheduleCategoryTableViewHelperDelegate {
+extension EditTrackerView: ScheduleCategoryTableViewHelperDelegate {
     func reloadTableView() {
         sheduleCategoryTableView.reloadData()
     }
@@ -353,7 +373,7 @@ extension CreateTrackerView: ScheduleCategoryTableViewHelperDelegate {
     }
 }
 
-extension CreateTrackerView: ColorAndEmojiCollectionViewHelperDelegate {
+extension EditTrackerView: ColorAndEmojiCollectionViewHelperDelegate {
     func sendSelectedEmoji(_ emoji: String?) {
         self.emoji = emoji
     }

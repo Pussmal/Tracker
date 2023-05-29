@@ -1,32 +1,38 @@
 import UIKit
 
-protocol SheduleCategoryTableViewHelperDelegate: AnyObject {
+protocol ScheduleCategoryTableViewHelperDelegate: AnyObject {
     func showCategory()
-    func showShedule()
+    func showSchedule()
     func reloadTableView()
 }
 
-final class SheduleCategoryTableViewHelper: NSObject {
+final class ScheduleCategoryTableViewHelper: NSObject {
     
-    private var typeTracker: TypeTracker
+    private var typeTracker: TypeTracker?
+    private var editTypeTracker: EditTypeTracker?
+    
     private var cellsTitle = [
-        ScheduleCategoryTableViewModel(name: "Категория", discription: nil),
-        ScheduleCategoryTableViewModel(name: "Расписание", discription: nil),
+        ScheduleCategoryTableViewModel(name: "Категория", description: nil),
+        ScheduleCategoryTableViewModel(name: "Расписание", description: nil),
     ]
     
-    weak var delegate: SheduleCategoryTableViewHelperDelegate?
+    weak var delegate: ScheduleCategoryTableViewHelperDelegate?
     
     init(typeTracker: TypeTracker) {
         self.typeTracker = typeTracker
     }
     
+    init(editTypeTracker: EditTypeTracker) {
+        self.editTypeTracker = editTypeTracker
+    }
+    
     func setCategory(category: String?) {
-        cellsTitle[0].discription = category
+        cellsTitle[0].description = category
         delegate?.reloadTableView()
     }
     
     func setSchedule(schedule: String?) {
-        cellsTitle[1].discription = schedule
+        cellsTitle[1].description = schedule
         delegate?.reloadTableView()
     }
     
@@ -40,19 +46,30 @@ final class SheduleCategoryTableViewHelper: NSObject {
     }
 }
 
-extension SheduleCategoryTableViewHelper: UITableViewDelegate {
+extension ScheduleCategoryTableViewHelper: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         Constants.hugHeight
     }
 }
 
-extension SheduleCategoryTableViewHelper: UITableViewDataSource {
+extension ScheduleCategoryTableViewHelper: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch typeTracker {
-        case .habit, .editHabit:
-            return 2
-        case .event, .editEvent:
-            return 1
+        if let typeTracker {
+            switch typeTracker {
+            case .habit:
+                return 2
+            case .event:
+                return 1
+            }
+        } else if let editTypeTracker {
+            switch editTypeTracker {
+            case .editHabit:
+                return 2
+            case .editEvent:
+                return 1
+            }
+        } else {
+            return 0
         }
     }
     
@@ -60,7 +77,7 @@ extension SheduleCategoryTableViewHelper: UITableViewDataSource {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
         cellConfig(cell: cell)
         cell.textLabel?.text = cellsTitle[safe: indexPath.row]?.name
-        cell.detailTextLabel?.text = cellsTitle[safe: indexPath.row]?.discription
+        cell.detailTextLabel?.text = cellsTitle[safe: indexPath.row]?.description
         return cell
     }
     
@@ -69,7 +86,7 @@ extension SheduleCategoryTableViewHelper: UITableViewDataSource {
         case 0:
             delegate?.showCategory()
         case 1:
-            delegate?.showShedule()
+            delegate?.showSchedule()
         default:
             break
         }

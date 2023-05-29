@@ -166,6 +166,25 @@ final class TrackersViewController: UIViewController {
         let completed = dataProvider.getCompletedDay(from: trackerId, currentDay: currentDate)
         return (count, completed)
     }
+    
+    private func editTracker(at tracker: Tracker, category: TrackerCategoryCoreData) {
+        let editTypeTracker: EditTypeTracker = tracker.isHabit ? .editHabit : .editEvent
+        let countAndCompleted = getDayCountAndDayCompleted(for: tracker.id)
+        let editTracker = EditTracker(
+            tracker: tracker,
+            categoryTitle: category.title ?? "",
+            schedule: tracker.schedule?.joined(separator: ", ") ?? "Error",
+            checkCountDay: countAndCompleted.count,
+            isChecked: countAndCompleted.completed,
+            canCheck: today < currentDate
+        )
+        let viewController = EditTrackerViewController(
+            editTypeTracker: editTypeTracker,
+            editTracker: editTracker,
+            selectedCategory: category)
+        let navigationViewController = UINavigationController(rootViewController: viewController)
+        present(navigationViewController, animated: true)
+    }
 }
 
 // MARK: UICollectionViewDelegateFlowLayout
@@ -290,14 +309,20 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         
         guard let location = interaction.view?.convert(location, to: collectionView),
-              let indexPath = collectionView.indexPathForItem(at: location) else { return UIContextMenuConfiguration() }
+              let indexPath = collectionView.indexPathForItem(at: location),
+              let tracker =  dataProvider.getTracker(at: indexPath),
+              let categoty = dataProvider.getTrackersCategory(atTrackerIndexPath: indexPath)
+        else { return UIContextMenuConfiguration() }
         
         return UIContextMenuConfiguration(actionProvider: { [weak self] actions in
             guard let self else { return UIMenu() }
             
             return UIMenu(children: [
                 UIAction(title: "Закрепить") { _ in },
-                UIAction(title: "Редактировать") { _ in },
+                UIAction(title: "Редактировать") { [weak self] _ in
+                    guard let self else { return }
+                    self.editTracker(at: tracker, category: categoty)
+                },
                 UIAction(title: "Удалить", attributes: .destructive, handler: { _ in } )
             ])
         })

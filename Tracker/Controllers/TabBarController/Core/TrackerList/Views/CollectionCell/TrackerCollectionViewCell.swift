@@ -95,7 +95,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     // MARK: Init
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         setupCell()
         activateConstraints()
     }

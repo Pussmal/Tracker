@@ -1,7 +1,7 @@
 import UIKit
 
 protocol SheduleViewDelegate: AnyObject {
-    func setDates(dates: [String]?)
+    func setDates(dates: [WeekDays]?)
 }
 
 final class SheduleView: UIView {
@@ -100,8 +100,8 @@ final class SheduleView: UIView {
     private func addButtonTapped() {
         addButton.showAnimation { [weak self] in
             guard let self = self else { return }
-            let weeDayNumber = [ "Пн": 0, "Вт": 1, "Ср": 2, "Чт": 3, "Пт": 4, "Сб": 5, "Вс": 6]
-            let sortDays = self.sheduleCollectionViewCellHelper?.selectedDates.sorted(by: { weeDayNumber[$0] ?? 7 < weeDayNumber[$1] ?? 7
+            let sortDays = self.sheduleCollectionViewCellHelper?.selectedDates.sorted(by: {
+                $0.day.numberDay < $1.day.numberDay
             })
             self.delegate?.setDates(dates: sortDays)
         }

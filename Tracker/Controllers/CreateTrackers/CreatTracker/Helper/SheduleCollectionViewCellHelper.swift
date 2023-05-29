@@ -1,8 +1,23 @@
 import UIKit
 
 final class SheduleCollectionViewCellHelper: NSObject {
-    private let daysArray = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
-    private(set) var selectedDates: Set<String> = []
+    private(set) var selectedDates: Set<WeekDays> = []
+    private var selectedDays: [String] = []
+        
+    private func configCellLayer(at indexPath: IndexPath, cell: SheduleCollectionViewCell) {
+        if indexPath.row == 0 {
+            cell.layer.masksToBounds = true
+            cell.layer.cornerRadius = Constants.cornerRadius
+            cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        }
+
+        if indexPath.row == WeekDays.allCases.count - 1 {
+            cell.layer.masksToBounds = true
+            cell.layer.cornerRadius = Constants.cornerRadius
+            cell.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+            cell.hideLineView()
+        }
+    }
 }
 
 extension SheduleCollectionViewCellHelper: UICollectionViewDataSource {
@@ -16,29 +31,16 @@ extension SheduleCollectionViewCellHelper: UICollectionViewDataSource {
         ) as? SheduleCollectionViewCell else {
             return UICollectionViewCell()
         }
-        
-        cell.config(day: daysArray[safe: indexPath.row])
-        
-        if indexPath.row == 0 {
-            cell.layer.masksToBounds = true
-            cell.layer.cornerRadius = Constants.cornerRadius
-            cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        }
-
-        if indexPath.row == daysArray.count - 1 {
-            cell.layer.masksToBounds = true
-            cell.layer.cornerRadius = Constants.cornerRadius
-            cell.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-            cell.hideLineView()
-        }
-
+        configCellLayer(at: indexPath, cell: cell)
+        let cellDay = WeekDays.allCases[indexPath.row].rawValue
+        cell.config(day: cellDay)
         cell.delegate = self
         cell.indexPath = indexPath
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        daysArray.count
+        WeekDays.allCases.count
     }
 }
 
@@ -60,9 +62,7 @@ extension SheduleCollectionViewCellHelper: UICollectionViewDelegateFlowLayout {
 extension SheduleCollectionViewCellHelper: SheduleCollectionViewCellProtocol {
     func getSelectedDay(_ indexPath: IndexPath?, select: Bool) {
         guard let indexPath else { return }
-        var index = indexPath.row + 1
-        if index == Calendar.current.shortWeekdaySymbols.count { index = 0 }
-        let day = Calendar.current.shortWeekdaySymbols[index]
+        let day = WeekDays.allCases[indexPath.row]
         
         if select {
             selectedDates.insert(day)
