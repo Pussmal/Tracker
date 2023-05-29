@@ -9,7 +9,7 @@ final class ColorAndEmojiCollectionViewHelper: NSObject {
     
     weak var delegate: ColorAndEmojiCollectionViewHelperDelegate?
     
-    private let emoji = [
+    private let emojies = [
         "🙂", "😻", "🌺", "🐶", "❤️", "😱",
         "😇", "😡", "🥶", "🤔", "🙌", "🍔",
         "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"
@@ -42,9 +42,20 @@ final class ColorAndEmojiCollectionViewHelper: NSObject {
         return nil
     }
     
+    private var selectedEmoji: String?
+    private var selectedColor: UIColor?
+    
     private var emojiSelectedItem: Int?
     private var colorSelectedItem: Int?
     private var selectedItem: IndexPath?
+    
+    func setEmoji(emoji: String) {
+        self.selectedEmoji = emoji
+    }
+    
+    func setColor(color: UIColor?) {
+        self.selectedColor = color
+    }
 }
 
 extension ColorAndEmojiCollectionViewHelper: UICollectionViewDataSource {
@@ -71,7 +82,7 @@ extension ColorAndEmojiCollectionViewHelper: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
-        case 0: return emoji.count
+        case 0: return emojies.count
         case 1: return colors.count
         default: return 0
         }
@@ -93,29 +104,37 @@ extension ColorAndEmojiCollectionViewHelper: UICollectionViewDataSource {
 }
 
 extension ColorAndEmojiCollectionViewHelper: UICollectionViewDelegate {
-    
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         selectedItem = indexPath
         return true
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let selectedItem else { return }
         
         switch indexPath.section {
         case 0:
+            guard let emojiSelectedItem else { return }
+            let oldIndexPath = IndexPath(row: emojiSelectedItem, section: selectedItem.section)
+            let oldCell = collectionView.cellForItem(at: oldIndexPath) as? EmojiCollectionViewCell
+            oldCell?.cellIsSelected = false
+            
             let cell = collectionView.cellForItem(at: indexPath) as? EmojiCollectionViewCell
             cell?.cellIsSelected = true
-            emojiSelectedItem = indexPath.item
+            self.emojiSelectedItem = indexPath.item
             
-            guard let emojiSelectedItem else { return }
-            delegate?.sendSelectedEmoji(emoji[safe: emojiSelectedItem])
+            delegate?.sendSelectedEmoji(emojies[safe: emojiSelectedItem])
             
         case 1:
+            guard let colorSelectedItem else { return }
+            let oldIndexPath = IndexPath(row: colorSelectedItem, section: selectedItem.section)
+            let oldCell = collectionView.cellForItem(at: oldIndexPath) as? ColorCollectionViewCell
+            oldCell?.cellIsSelected = false
+            
             let cell = collectionView.cellForItem(at: indexPath) as? ColorCollectionViewCell
             cell?.cellIsSelected = true
-            colorSelectedItem = indexPath.item
+            self.colorSelectedItem = indexPath.item
             
-            guard let colorSelectedItem else { return }
             delegate?.sendSelectedColor(colors[safe: colorSelectedItem])
         default: break
         }
@@ -176,7 +195,14 @@ extension ColorAndEmojiCollectionViewHelper {
             return UICollectionViewCell()
         }
         
-        cell.config(emoji: emoji[safe: indexPath.row])
+        let emoji = emojies[indexPath.row]
+        
+        if let selectedEmoji, selectedEmoji == emoji {
+            cell.cellIsSelected = true
+            emojiSelectedItem = indexPath.row
+        }
+        
+        cell.config(emoji: emojies[safe: indexPath.row])
         return cell
     }
     
@@ -191,7 +217,15 @@ extension ColorAndEmojiCollectionViewHelper {
             return UICollectionViewCell()
         }
         
+        let color = colors[indexPath.row]
         cell.config(color: colors[safe: indexPath.row])
+
+        if let selectedColor,
+           selectedColor.rgbStringName == color.rgbStringName
+        {
+            cell.cellIsSelected = true
+            colorSelectedItem = indexPath.row
+        }
         return cell
     }
     

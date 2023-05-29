@@ -17,7 +17,6 @@ final class CreateTrackerViewController: UIViewController {
     private struct ViewControllerConstants {
         static let habitTitle = "Новая привычка"
         static let eventTitle = "Новое нерегулярное событие"
-        static let weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
     }
     
     // MARK: private properties
@@ -92,7 +91,7 @@ final class CreateTrackerViewController: UIViewController {
 extension CreateTrackerViewController: CreateTrackerViewDelegate {
     func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String) {
         if typeTracker == .event {
-            stringDatesArray = ViewControllerConstants.weekDays
+            stringDatesArray = WeekDays.allCases.map({ $0.day.shortForm })
         }
     
         guard

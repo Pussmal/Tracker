@@ -28,3 +28,11 @@ extension UIColor {
     static var ypColorSelection17: UIColor? { return UIColor(named: "Color selection 17")}
     static var ypColorSelection18: UIColor? { return UIColor(named: "Color selection 18")}
 }
+
+extension UIColor {
+    var rgbStringName: String {
+        guard let colorComponets = self.cgColor.components?.compactMap({ Float($0) }) else { return "" }
+        let colorStringComponents = colorComponets.compactMap { String(format: "%.3f", $0) }
+        return colorStringComponents.joined()
+    }
+}

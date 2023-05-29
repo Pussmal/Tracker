@@ -17,7 +17,6 @@ final class EditTrackerViewController: UIViewController {
     private struct ViewControllerConstants {
         static let editHabitTitle = "Редактирование привычки"
         static let editEventTitle = "Редактирование нерегулярного события"
-      //  static let weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
     }
     
     // MARK: private properties
@@ -72,10 +71,11 @@ final class EditTrackerViewController: UIViewController {
         editTrackerView.delegate = self
         
         stringDatesArray = editTracker.schedule.components(separatedBy: ",")
-        
         editTrackerView.setCategory(with: editTracker.categoryTitle)
         editTrackerView.setSchedule(with: editTracker.schedule)
-        
+        editTrackerView.setEmoji(emoji: editTracker.tracker.emoji)
+        editTrackerView.setSelectedTrackerColor(color: editTracker.tracker.color)
+                
         switch editTypeTracker {
         case .editHabit:
             setupView(with: ViewControllerConstants.editHabitTitle)

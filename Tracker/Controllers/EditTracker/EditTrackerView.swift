@@ -35,7 +35,7 @@ final class EditTrackerView: UIView {
     
     private let editTracker: EditTracker
     
-    private var emojiCollectionViewHelper: ColorAndEmojiCollectionViewHelper
+    private var emojiAndColorCollectionViewHelper: ColorAndEmojiCollectionViewHelper
     private var sheduleCategoryTableViewHelper: ScheduleCategoryTableViewHelper
     private var nameTrackerTextFieldHelper =  NameTrackerTextFieldHelper()
     
@@ -181,18 +181,18 @@ final class EditTrackerView: UIView {
     ) {
         self.editTypeTracker = editTypeTracker
         self.editTracker = editTracker
-        emojiCollectionViewHelper = ColorAndEmojiCollectionViewHelper()
+        emojiAndColorCollectionViewHelper = ColorAndEmojiCollectionViewHelper()
         sheduleCategoryTableViewHelper = ScheduleCategoryTableViewHelper(editTypeTracker: editTypeTracker)
         super.init(frame: frame)
         
-        colorAndEmojiCollectionView.dataSource = emojiCollectionViewHelper
-        colorAndEmojiCollectionView.delegate = emojiCollectionViewHelper
+        colorAndEmojiCollectionView.dataSource = emojiAndColorCollectionViewHelper
+        colorAndEmojiCollectionView.delegate = emojiAndColorCollectionViewHelper
         
         sheduleCategoryTableView.dataSource = sheduleCategoryTableViewHelper
         sheduleCategoryTableView.delegate = sheduleCategoryTableViewHelper
         
         nameTrackerTextField.delegate = nameTrackerTextFieldHelper
-        emojiCollectionViewHelper.delegate = self
+        emojiAndColorCollectionViewHelper.delegate = self
         
         nameTrackerTextFieldHelper.delegate = self
         sheduleCategoryTableViewHelper.delegate = self
@@ -212,6 +212,14 @@ final class EditTrackerView: UIView {
     
     func setSchedule(with shedule: String?) {
         sheduleCategoryTableViewHelper.setSchedule(schedule: shedule)
+    }
+    
+    func setEmoji(emoji: String) {
+        emojiAndColorCollectionViewHelper.setEmoji(emoji: emoji)
+    }
+    
+    func setSelectedTrackerColor(color: UIColor?) {
+        emojiAndColorCollectionViewHelper.setColor(color: color)
     }
     
     // MARK: - Private methods
