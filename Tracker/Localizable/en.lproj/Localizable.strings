@@ -22,5 +22,7 @@ EventButtonTitle = "Not a regular event";
 //TrackersViewController
 SearchBarPlaceholderText = Search;
 SearchBarCancelButtonText = Cancel;
-
+deleteActionSheetMessage = "Delete this tracker?";
+deleteActionSheetButtonTitle = Delete;
+cancelActionSheetButtonTitle = Cancel;
 

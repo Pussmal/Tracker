@@ -15,7 +15,7 @@ final class EditTrackerView: UIView {
     // MARK: -CreateTrackerViewConstants
     private struct CreateTrackerViewConstants {
         static let cancelButtonTitle = "Отменить"
-        static let createButtonTitle = "Создать"
+        static let createButtonTitle = "Сохранить"
         static let errorLabelText = "Ограничение 38 символов"
         static let textFieldPlaceholder = "Введите название трекера"
         static let defaultCellIdentifier = "cell"

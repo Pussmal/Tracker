@@ -24,6 +24,7 @@ protocol DataProviderProtocol {
     
     func saveTracker(_ tracker: Tracker, in categoryCoreData: TrackerCategoryCoreData) throws
     func resaveTracker(at indexPath: IndexPath, newTracker: Tracker, category: TrackerCategoryCoreData?) throws
+    func deleteTracker(at indexPath: IndexPath) throws
 }
 
 final class DataProvider: NSObject {
@@ -51,7 +52,6 @@ final class DataProvider: NSObject {
             managedObjectContext: context,
             sectionNameKeyPath: DataProviderConstants.sectionNameKeyPath,
             cacheName: nil)
-        fetchedResultController.delegate = self
         try? fetchedResultController.performFetch()
         return fetchedResultController
     }()
@@ -89,8 +89,6 @@ extension DataProvider: DataProviderProtocol {
     
     func getTracker(at indexPath: IndexPath) -> Tracker? {
         let trackerCoreData = fetchedResultsController.object(at: indexPath)
-       
-        
         do {
             let tracker = try trackerStore.creatTracker(from: trackerCoreData)
             return tracker
@@ -169,8 +167,13 @@ extension DataProvider: DataProviderProtocol {
         let trackerManagedObjectID = object.objectID
         try trackerStore.changeTracker(trackerManagedObjectID, newTracker: newTracker, category: category)
     }
+    
+    func deleteTracker(at indexPath: IndexPath) throws {
+        let object = fetchedResultsController.object(at: indexPath)
+        let trackerManagedObjectID = object.objectID
+        trackerStore.deleteTracker(forId: trackerManagedObjectID)
+        try fetchedResultsController.performFetch()
+    }
 }
-
-extension DataProvider: NSFetchedResultsControllerDelegate {} 
 
 

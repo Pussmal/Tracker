@@ -49,6 +49,12 @@ final class TrackerStore: NSObject {
         saveContext()
     }
     
+    func deleteTracker(forId id: NSManagedObjectID) {
+        guard let object = try? context.existingObject(with: id) as? TrackerCoreData else { return }
+        context.delete(object)
+        saveContext()
+    }
+    
     func creatTracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
         guard let id = trackerCoreData.id else { throw TrackerStoreError.errorDecodingId }
         guard let name = trackerCoreData.name else { throw TrackerStoreError.errorDecodingName }

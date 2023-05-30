@@ -26,7 +26,7 @@ final class OnboardingView: UIView {
     private lazy var infoLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .ypBlack
+        label.textColor = .black
         label.font = UIFont.ypBoldSize32
         label.textAlignment = .center
         label.numberOfLines = 0

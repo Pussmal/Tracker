@@ -9,6 +9,9 @@ final class TrackersViewController: UIViewController {
         static let cancelButtonTextKey = "cancelButtonText"
         static let searchBarPlaceholderText = NSLocalizedString("SearchBarPlaceholderText", comment: "Text for searchBar's placeholder")
         static let searchBarCancelButtonText = NSLocalizedString("SearchBarCancelButtonText", comment: "Text for searchBar's cancel button")
+        static let deleteActionSheetMessage = NSLocalizedString("deleteActionSheetMessage", comment: "Text for action sheep title")
+        static let deleteActionSheetButtonTitle = NSLocalizedString("deleteActionSheetButtonTitle", comment: "Text for action sheep delete button")
+        static let cancelActionSheetButtonTitle = NSLocalizedString("cancelActionSheetButtonTitle", comment: "Text for action sheep cancel button")
     }
     
     // MARK: private properties
@@ -100,6 +103,10 @@ final class TrackersViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func checkPlugView() {
+        plugView.isHidden = dataProvider.isTrackersForSelectedDate
+    }
+    
     // MARK: Override
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -149,7 +156,7 @@ final class TrackersViewController: UIViewController {
         navigationItem.searchController = searchController
         definesPresentationContext = true
     }
-        
+    
     @objc
     private func addTrackerButtonTapped() {
         showTypeTrackerViewController()
@@ -188,6 +195,35 @@ final class TrackersViewController: UIViewController {
         viewController.delegate = self
         let navigationViewController = UINavigationController(rootViewController: viewController)
         present(navigationViewController, animated: true)
+    }
+    
+    private func showActionSheepForDeleteTracker(trackerIndexPath: IndexPath) {
+        var deleteActionSheet: UIAlertController {
+            let message = ViewControllerConstants.deleteActionSheetMessage
+            let alertController = UIAlertController(
+                title: nil, message: message,
+                preferredStyle: .actionSheet
+            )
+            let deleteAction = UIAlertAction(
+                title: ViewControllerConstants.deleteActionSheetButtonTitle,
+                style: .destructive) { [weak self] _ in
+                    guard let self = self else { return }
+                    do {
+                        try self.dataProvider.deleteTracker(at: trackerIndexPath)
+                        self.collectionView.reloadData()
+                        self.checkPlugView()
+                    } catch {
+                        assertionFailure("Error delete tracker")
+                    }
+                }
+            let cancelAction = UIAlertAction(title: ViewControllerConstants.cancelActionSheetButtonTitle, style: .cancel)
+            alertController.addAction(deleteAction)
+            alertController.addAction(cancelAction)
+            return alertController
+        }
+        
+        let viewController = deleteActionSheet
+        present(viewController, animated: true)
     }
 }
 
@@ -295,7 +331,7 @@ extension TrackersViewController: UISearchResultsUpdating {
 extension TrackersViewController: UISearchControllerDelegate {
     func didDismissSearchController(_ searchController: UISearchController) {
         try? dataProvider.loadTrackers(from: datePicker.date, with: nil)
-        plugView.isHidden = dataProvider.isTrackersForSelectedDate
+        checkPlugView()
         plugView.config(plug: .trackers)
         collectionView.reloadData()
     }
@@ -304,7 +340,7 @@ extension TrackersViewController: UISearchControllerDelegate {
 // MARK: DataProviderDelegate
 extension TrackersViewController: DataProviderDelegate {
     func didUpdate() {
-        plugView.isHidden = dataProvider.isTrackersForSelectedDate
+        checkPlugView()
         collectionView.reloadData()
     }
 }
@@ -315,7 +351,7 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
         guard let location = interaction.view?.convert(location, to: collectionView),
               let indexPath = collectionView.indexPathForItem(at: location),
               let tracker =  dataProvider.getTracker(at: indexPath),
-              let categoty = dataProvider.getTrackersCategory(atTrackerIndexPath: indexPath)
+              let category = dataProvider.getTrackersCategory(atTrackerIndexPath: indexPath)
         else { return UIContextMenuConfiguration() }
         
         return UIContextMenuConfiguration(actionProvider: { [weak self] actions in
@@ -325,9 +361,12 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
                 UIAction(title: "Закрепить") { _ in },
                 UIAction(title: "Редактировать") { [weak self] _ in
                     guard let self else { return }
-                    self.editTracker(at: tracker, category: categoty, indexPath: indexPath)
+                    self.editTracker(at: tracker, category: category, indexPath: indexPath)
                 },
-                UIAction(title: "Удалить", attributes: .destructive, handler: { _ in } )
+                UIAction(title: "Удалить", attributes: .destructive, handler: { [weak self] _ in
+                    guard let self else { return }
+                    self.showActionSheepForDeleteTracker(trackerIndexPath: indexPath)
+                } )
             ])
         })
     }
@@ -335,7 +374,7 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
 
 extension TrackersViewController: EditTrackerViewControllerDelegate {
     func dismissEditTrackerViewController(_ viewController: UIViewController) {
-        plugView.isHidden = dataProvider.isTrackersForSelectedDate
+        checkPlugView()
         collectionView.reloadData()
         dismissViewController(viewController)
     }

@@ -22,3 +22,6 @@ EventButtonTitle = "Нерегулярное событие";
 //TrackersViewController
 SearchBarPlaceholderText = "Поиск";
 SearchBarCancelButtonText = "Отмена";
+deleteActionSheetMessage = "Уверены что хотите удалить трекер?";
+deleteActionSheetButtonTitle = "Удалить";
+cancelActionSheetButtonTitle = "Отменить";
