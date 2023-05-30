@@ -7,4 +7,5 @@ struct EditTracker {
     let checkCountDay: Int
     let isChecked: Bool
     let canCheck: Bool
+    let indexPath: IndexPath
 }

@@ -1,7 +1,7 @@
 import UIKit
 
 protocol EditTrackerViewDelegate: AnyObject {
-    func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String)
+    func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String, isChecked: Bool)
     func cancelCreate()
     func showCategory()
     func showSchedule()
@@ -18,7 +18,7 @@ final class EditTrackerView: UIView {
         static let createButtonTitle = "Создать"
         static let errorLabelText = "Ограничение 38 символов"
         static let textFieldPlaceholder = "Введите название трекера"
-        static let standartCellIdentifire = "cell"
+        static let defaultCellIdentifier = "cell"
         static let spacingConstant: CGFloat = 8
     }
     
@@ -36,17 +36,19 @@ final class EditTrackerView: UIView {
     private let editTracker: EditTracker
     
     private var emojiAndColorCollectionViewHelper: ColorAndEmojiCollectionViewHelper
-    private var sheduleCategoryTableViewHelper: ScheduleCategoryTableViewHelper
+    private var scheduleCategoryTableViewHelper: ScheduleCategoryTableViewHelper
     private var nameTrackerTextFieldHelper =  NameTrackerTextFieldHelper()
     
     private var emoji: String?
     private var color: UIColor?
+    private var isChecked: Bool?
     
     private var topViewConstraint: NSLayoutConstraint!
     
     // MARK: UI
     private lazy var editCountDaysView: EditCountDaysView = {
         let view = EditCountDaysView()
+        view.delegate = self
         return view
     }()
     
@@ -80,7 +82,6 @@ final class EditTrackerView: UIView {
             frame: .zero,
             placeholderText: CreateTrackerViewConstants.textFieldPlaceholder
         )
-        textField.addTarget(self, action: #selector(textFieldChangeed), for: .editingChanged)
         return textField
     }()
     
@@ -95,12 +96,12 @@ final class EditTrackerView: UIView {
         return label
     }()
     
-    private lazy var sheduleCategoryTableView: UITableView = {
+    private lazy var scheduleCategoryTableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(
             UITableViewCell.self,
-            forCellReuseIdentifier: CreateTrackerViewConstants.standartCellIdentifire
+            forCellReuseIdentifier: CreateTrackerViewConstants.defaultCellIdentifier
         )
         tableView.backgroundColor = .clear
         tableView.layer.cornerRadius = Constants.cornerRadius
@@ -117,7 +118,7 @@ final class EditTrackerView: UIView {
         )
         collectionView.register(
             EmojiCollectionViewCell.self,
-            forCellWithReuseIdentifier: EmojiCollectionViewCell.reuseIdentifire
+            forCellWithReuseIdentifier: EmojiCollectionViewCell.cellReuseIdentifier
         )
         collectionView.register(
             HeaderReusableView.self,
@@ -125,7 +126,7 @@ final class EditTrackerView: UIView {
             withReuseIdentifier: HeaderReusableView.reuseIdentifier)
         collectionView.register(
             ColorCollectionViewCell.self,
-            forCellWithReuseIdentifier: ColorCollectionViewCell.reuseIdentifire)
+            forCellWithReuseIdentifier: ColorCollectionViewCell.cellReuseIdentifier)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.backgroundColor = .clear
@@ -168,8 +169,7 @@ final class EditTrackerView: UIView {
             action: #selector(createButtonTapped),
             for: .touchUpInside
         )
-        button.backgroundColor = .ypGray
-        button.isEnabled = false
+        button.backgroundColor = .ypBlack
         return button
     }()
     
@@ -182,24 +182,25 @@ final class EditTrackerView: UIView {
         self.editTypeTracker = editTypeTracker
         self.editTracker = editTracker
         emojiAndColorCollectionViewHelper = ColorAndEmojiCollectionViewHelper()
-        sheduleCategoryTableViewHelper = ScheduleCategoryTableViewHelper(editTypeTracker: editTypeTracker)
+        scheduleCategoryTableViewHelper = ScheduleCategoryTableViewHelper(editTypeTracker: editTypeTracker)
         super.init(frame: frame)
         
         colorAndEmojiCollectionView.dataSource = emojiAndColorCollectionViewHelper
         colorAndEmojiCollectionView.delegate = emojiAndColorCollectionViewHelper
         
-        sheduleCategoryTableView.dataSource = sheduleCategoryTableViewHelper
-        sheduleCategoryTableView.delegate = sheduleCategoryTableViewHelper
+        scheduleCategoryTableView.dataSource = scheduleCategoryTableViewHelper
+        scheduleCategoryTableView.delegate = scheduleCategoryTableViewHelper
         
         nameTrackerTextField.delegate = nameTrackerTextFieldHelper
         emojiAndColorCollectionViewHelper.delegate = self
         
         nameTrackerTextFieldHelper.delegate = self
-        sheduleCategoryTableViewHelper.delegate = self
+        scheduleCategoryTableViewHelper.delegate = self
         
         setupView(with: editTracker)
         addViews()
         activateConstraints()
+        trackerSetup(editTracker: editTracker)
     }
     
     required init?(coder: NSCoder) {
@@ -207,11 +208,11 @@ final class EditTrackerView: UIView {
     }
     
     func setCategory(with category: String?) {
-        sheduleCategoryTableViewHelper.setCategory(category: category)
+        scheduleCategoryTableViewHelper.setCategory(category: category)
     }
     
-    func setSchedule(with shedule: String?) {
-        sheduleCategoryTableViewHelper.setSchedule(schedule: shedule)
+    func setSchedule(with schedule: String?) {
+        scheduleCategoryTableViewHelper.setSchedule(schedule: schedule)
     }
     
     func setEmoji(emoji: String) {
@@ -225,13 +226,11 @@ final class EditTrackerView: UIView {
     // MARK: - Private methods
     private func setupView(with editTracker: EditTracker) {
         editCountDaysView.config(
-            coundDay: editTracker.checkCountDay,
+            countDay: editTracker.checkCountDay,
             isChecked: editTracker.isChecked,
             canCheck: editTracker.canCheck
         )
         nameTrackerTextField.text = editTracker.tracker.name
-        
-        
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .ypWhite
     }
@@ -248,9 +247,8 @@ final class EditTrackerView: UIView {
             buttonStackView
         )
         
-        stackView.addArrangedSubview(sheduleCategoryTableView)
+        stackView.addArrangedSubview(scheduleCategoryTableView)
         stackView.addArrangedSubview(colorAndEmojiCollectionView)
-        
         buttonStackView.addArrangedSubview(cancelButton)
         buttonStackView.addArrangedSubview(createButton)
     }
@@ -275,7 +273,7 @@ final class EditTrackerView: UIView {
         
         topViewConstraint = stackView.topAnchor.constraint(equalTo: nameTrackerTextField.bottomAnchor, constant: insetBetweenNameTextFieldAndStackView)
         topViewConstraint.isActive = true
-    
+        
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -308,8 +306,14 @@ final class EditTrackerView: UIView {
             buttonStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -edge),
             buttonStackView.heightAnchor.constraint(equalToConstant: buttonHeight),
             
-            sheduleCategoryTableView.heightAnchor.constraint(equalToConstant: tableViewHeight),
+            scheduleCategoryTableView.heightAnchor.constraint(equalToConstant: tableViewHeight),
         ])
+    }
+    
+    private func trackerSetup(editTracker: EditTracker) {
+        emoji = editTracker.tracker.emoji
+        color = editTracker.tracker.color
+        isChecked = editTracker.isChecked
     }
     
     @objc
@@ -319,22 +323,14 @@ final class EditTrackerView: UIView {
                 let self = self,
                 self.nameTrackerTextField.text != "",
                 let selectedEmoji = self.emoji,
-                let selectedColor = self.color else { return }
+                let selectedColor = self.color,
+                let isChecked = self.isChecked else { return }
             self.delegate?.sendTrackerSetup(
                 nameTracker: self.nameTrackerTextField.text,
                 color: selectedColor,
-                emoji: selectedEmoji
+                emoji: selectedEmoji,
+                isChecked: isChecked
             )
-        }
-    }
-    
-    @objc private func textFieldChangeed() {
-        if nameTrackerTextField.text?.isEmpty == false {
-            createButton.backgroundColor = .ypBlack
-            createButton.isEnabled = true
-        } else {
-            createButton.backgroundColor = .ypGray
-            createButton.isEnabled = false
         }
     }
     
@@ -369,7 +365,7 @@ extension EditTrackerView: NameTrackerTextFieldHelperDelegate {
 
 extension EditTrackerView: ScheduleCategoryTableViewHelperDelegate {
     func reloadTableView() {
-        sheduleCategoryTableView.reloadData()
+        scheduleCategoryTableView.reloadData()
     }
     
     func showSchedule() {
@@ -388,5 +384,15 @@ extension EditTrackerView: ColorAndEmojiCollectionViewHelperDelegate {
     
     func sendSelectedColor(_ color: UIColor?) {
         self.color = color
+    }
+}
+
+extension EditTrackerView: EditCountDaysViewDelegate {
+    func checkDay() {
+        isChecked = true
+    }
+    
+    func uncheckDay() {
+        isChecked = false
     }
 }

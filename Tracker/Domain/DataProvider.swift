@@ -20,9 +20,10 @@ protocol DataProviderProtocol {
     func getCompletedDayCount(from trackerId: String) -> Int
     func getCompletedDay(from trackerId: String, currentDay: Date) -> Bool
     
-    func checkTracker( for trackerID: String?, completed: Bool, with date: Date)
+    func checkTracker(trackerId: String?, completed: Bool, with date: Date)
     
     func saveTracker(_ tracker: Tracker, in categoryCoreData: TrackerCategoryCoreData) throws
+    func resaveTracker(at indexPath: IndexPath, newTracker: Tracker, category: TrackerCategoryCoreData?) throws
 }
 
 final class DataProvider: NSObject {
@@ -145,10 +146,10 @@ extension DataProvider: DataProviderProtocol {
         return completed
     }
     
-    func checkTracker(for trackerID: String?, completed: Bool, with date: Date) {
+    func checkTracker(trackerId: String?, completed: Bool, with date: Date) {
         guard let trackers = fetchedResultsController.fetchedObjects else { return }
         trackers.forEach { trackerCoreData in
-            if trackerCoreData.id == trackerID {
+            if trackerCoreData.id == trackerId {
                 switch completed {
                 case true:
                     trackerRecordStore.saveRecord(for: trackerCoreData, with: date)
@@ -161,6 +162,12 @@ extension DataProvider: DataProviderProtocol {
     
     func saveTracker(_ tracker: Tracker, in categoryCoreData: TrackerCategoryCoreData) throws {
         trackerStore.addNewTracker(tracker, with: categoryCoreData)
+    }
+    
+    func resaveTracker(at indexPath: IndexPath, newTracker: Tracker, category: TrackerCategoryCoreData?) throws {
+        let object = fetchedResultsController.object(at: indexPath)
+        let trackerManagedObjectID = object.objectID
+        try trackerStore.changeTracker(trackerManagedObjectID, newTracker: newTracker, category: category)
     }
 }
 

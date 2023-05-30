@@ -1,7 +1,7 @@
 import UIKit
 
 protocol EditTrackerViewControllerDelegate: AnyObject {
-    func dismissViewController(_ viewController: UIViewController)
+    func dismissEditTrackerViewController(_ viewController: UIViewController)
 }
 
 enum EditTypeTracker {
@@ -23,6 +23,7 @@ final class EditTrackerViewController: UIViewController {
     private var editTypeTracker: EditTypeTracker
     private var selectedCategory: TrackerCategoryCoreData
     private var stringDatesArray: [String]?
+    private var selectedDay: Date
     
     private var isHabit: Bool {
         switch editTypeTracker {
@@ -48,10 +49,11 @@ final class EditTrackerViewController: UIViewController {
     private var editTrackerView: EditTrackerView!
     
     //MARK: initialization
-    init(editTypeTracker: EditTypeTracker, editTracker: EditTracker, selectedCategory: TrackerCategoryCoreData) {
+    init(editTypeTracker: EditTypeTracker, editTracker: EditTracker, selectedCategory: TrackerCategoryCoreData, selectedDay: Date) {
         self.editTypeTracker = editTypeTracker
         self.editTracker = editTracker
         self.selectedCategory = selectedCategory
+        self.selectedDay = selectedDay
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -62,7 +64,7 @@ final class EditTrackerViewController: UIViewController {
     // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
         editTrackerView = EditTrackerView(
             frame: view.bounds,
             editTypeTracker: editTypeTracker,
@@ -75,7 +77,7 @@ final class EditTrackerViewController: UIViewController {
         editTrackerView.setSchedule(with: editTracker.schedule)
         editTrackerView.setEmoji(emoji: editTracker.tracker.emoji)
         editTrackerView.setSelectedTrackerColor(color: editTracker.tracker.color)
-                
+        
         switch editTypeTracker {
         case .editHabit:
             setupView(with: ViewControllerConstants.editHabitTitle)
@@ -83,7 +85,7 @@ final class EditTrackerViewController: UIViewController {
             setupView(with: ViewControllerConstants.editEventTitle)
         }
     }
-        
+    
     // MARK: private methods
     private func setupView(with title: String) {
         view.backgroundColor = .clear
@@ -98,17 +100,14 @@ final class EditTrackerViewController: UIViewController {
 
 // MARK: EditTrackerViewDelegate
 extension EditTrackerViewController: EditTrackerViewDelegate {
-    func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String) {
+    func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String, isChecked: Bool) {
         if editTypeTracker == .editEvent {
             stringDatesArray = WeekDays.allCases.map({ $0.day.shortForm })
         }
-    
-        guard
-            let nameTracker,
-            stringDatesArray != nil
-        else { return }
-            
-        let tracker = Tracker(
+        
+        guard let nameTracker, stringDatesArray != nil else { return }
+        
+        let newTracker = Tracker(
             id: editTracker.tracker.id,
             name: nameTracker,
             color: color,
@@ -117,22 +116,27 @@ extension EditTrackerViewController: EditTrackerViewDelegate {
             isHabit: isHabit
         )
         
-        try? dataProvider.saveTracker(tracker, in: selectedCategory)
-        delegate?.dismissViewController(self)
+        try? dataProvider.resaveTracker(
+            at: editTracker.indexPath,
+            newTracker: newTracker,
+            category: selectedCategory)
+        
+        dataProvider.checkTracker(trackerId: newTracker.id, completed: isChecked, with: selectedDay)
+        delegate?.dismissEditTrackerViewController(self)
     }
     
     func showSchedule() {
-        let viewController = createViewController(type: .shedule)
+        let viewController = createViewController(type: .schedule)
         present(viewController, animated: true)
     }
-        
+    
     func showCategory() {
         let viewController = createViewController(type: .category)
         present(viewController, animated: true)
     }
-
+    
     func cancelCreate() {
-        delegate?.dismissViewController(self)
+        delegate?.dismissEditTrackerViewController(self)
     }
     
     private func setSelectedCategory() {
@@ -142,11 +146,11 @@ extension EditTrackerViewController: EditTrackerViewDelegate {
 
 // MARK: create CategoryViewController
 extension EditTrackerViewController {
-    private func createViewController(type: SheduleCategory) -> UINavigationController {
+    private func createViewController(type: ScheduleCategory) -> UINavigationController {
         let viewController: UIViewController
         
         switch type {
-        case .shedule:
+        case .schedule:
             let scheduleViewController = SheduleViewController()
             scheduleViewController.delegate = self
             scheduleViewController.setSchedule(with: stringSelectedDates)

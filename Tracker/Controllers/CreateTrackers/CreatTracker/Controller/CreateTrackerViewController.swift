@@ -4,8 +4,8 @@ protocol CreateTrackerViewControllerDelegate: AnyObject {
     func dismissViewController(_ viewController: UIViewController)
 }
 
-enum SheduleCategory {
-    case shedule
+enum ScheduleCategory {
+    case schedule
     case category
 }
 
@@ -14,11 +14,12 @@ final class CreateTrackerViewController: UIViewController {
     // MARK: public properties
     weak var delegate: CreateTrackerViewControllerDelegate?
         
+    //MARK: Helpres
     private struct ViewControllerConstants {
         static let habitTitle = "Новая привычка"
         static let eventTitle = "Новое нерегулярное событие"
     }
-    
+
     // MARK: private properties
     private var typeTracker: TypeTracker
     private var selectedCategory: TrackerCategoryCoreData?
@@ -117,7 +118,7 @@ extension CreateTrackerViewController: CreateTrackerViewDelegate {
     }
     
     func showSchedule() {
-        let viewController = createViewController(type: .shedule)
+        let viewController = createViewController(type: .schedule)
         present(viewController, animated: true)
     }
     
@@ -133,11 +134,11 @@ extension CreateTrackerViewController: CreateTrackerViewDelegate {
 
 // MARK: create CategoryViewController
 extension CreateTrackerViewController {
-    private func createViewController(type: SheduleCategory) -> UINavigationController {
+    private func createViewController(type: ScheduleCategory) -> UINavigationController {
         let viewController: UIViewController
         
         switch type {
-        case .shedule:
+        case .schedule:
             let sheduleViewController = SheduleViewController()
             sheduleViewController.delegate = self
             viewController = sheduleViewController

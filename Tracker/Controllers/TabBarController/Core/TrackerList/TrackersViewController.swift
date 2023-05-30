@@ -167,7 +167,7 @@ final class TrackersViewController: UIViewController {
         return (count, completed)
     }
     
-    private func editTracker(at tracker: Tracker, category: TrackerCategoryCoreData) {
+    private func editTracker(at tracker: Tracker, category: TrackerCategoryCoreData, indexPath: IndexPath) {
         let editTypeTracker: EditTypeTracker = tracker.isHabit ? .editHabit : .editEvent
         let countAndCompleted = getDayCountAndDayCompleted(for: tracker.id)
         let editTracker = EditTracker(
@@ -176,12 +176,16 @@ final class TrackersViewController: UIViewController {
             schedule: tracker.schedule?.joined(separator: ", ") ?? "Error",
             checkCountDay: countAndCompleted.count,
             isChecked: countAndCompleted.completed,
-            canCheck: today < currentDate
+            canCheck: today < currentDate,
+            indexPath: indexPath
         )
         let viewController = EditTrackerViewController(
             editTypeTracker: editTypeTracker,
             editTracker: editTracker,
-            selectedCategory: category)
+            selectedCategory: category,
+            selectedDay: currentDate
+        )
+        viewController.delegate = self
         let navigationViewController = UINavigationController(rootViewController: viewController)
         present(navigationViewController, animated: true)
     }
@@ -268,7 +272,7 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
 // MARK: TrackerCollectionViewCellDelegate
 extension TrackersViewController: TrackerCollectionViewCellDelegate {
     func checkTracker(id: String?, completed: Bool) {
-        dataProvider.checkTracker(for: id, completed: completed, with: currentDate)
+        dataProvider.checkTracker(trackerId: id, completed: completed, with: currentDate)
     }
 }
 
@@ -321,10 +325,18 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
                 UIAction(title: "Закрепить") { _ in },
                 UIAction(title: "Редактировать") { [weak self] _ in
                     guard let self else { return }
-                    self.editTracker(at: tracker, category: categoty)
+                    self.editTracker(at: tracker, category: categoty, indexPath: indexPath)
                 },
                 UIAction(title: "Удалить", attributes: .destructive, handler: { _ in } )
             ])
         })
+    }
+}
+
+extension TrackersViewController: EditTrackerViewControllerDelegate {
+    func dismissEditTrackerViewController(_ viewController: UIViewController) {
+        plugView.isHidden = dataProvider.isTrackersForSelectedDate
+        collectionView.reloadData()
+        dismissViewController(viewController)
     }
 }

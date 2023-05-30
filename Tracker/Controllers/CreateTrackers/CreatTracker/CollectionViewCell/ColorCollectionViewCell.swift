@@ -1,7 +1,7 @@
 import UIKit
 
 final class ColorCollectionViewCell: UICollectionViewCell {
-    static let reuseIdentifire = "ColorCollectionViewCell"
+    static let cellReuseIdentifier = "ColorCollectionViewCell"
     
     private struct ColorCollectionViewCellConstants {
         static let viewCornerRadius: CGFloat = 9

@@ -98,7 +98,6 @@ extension ColorAndEmojiCollectionViewHelper: UICollectionViewDataSource {
             view = createReusableView(collectionView, viewForSupplementaryElementOfKind: kind, at: indexPath, title: colorsSectionTitle)
         default: view = UICollectionReusableView()
         }
-        
         return view
     }
 }
@@ -110,40 +109,36 @@ extension ColorAndEmojiCollectionViewHelper: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let selectedItem else { return }
-        
         switch indexPath.section {
         case 0:
-            guard let emojiSelectedItem else { return }
-            let oldIndexPath = IndexPath(row: emojiSelectedItem, section: selectedItem.section)
-            let oldCell = collectionView.cellForItem(at: oldIndexPath) as? EmojiCollectionViewCell
-            oldCell?.cellIsSelected = false
-            
+            if let selectedItem, let emojiSelectedItem {
+                let oldIndexPath = IndexPath(row: emojiSelectedItem, section: selectedItem.section)
+                let oldCell = collectionView.cellForItem(at: oldIndexPath) as? EmojiCollectionViewCell
+                oldCell?.cellIsSelected = false
+            }
             let cell = collectionView.cellForItem(at: indexPath) as? EmojiCollectionViewCell
             cell?.cellIsSelected = true
-            self.emojiSelectedItem = indexPath.item
-            
+            emojiSelectedItem = indexPath.item
+            guard let emojiSelectedItem else { return }
             delegate?.sendSelectedEmoji(emojies[safe: emojiSelectedItem])
             
         case 1:
-            guard let colorSelectedItem else { return }
-            let oldIndexPath = IndexPath(row: colorSelectedItem, section: selectedItem.section)
-            let oldCell = collectionView.cellForItem(at: oldIndexPath) as? ColorCollectionViewCell
-            oldCell?.cellIsSelected = false
-            
+            if let selectedItem, let colorSelectedItem {
+                let oldIndexPath = IndexPath(row: colorSelectedItem, section: selectedItem.section)
+                let oldCell = collectionView.cellForItem(at: oldIndexPath) as? ColorCollectionViewCell
+                oldCell?.cellIsSelected = false
+            }
             let cell = collectionView.cellForItem(at: indexPath) as? ColorCollectionViewCell
             cell?.cellIsSelected = true
-            self.colorSelectedItem = indexPath.item
-            
+            colorSelectedItem = indexPath.item
+            guard let colorSelectedItem else { return }
             delegate?.sendSelectedColor(colors[safe: colorSelectedItem])
         default: break
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        
         guard let section = selectedItem?.section else { return }
-        
         switch section {
         case 0:
             guard let item = emojiSelectedItem,
@@ -189,7 +184,7 @@ extension ColorAndEmojiCollectionViewHelper {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: EmojiCollectionViewCell.reuseIdentifire,
+            withReuseIdentifier: EmojiCollectionViewCell.cellReuseIdentifier,
             for: indexPath
         ) as? EmojiCollectionViewCell else {
             return UICollectionViewCell()
@@ -211,7 +206,7 @@ extension ColorAndEmojiCollectionViewHelper {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: ColorCollectionViewCell.reuseIdentifire,
+            withReuseIdentifier: ColorCollectionViewCell.cellReuseIdentifier,
             for: indexPath
         ) as? ColorCollectionViewCell else {
             return UICollectionViewCell()

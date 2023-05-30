@@ -110,7 +110,7 @@ final class CreateTrackerView: UIView {
         )
         collectionView.register(
             EmojiCollectionViewCell.self,
-            forCellWithReuseIdentifier: EmojiCollectionViewCell.reuseIdentifire
+            forCellWithReuseIdentifier: EmojiCollectionViewCell.cellReuseIdentifier
         )
         collectionView.register(
             HeaderReusableView.self,
@@ -118,7 +118,7 @@ final class CreateTrackerView: UIView {
             withReuseIdentifier: HeaderReusableView.reuseIdentifier)
         collectionView.register(
             ColorCollectionViewCell.self,
-            forCellWithReuseIdentifier: ColorCollectionViewCell.reuseIdentifire)
+            forCellWithReuseIdentifier: ColorCollectionViewCell.cellReuseIdentifier)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.backgroundColor = .clear

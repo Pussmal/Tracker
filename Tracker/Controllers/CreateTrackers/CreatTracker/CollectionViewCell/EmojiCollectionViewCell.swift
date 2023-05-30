@@ -1,7 +1,7 @@
 import UIKit
 
 final class EmojiCollectionViewCell: UICollectionViewCell {
-    static let reuseIdentifire = "EmojiCollectionViewCell"
+    static let cellReuseIdentifier = "EmojiCollectionViewCell"
     
     var cellIsSelected = false {
         didSet {

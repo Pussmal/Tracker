@@ -1,6 +1,13 @@
 import UIKit
 
+protocol EditCountDaysViewDelegate: AnyObject {
+    func checkDay()
+    func uncheckDay()
+}
+
 final class EditCountDaysView: UIStackView {
+    
+    weak var delegate: EditCountDaysViewDelegate?
     
     private struct ViewConstant {
         static let minusButtonImageName = "buttonMinus"
@@ -52,8 +59,8 @@ final class EditCountDaysView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func config(coundDay: Int, isChecked: Bool, canCheck: Bool) {
-        self.countDay =  coundDay
+    func config(countDay: Int, isChecked: Bool, canCheck: Bool) {
+        self.countDay =  countDay
         setCountLabelText(with: self.countDay)
         
         guard !canCheck else {
@@ -102,7 +109,7 @@ final class EditCountDaysView: UIStackView {
             self.setCountLabelText(with: self.countDay)
             self.minusButton.isEnabled = false
             self.plusButton.isEnabled = true
-            print("work minus")
+            self.delegate?.uncheckDay()
         }
     }
     
@@ -114,7 +121,7 @@ final class EditCountDaysView: UIStackView {
             self.setCountLabelText(with: self.countDay)
             self.minusButton.isEnabled = true
             self.plusButton.isEnabled = false
-            print("work plus")
+            self.delegate?.checkDay()
         }
     }
 }
