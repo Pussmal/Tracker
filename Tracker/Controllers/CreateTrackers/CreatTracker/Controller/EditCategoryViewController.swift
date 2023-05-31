@@ -53,6 +53,12 @@ final class EditCategoryViewController: UIViewController {
     }
     
     private func editCategory(newTitle: String, at indexPath: IndexPath)  {
+        var indexPath = indexPath
+        //при первом включении мы создаем категорию закрепленные, нам ее показывать не нужно, поэтому для отображения прибавляю 1
+        if indexPath.row >= 0 {
+            indexPath.row += 1
+        }
+        
         categoryStory.changeCategory(at: indexPath, newCategoryTitle: newTitle)
     }
 }

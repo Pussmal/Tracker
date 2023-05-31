@@ -28,3 +28,4 @@ cancelActionSheetButtonTitle = "Отменить";
 editActionTitle = "Редактировать";
 
 everyDay = "Каждый день";
+pinnedCategory = "Закрепленные";

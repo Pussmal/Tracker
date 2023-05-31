@@ -17,13 +17,15 @@ final class CategoriesView: UIView {
     weak var delegate: CategoriesViewDelegate?
     private var viewModel: CategoriesViewModelProtocol?
     
-    private struct CategoryViewConstant {
+    private struct ViewConstant {
         static let collectionViewReuseIdentifier = "Cell"
         static let addButtonTitle = "Добавить категорию"
         static let plugLabelText = """
             Привычки и события можно
             объединить по смыслу
         """
+        static let deleteActionTitle = NSLocalizedString("deleteActionTitle", comment: "")
+        static let editActionTitle = NSLocalizedString("editActionTitle", comment: "")
     }
     
     //MARK: UI
@@ -42,7 +44,7 @@ final class CategoriesView: UIView {
         )
         collectionView.register(
             UICollectionViewCell.self,
-            forCellWithReuseIdentifier: CategoryViewConstant.collectionViewReuseIdentifier
+            forCellWithReuseIdentifier: ViewConstant.collectionViewReuseIdentifier
         )
         collectionView.register(
             CategoryCollectionViewCell.self,
@@ -59,7 +61,7 @@ final class CategoriesView: UIView {
     private lazy var addButton: TrackerButton = {
         let button = TrackerButton(
             frame: .zero,
-            title: CategoryViewConstant.addButtonTitle
+            title: ViewConstant.addButtonTitle
         )
         button.addTarget(
             self,
@@ -152,14 +154,14 @@ final class CategoriesView: UIView {
             else { return UIMenu() }
             
             return UIMenu(children: [
-                UIAction(title: "Редактировать") { _ in
+                UIAction(title: ViewConstant.editActionTitle) { _ in
                     self.delegate?.showEditCategoryViewController(
                         type: .editCategory,
                         editCategoryString: selectedCategory.title,
                         at: indexPath
                     )
                 },
-                UIAction(title: "Удалить", attributes: .destructive, handler: { _ in
+                UIAction(title: ViewConstant.deleteActionTitle, attributes: .destructive, handler: { _ in
                     guard let cell = self.viewModel?.categoryCellViewModel(at: indexPath) else { return }
                     cell.selectedCategory ? self.delegate?.showErrorAlert() : self.delegate?.showDeleteActionSheet(deleteCategory: selectedCategory)
                 })
