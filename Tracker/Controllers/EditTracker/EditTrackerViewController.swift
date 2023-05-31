@@ -22,7 +22,7 @@ final class EditTrackerViewController: UIViewController {
     // MARK: private properties
     private var editTypeTracker: EditTypeTracker
     private var selectedCategory: TrackerCategoryCoreData
-    private var stringDatesArray: [String]?
+    private var datesArray: [String] = []
     private var selectedDay: Date
     
     private var isHabit: Bool {
@@ -31,14 +31,6 @@ final class EditTrackerViewController: UIViewController {
             return true
         case .editEvent:
             return false
-        }
-    }
-    
-    private var stringSelectedDates: String {
-        if stringDatesArray?.count == 7 {
-            return "Каждый день"
-        } else {
-            return stringDatesArray?.joined(separator: ", ") ?? ""
         }
     }
     
@@ -71,8 +63,6 @@ final class EditTrackerViewController: UIViewController {
             editTracker: editTracker
         )
         editTrackerView.delegate = self
-        
-        stringDatesArray = editTracker.schedule.components(separatedBy: ",")
         editTrackerView.setCategory(with: editTracker.categoryTitle)
         editTrackerView.setSchedule(with: editTracker.schedule)
         editTrackerView.setEmoji(emoji: editTracker.tracker.emoji)
@@ -101,18 +91,15 @@ final class EditTrackerViewController: UIViewController {
 // MARK: EditTrackerViewDelegate
 extension EditTrackerViewController: EditTrackerViewDelegate {
     func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String, isChecked: Bool) {
-        if editTypeTracker == .editEvent {
-            stringDatesArray = WeekDays.allCases.map({ $0.day.shortForm })
-        }
-        
-        guard let nameTracker, stringDatesArray != nil else { return }
-        
+        guard let nameTracker else { return }
+        if editTypeTracker == .editEvent { datesArray = Constants.allWeekDayStringIndexArray }
+    
         let newTracker = Tracker(
             id: editTracker.tracker.id,
             name: nameTracker,
             color: color,
             emoji: emoji,
-            schedule: stringDatesArray,
+            schedule: datesArray,
             isHabit: isHabit
         )
         
@@ -121,7 +108,10 @@ extension EditTrackerViewController: EditTrackerViewDelegate {
             newTracker: newTracker,
             category: selectedCategory)
         
-        dataProvider.checkTracker(trackerId: newTracker.id, completed: isChecked, with: selectedDay)
+        if editTracker.isChecked != isChecked {
+            dataProvider.checkTracker(trackerId: newTracker.id, completed: isChecked, with: selectedDay)
+        }
+        
         delegate?.dismissEditTrackerViewController(self)
     }
     
@@ -153,7 +143,7 @@ extension EditTrackerViewController {
         case .schedule:
             let scheduleViewController = SheduleViewController()
             scheduleViewController.delegate = self
-            scheduleViewController.setSchedule(with: stringSelectedDates)
+            scheduleViewController.setSchedule(with: editTracker.schedule)
             viewController = scheduleViewController
         case .category:
             let viewModel = CategoriesViewControllerViewModel()
@@ -180,8 +170,23 @@ extension EditTrackerViewController: CategoriesViewControllerDelegate {
 
 // MARK: ScheduleViewControllerDelegate
 extension EditTrackerViewController: ScheduleViewControllerDelegate {
-    func setSelectedDates(dates: [WeekDays]) {
-        stringDatesArray = dates.map({ $0.day.shortForm })
+    func setSelectedDates(dates: [Int]) {
+        datesArray = dates.map({ String($0) })
+        let stringDatesArray = dates.map({
+            var dayNumber = $0 + 1
+            if dayNumber == 7 {
+                dayNumber = 0
+            }
+            return Calendar.current.shortWeekdaySymbols[dayNumber]
+        })
+        
+        var stringSelectedDates: String
+        if stringDatesArray.count == 7 {
+            stringSelectedDates = "Каждый день"
+        } else {
+            stringSelectedDates = stringDatesArray.joined(separator: ", ")
+        }
+        
         editTrackerView.setSchedule(with: stringSelectedDates)
         dismiss(animated: true)
     }

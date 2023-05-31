@@ -7,4 +7,6 @@ public struct Constants {
     static let hugHeight: CGFloat = 75
     
     static let firstEnabledUserDefaultsKey = "enabled"
+    
+    static let allWeekDayStringIndexArray = ["0", "1", "2", "3", "4", "5", "6"]
 }

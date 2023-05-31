@@ -1,7 +1,7 @@
 import UIKit
 
 protocol ScheduleViewControllerDelegate: AnyObject {
-    func setSelectedDates(dates: [WeekDays])
+    func setSelectedDates(dates: [Int])
 }
 
 final class SheduleViewController: UIViewController {
@@ -42,7 +42,7 @@ final class SheduleViewController: UIViewController {
 }
 
 extension SheduleViewController: SheduleViewDelegate {
-    func setDates(dates: [WeekDays]?) {
+    func setDates(dates: [Int]?) {
         guard let dates, !dates.isEmpty else { return }
         delegate?.setSelectedDates(dates: dates)
     }

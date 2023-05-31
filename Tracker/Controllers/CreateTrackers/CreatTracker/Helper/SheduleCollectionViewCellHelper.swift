@@ -1,7 +1,7 @@
 import UIKit
 
 final class SheduleCollectionViewCellHelper: NSObject {
-    private(set) var selectedDates: Set<WeekDays> = []
+    private(set) var selectedDates: Set<Int> = []
     private var selectedDays: [String] = []
         
     private func configCellLayer(at indexPath: IndexPath, cell: SheduleCollectionViewCell) {
@@ -11,7 +11,7 @@ final class SheduleCollectionViewCellHelper: NSObject {
             cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         }
 
-        if indexPath.row == WeekDays.allCases.count - 1 {
+        if indexPath.row == Calendar.current.weekdaySymbols.count - 1 {
             cell.layer.masksToBounds = true
             cell.layer.cornerRadius = Constants.cornerRadius
             cell.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
@@ -32,7 +32,13 @@ extension SheduleCollectionViewCellHelper: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         configCellLayer(at: indexPath, cell: cell)
-        let cellDay = WeekDays.allCases[indexPath.row].rawValue
+        
+        var dayNumber = indexPath.row + 1
+        if dayNumber == 7 {
+            dayNumber = 0
+        }
+        
+        let cellDay = Calendar.current.weekdaySymbols[safe: dayNumber]
         cell.config(day: cellDay)
         cell.delegate = self
         cell.indexPath = indexPath
@@ -40,7 +46,7 @@ extension SheduleCollectionViewCellHelper: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        WeekDays.allCases.count
+        Calendar.current.weekdaySymbols.count
     }
 }
 
@@ -62,12 +68,10 @@ extension SheduleCollectionViewCellHelper: UICollectionViewDelegateFlowLayout {
 extension SheduleCollectionViewCellHelper: SheduleCollectionViewCellProtocol {
     func getSelectedDay(_ indexPath: IndexPath?, select: Bool) {
         guard let indexPath else { return }
-        let day = WeekDays.allCases[indexPath.row]
-        
         if select {
-            selectedDates.insert(day)
+            selectedDates.insert(indexPath.row)
         } else {
-            selectedDates.remove(day)
+            selectedDates.remove(indexPath.row)
         }
     }
 }

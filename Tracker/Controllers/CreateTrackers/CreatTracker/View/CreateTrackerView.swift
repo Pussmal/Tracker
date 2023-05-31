@@ -203,7 +203,7 @@ final class CreateTrackerView: UIView {
         sheduleCategoryTableViewHelper.setCategory(category: category)
     }
     
-    func setShedule(with shedule: String?) {
+    func setSchedule(with shedule: String?) {
         sheduleCategoryTableViewHelper.setSchedule(schedule: shedule)
     }
         

@@ -13,7 +13,7 @@ protocol DataProviderProtocol {
     func numberOfRowsInSection(_ section: Int) -> Int
     func getTracker(at indexPath: IndexPath) -> Tracker?
     func getTrackersCategory(atTrackerIndexPath indexPath: IndexPath) -> TrackerCategoryCoreData?
-    func getSectionTitle(at secrion: Int) -> String?
+    func getSectionTitle(at section: Int) -> String?
     
     func loadTrackers(from date: Date, with filterString: String?) throws
     
@@ -103,10 +103,10 @@ extension DataProvider: DataProviderProtocol {
     }
     
     func loadTrackers(from date: Date, with filterString: String?) throws {
-        let currentDayWeek = Date.getStringWeekday(from: date)
+        let currentDayStringIndex = Date.getCurrentDayStringIndex(at: date)
         var predicates: [NSPredicate] = []
         
-        let weekdayPredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), currentDayWeek)
+        let weekdayPredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), currentDayStringIndex)
         predicates.append(weekdayPredicate)
         
         if let filterString {

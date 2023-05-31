@@ -7,10 +7,23 @@ extension Date {
         return date?.addingTimeInterval(24*3600) ?? Date()
     }
     
-    static func getStringWeekday(from date: Date) -> String {
+    static func getCurrentDayStringIndex(at date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "E"
-        let date = dateFormatter.string(from: date)
-        return date
+        let currentDayWeek = dateFormatter.string(from: date)
+        let numberOfDay = Calendar.current.shortWeekdaySymbols
+        var currentNumberOfDay = ""
+    
+        for (index, shortSymbols) in numberOfDay.enumerated() {
+            if currentDayWeek == shortSymbols {
+                //Мне нужно чтобы у текущего дня был индекс на один меньше, так как первый день понедельник с индексом 0
+                var currentIndex = index - 1
+                if currentIndex < 0 { currentIndex = 6 }
+                currentNumberOfDay = String(currentIndex)
+                break
+            }
+        }
+        
+        return currentNumberOfDay
     }
 }

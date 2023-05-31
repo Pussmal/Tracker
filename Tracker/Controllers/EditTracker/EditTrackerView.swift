@@ -37,7 +37,7 @@ final class EditTrackerView: UIView {
     
     private var emojiAndColorCollectionViewHelper: ColorAndEmojiCollectionViewHelper
     private var scheduleCategoryTableViewHelper: ScheduleCategoryTableViewHelper
-    private var nameTrackerTextFieldHelper =  NameTrackerTextFieldHelper()
+    private var nameTrackerTextFieldHelper = NameTrackerTextFieldHelper()
     
     private var emoji: String?
     private var color: UIColor?

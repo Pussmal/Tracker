@@ -13,17 +13,17 @@ final class CreateTrackerViewController: UIViewController {
     
     // MARK: public properties
     weak var delegate: CreateTrackerViewControllerDelegate?
-        
+    
     //MARK: Helpres
     private struct ViewControllerConstants {
         static let habitTitle = "Новая привычка"
         static let eventTitle = "Новое нерегулярное событие"
     }
-
+    
     // MARK: private properties
     private var typeTracker: TypeTracker
     private var selectedCategory: TrackerCategoryCoreData?
-    private var stringDatesArray: [String]?
+    private var datesArray: [String] = []
     
     private var isHabit: Bool {
         switch typeTracker {
@@ -34,14 +34,6 @@ final class CreateTrackerViewController: UIViewController {
         }
     }
         
-    private var stringSelectedDates: String {
-        if stringDatesArray?.count == 7 {
-            return "Каждый день"
-        } else {
-            return stringDatesArray?.joined(separator: ", ") ?? ""
-        }
-    }
-    
     private var tracker: Tracker?
     private let dataProvider = DataProvider()
     
@@ -91,24 +83,22 @@ final class CreateTrackerViewController: UIViewController {
 // MARK: CreateTrackerViewDelegate
 extension CreateTrackerViewController: CreateTrackerViewDelegate {
     func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String) {
-        if typeTracker == .event {
-            stringDatesArray = WeekDays.allCases.map({ $0.day.shortForm })
-        }
-    
         guard
             let nameTracker,
-            stringDatesArray != nil
+            !datesArray.isEmpty
         else { return }
-            
+        
+        if typeTracker == .event { datesArray = Constants.allWeekDayStringIndexArray }
+        
         tracker = Tracker(
             id: UUID().uuidString,
             name: nameTracker,
             color: color,
             emoji: emoji,
-            schedule: stringDatesArray,
+            schedule: datesArray,
             isHabit: isHabit
         )
-                
+        
         guard let tracker = tracker,
               let selectedCategory
         else { return }
@@ -126,7 +116,7 @@ extension CreateTrackerViewController: CreateTrackerViewDelegate {
         let viewController = createViewController(type: .category)
         present(viewController, animated: true)
     }
-
+    
     func cancelCreate() {
         delegate?.dismissViewController(self)
     }
@@ -169,9 +159,24 @@ extension CreateTrackerViewController: CategoriesViewControllerDelegate {
 
 // MARK: SheduleViewControllerDelegate
 extension CreateTrackerViewController: ScheduleViewControllerDelegate {
-    func setSelectedDates(dates: [WeekDays]) {
-        stringDatesArray = dates.map({ $0.day.shortForm })
-        createTrackerView.setShedule(with: stringSelectedDates)
+    func setSelectedDates(dates: [Int]) {
+        datesArray = dates.map({ String($0) })
+        let stringDatesArray = dates.map({
+            var dayNumber = $0 + 1
+            if dayNumber == 7 {
+                dayNumber = 0
+            }
+            return Calendar.current.shortWeekdaySymbols[dayNumber]
+        })
+        
+        var stringSelectedDates: String
+        if stringDatesArray.count == 7 {
+            stringSelectedDates = "Каждый день"
+        } else {
+            stringSelectedDates = stringDatesArray.joined(separator: ", ")
+        }
+        
+        createTrackerView.setSchedule(with: stringSelectedDates)
         dismiss(animated: true)
     }
 }

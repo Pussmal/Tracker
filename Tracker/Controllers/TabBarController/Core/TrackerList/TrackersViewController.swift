@@ -103,7 +103,7 @@ final class TrackersViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func checkPlugView() {
+    private func checkPlugView() {
         plugView.isHidden = dataProvider.isTrackersForSelectedDate
     }
     
@@ -177,10 +177,11 @@ final class TrackersViewController: UIViewController {
     private func editTracker(at tracker: Tracker, category: TrackerCategoryCoreData, indexPath: IndexPath) {
         let editTypeTracker: EditTypeTracker = tracker.isHabit ? .editHabit : .editEvent
         let countAndCompleted = getDayCountAndDayCompleted(for: tracker.id)
+        let schedule = getSchedule(for: tracker.schedule)
         let editTracker = EditTracker(
             tracker: tracker,
             categoryTitle: category.title ?? "",
-            schedule: tracker.schedule?.joined(separator: ", ") ?? "Error",
+            schedule: schedule,
             checkCountDay: countAndCompleted.count,
             isChecked: countAndCompleted.completed,
             canCheck: today < currentDate,
@@ -224,6 +225,23 @@ final class TrackersViewController: UIViewController {
         
         let viewController = deleteActionSheet
         present(viewController, animated: true)
+    }
+    
+    private func getSchedule(for arraySchedule: [String]?) -> String {
+        guard let arraySchedule else { return "" }
+        guard arraySchedule.count <= 6 else { return "Каждый день" }
+        
+        let numberDay = arraySchedule.compactMap { Int($0) }
+        let shortWeekday = Calendar.current.shortWeekdaySymbols
+        var scheduleArray: [String] = []
+        
+        numberDay.forEach {
+            var index = $0 + 1
+            if index > 6 { index = 0 }
+            scheduleArray.append(shortWeekday[index])
+        }
+  
+        return scheduleArray.joined(separator: ", ")
     }
 }
 
