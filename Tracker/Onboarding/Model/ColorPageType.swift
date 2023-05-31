@@ -12,16 +12,7 @@ enum ColorPageType: CaseIterable {
     case blue
     case red
  
-    var viewController: UIViewController {
-        switch self {
-        case .blue:
-            return OnboardingViewController(colorPage: self.colorPage)
-        case .red:
-            return OnboardingViewController(colorPage: self.colorPage)
-        }
-    }
-
-    private var colorPage: ColorPage {
+    var colorPage: ColorPage {
         ColorPage(backgroundImageName: self.imageName, onboardingInfoText: self.infoText)
     }
     

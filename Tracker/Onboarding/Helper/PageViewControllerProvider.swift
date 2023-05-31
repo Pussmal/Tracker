@@ -7,7 +7,7 @@ protocol PageViewControllerProviderProtocol {
 }
 
 final class PageViewControllerProvider {
-    private var viewControllers: [UIViewController] = ColorPageType.allCases.compactMap { $0.viewController }
+    private var viewControllers: [UIViewController] = ColorPageType.allCases.compactMap { OnboardingViewController(colorPage: $0.colorPage) }
 }
 
 extension PageViewControllerProvider: PageViewControllerProviderProtocol {

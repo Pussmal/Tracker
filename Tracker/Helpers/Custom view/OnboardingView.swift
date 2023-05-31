@@ -43,6 +43,8 @@ final class OnboardingView: UIView {
             action: #selector(okButtonTapped),
             for: .touchUpInside
         )
+        button.backgroundColor = .black
+        button.setTitleColor(.white, for: .normal)
         return button
     }()
     
