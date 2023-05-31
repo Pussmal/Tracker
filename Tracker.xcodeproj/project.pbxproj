@@ -21,6 +21,9 @@
 		5B5C037B2A2095F7002B7452 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 5B5C037D2A2095F7002B7452 /* Localizable.stringsdict */; };
 		5B5E993A2A276398006B6974 /* PinnedTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E99392A276398006B6974 /* PinnedTracker.swift */; };
 		5B5E993C2A276638006B6974 /* IndexPathMarshalling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E993B2A276638006B6974 /* IndexPathMarshalling.swift */; };
+		5B5E993F2A27B05C006B6974 /* FiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E993E2A27B05C006B6974 /* FiltersViewController.swift */; };
+		5B5E99422A27B2A7006B6974 /* FilterCollectionViewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E99412A27B2A7006B6974 /* FilterCollectionViewProvider.swift */; };
+		5B5E99472A27BC3F006B6974 /* FilterCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E99462A27BC3F006B6974 /* FilterCollectionViewCell.swift */; };
 		5B6A1DF229D19784006BD980 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 5B6A1DF129D19784006BD980 /* .gitignore */; };
 		5B6A1DF629D19EDB006BD980 /* UIColor+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6A1DF529D19EDB006BD980 /* UIColor+extension.swift */; };
 		5B6A1DF829D1A804006BD980 /* UIFont+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6A1DF729D1A804006BD980 /* UIFont+extension.swift */; };
@@ -94,6 +97,9 @@
 		5B5C037C2A2095F7002B7452 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		5B5E99392A276398006B6974 /* PinnedTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedTracker.swift; sourceTree = "<group>"; };
 		5B5E993B2A276638006B6974 /* IndexPathMarshalling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexPathMarshalling.swift; sourceTree = "<group>"; };
+		5B5E993E2A27B05C006B6974 /* FiltersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersViewController.swift; sourceTree = "<group>"; };
+		5B5E99412A27B2A7006B6974 /* FilterCollectionViewProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCollectionViewProvider.swift; sourceTree = "<group>"; };
+		5B5E99462A27BC3F006B6974 /* FilterCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCollectionViewCell.swift; sourceTree = "<group>"; };
 		5B6A1DF129D19784006BD980 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		5B6A1DF529D19EDB006BD980 /* UIColor+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+extension.swift"; sourceTree = "<group>"; };
 		5B6A1DF729D1A804006BD980 /* UIFont+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+extension.swift"; sourceTree = "<group>"; };
@@ -176,9 +182,44 @@
 			path = Stringsdict;
 			sourceTree = "<group>";
 		};
+		5B5E993D2A27B039006B6974 /* FilterTrackers */ = {
+			isa = PBXGroup;
+			children = (
+				5B5E99482A27BCEC006B6974 /* Controller */,
+				5B5E99432A27BC01006B6974 /* View */,
+				5B5E99402A27B28F006B6974 /* Helper */,
+			);
+			path = FilterTrackers;
+			sourceTree = "<group>";
+		};
+		5B5E99402A27B28F006B6974 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				5B5E99412A27B2A7006B6974 /* FilterCollectionViewProvider.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		5B5E99432A27BC01006B6974 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5B5E99462A27BC3F006B6974 /* FilterCollectionViewCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		5B5E99482A27BCEC006B6974 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5B5E993E2A27B05C006B6974 /* FiltersViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		5B6A1DF329D197C1006BD980 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5B5E993D2A27B039006B6974 /* FilterTrackers */,
 				5B88D8DF29D3490300A325E4 /* TabBarController */,
 				5BAAF5602A2326BE002A23AA /* EditTracker */,
 				5B88D8DE29D348EE00A325E4 /* CreateTrackers */,
@@ -621,6 +662,7 @@
 				5B5E993C2A276638006B6974 /* IndexPathMarshalling.swift in Sources */,
 				5B0662EA29D8632A001A5A54 /* PlugView.swift in Sources */,
 				5B7D879629D16EDD00765744 /* TrackersViewController.swift in Sources */,
+				5B5E99472A27BC3F006B6974 /* FilterCollectionViewCell.swift in Sources */,
 				5BF1820329F6A09E00AC5510 /* TrackerRecordStore.swift in Sources */,
 				5B88D8FB29D4487500A325E4 /* Collection+extension.swift in Sources */,
 				5B88D91629D5BC2000A325E4 /* NameTrackerTextFieldHelper.swift in Sources */,
@@ -631,6 +673,8 @@
 				5BB5F7AE2A0E0EB300670595 /* CategoriesViewModel.swift in Sources */,
 				5B88D8E729D34D7500A325E4 /* UIViewController+extension.swift in Sources */,
 				5B0662DE29D6A33E001A5A54 /* EditCategoryViewTextFieldHelper.swift in Sources */,
+				5B5E993F2A27B05C006B6974 /* FiltersViewController.swift in Sources */,
+				5B5E99422A27B2A7006B6974 /* FilterCollectionViewProvider.swift in Sources */,
 				5BB5F7B32A10C81000670595 /* OnboardingViewController.swift in Sources */,
 				5BBB6AFC29E6952B00027985 /* ScheduleCategoryTableViewModel.swift in Sources */,
 				5B49C09229ED1BCE008EE30A /* Date+extension.swift in Sources */,

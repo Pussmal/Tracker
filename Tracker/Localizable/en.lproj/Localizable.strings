@@ -32,3 +32,10 @@ pinnedCategory = "Pinned";
 
 toPinTracker = "To pin";
 toUnpinTracker = "To unpin";
+
+filterTitle = Filters;
+
+AllTrackers = "All trackers";
+TrackersForToday = "Trackers for today";
+Completed = Completed;
+NotCompleted = "Not completed";

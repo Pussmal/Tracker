@@ -32,3 +32,11 @@ pinnedCategory = "Закрепленные";
 
 toPinTracker = "Закрепить";
 toUnpinTracker = "Открепить";
+
+filterTitle = "Фильтры";
+
+AllTrackers = "Все трекеры";
+TrackersForToday = "Трекеры на сегодня";
+Completed = "Завершенные";
+NotCompleted = "Не завершенные";
+   

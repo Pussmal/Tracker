@@ -34,13 +34,13 @@ final class CategoriesViewModel {
 extension CategoriesViewModel: CategoriesViewModelProtocol {
     var numberOfRows: Int {
         guard let numberOfRows = categoryStore.fetchedResultsController.sections?[0].numberOfObjects else { return 0 }
-        //при первом включении мы создаем категорию закрепленные, нам ее показывать не нужно, поэтому уменьшаю на 1
+        //при первом запуске мы создаем категорию "закрепленные", нам ее показывать не нужно, поэтому уменьшаю на 1
         return numberOfRows - 1
     }
     
     func didSelectCategory(by indexPath: IndexPath) -> TrackerCategoryCoreData? {
         var indexPath = indexPath
-        //при первом включении мы создаем категорию закрепленные, нам ее показывать не нужно, поэтому для отображения прибавляю 1
+        //при первом запуске мы создаем категорию "закрепленные", нам ее показывать не нужно, поэтому чтобы она не нажималась прибавляю 1
         if indexPath.row >= 0 {
             indexPath.row += 1
         }
@@ -49,13 +49,13 @@ extension CategoriesViewModel: CategoriesViewModelProtocol {
     
     func categoryCellViewModel(at indexPath: IndexPath) -> CategoryCellViewModel? {
         var indexPath = indexPath
-        //при первом включении мы создаем категорию закрепленные, нам ее показывать не нужно, поэтому для отображения прибавляю 1
+        //при первом запуске мы создаем категорию закрепленные, нам ее показывать не нужно, поэтому для отображения прибавляю 1
         if indexPath.row >= 0 {
             indexPath.row += 1
         }
         
         guard let category = categoryStore.getTrackerCategory(by: indexPath) else { return nil }
-        let isSelected = selectedCategory == category.title ? true : false
+        let isSelected = selectedCategory == category.title
         return CategoryCellViewModel(category: category, isSelect: isSelected)
     }
     
@@ -71,7 +71,7 @@ extension CategoriesViewModel: CategoriesViewModelProtocol {
     
     func needToHidePlugView() {
         let checkedValue = categoryStore.fetchedResultsController.sections?[0].numberOfObjects
-        //при первом включении мы создаем категорию закрепленные, нам ее показывать не нужно, поэтому plug показываем даже если одна категория
+        //при первом запуске мы создаем категорию закрепленные, нам ее показывать не нужно, поэтому plug показываем даже если одна категория
         let needToHidePlugView = checkedValue != 0 && checkedValue != 1
         needToHidePlugView ? hidePlugView?(true) : hidePlugView?(false)
     }

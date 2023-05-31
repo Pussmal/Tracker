@@ -13,6 +13,7 @@ final class TrackersViewController: UIViewController {
         static let deleteActionTitle = NSLocalizedString("deleteActionTitle", comment: "Text for action sheep delete button")
         static let cancelActionSheetButtonTitle = NSLocalizedString("cancelActionSheetButtonTitle", comment: "Text for action sheep cancel button")
         static let editActionTitle = NSLocalizedString("editActionTitle", comment: "Edit title for UIContextmenu")
+        static let filterButtonTitle = NSLocalizedString("filterTitle", comment: "Title for filter button")
     }
     
     // MARK: private properties
@@ -90,8 +91,17 @@ final class TrackersViewController: UIViewController {
     
     private lazy var plugView: PlugView = {
         let plugView = PlugView(frame: .zero, plug: .trackers)
-        plugView.isHidden = true
+        plugView.alpha = 0
         return plugView
+    }()
+    
+    private lazy var filterButton: TrackerButton = {
+        let button = TrackerButton(frame: .zero, title: ViewControllerConstants.filterButtonTitle)
+        button.backgroundColor = .ypBlue
+        button.setTitleColor(.white, for: .normal)
+        button.alpha = 0
+        button.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+        return button
     }()
     
     // MARK: - initialization
@@ -103,11 +113,7 @@ final class TrackersViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private func checkPlugView() {
-        plugView.isHidden = dataProvider.isTrackersForSelectedDate
-    }
-    
+        
     // MARK: Override
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -130,10 +136,13 @@ final class TrackersViewController: UIViewController {
     }
     
     private func addSubviews() {
-        view.addSubViews(collectionView, plugView)
+        view.addSubViews(collectionView, plugView, filterButton)
     }
     
     private func activateConstraints() {
+        let filterButtonWidth: CGFloat = 114
+        let filterButtonHeight: CGFloat = 50
+        
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.indentationFromEdges),
@@ -142,6 +151,11 @@ final class TrackersViewController: UIViewController {
             
             plugView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             plugView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
+            filterButton.widthAnchor.constraint(equalToConstant: filterButtonWidth),
+            filterButton.heightAnchor.constraint(equalToConstant: filterButtonHeight),
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -17),
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     
@@ -158,6 +172,19 @@ final class TrackersViewController: UIViewController {
         definesPresentationContext = true
     }
     
+    private func checkPlugView() {
+        if dataProvider.isTrackersForSelectedDate {
+            self.plugView.alpha = 0
+            self.filterButton.alpha = 1
+        } else {
+            UIView.animate(withDuration: 0.3) { [weak self] in
+                guard let self else { return }
+                self.filterButton.alpha = 0
+                self.plugView.alpha = 1
+            }
+        }
+    }
+    
     @objc
     private func addTrackerButtonTapped() {
         showTypeTrackerViewController()
@@ -167,6 +194,20 @@ final class TrackersViewController: UIViewController {
     private func changedDate() {
         try? dataProvider.loadTrackers(from: datePicker.date, with: nil)
         presentedViewController?.dismiss(animated: false, completion: nil)
+    }
+    
+    @objc
+    private func filterButtonTapped() {
+        filterButton.showAnimation { [weak self] in
+            guard let self else { return }
+            self.showFilterViewController()
+        }
+    }
+    
+    private func showFilterViewController() {
+        let viewController = FiltersViewController()
+        let navigationViewController = UINavigationController(rootViewController: viewController)
+        present(navigationViewController, animated: true)
     }
     
     private func getDayCountAndDayCompleted(for trackerId: String) -> (count: Int, completed: Bool) {
@@ -262,8 +303,6 @@ final class TrackersViewController: UIViewController {
         let newTracker = PinnedTracker(tracker: tracker, idOldCategory: tracker.idCategory ?? "", oldIndexPath: oldIndexPath)
         dataProvider.unpinnedTracker(unpinned: newTracker, deleteTrackerAt: indexPath)
         collectionView.reloadData()
-        
-        // print("изменить категорию, удалить из трекера id старой категории, поменять свойств isPinnet на false, обновить экран, сделать fetchupdate у фетчконтроллера")
     }
 }
 
