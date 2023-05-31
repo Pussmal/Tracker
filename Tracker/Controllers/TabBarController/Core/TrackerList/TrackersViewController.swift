@@ -300,7 +300,12 @@ extension TrackersViewController: UICollectionViewDataSource {
         else { return UICollectionViewCell() }
         
         let countAndCompleted = getDayCountAndDayCompleted(for: tracker.id)
-        cell.config(tracker: tracker, completedDaysCount: countAndCompleted.count, completed: countAndCompleted.completed)
+        cell.config(
+            tracker: tracker,
+            completedDaysCount: countAndCompleted.count,
+            completed: countAndCompleted.completed,
+            isPinned: tracker.isPinned
+        )
         cell.enabledCheckTrackerButton(enabled: today < currentDate)
         cell.delegate = self
         cell.interaction = UIContextMenuInteraction( delegate: self)
@@ -315,6 +320,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
         
+        // у нас есть дефолтная категория "Закрепленные", этим условием устанавливаем для нее title если она отображается, в остальных случаем тащим title из БД
         guard indexPath.section != 0 else {
             let pinnedCategoryTitle = NSLocalizedString("pinnedCategory", comment: "")
             view.config(title: pinnedCategoryTitle)
