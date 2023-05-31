@@ -15,6 +15,7 @@ final class SheduleCollectionViewCellHelper: NSObject {
             cell.layer.masksToBounds = true
             cell.layer.cornerRadius = Constants.cornerRadius
             cell.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+            cell.hideLineView()
         }
     }
 }
@@ -74,3 +75,5 @@ extension SheduleCollectionViewCellHelper: SheduleCollectionViewCellProtocol {
         }
     }
 }
+
+
