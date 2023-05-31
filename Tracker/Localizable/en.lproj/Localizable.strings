@@ -23,6 +23,8 @@ EventButtonTitle = "Not a regular event";
 SearchBarPlaceholderText = Search;
 SearchBarCancelButtonText = Cancel;
 deleteActionSheetMessage = "Delete this tracker?";
-deleteActionSheetButtonTitle = Delete;
+deleteActionTitle = Delete;
 cancelActionSheetButtonTitle = Cancel;
+editActionTitle = Edit;
 
+everyDay = "Every day";

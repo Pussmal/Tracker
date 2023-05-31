@@ -23,5 +23,8 @@ EventButtonTitle = "Нерегулярное событие";
 SearchBarPlaceholderText = "Поиск";
 SearchBarCancelButtonText = "Отмена";
 deleteActionSheetMessage = "Уверены что хотите удалить трекер?";
-deleteActionSheetButtonTitle = "Удалить";
+deleteActionTitle = "Удалить";
 cancelActionSheetButtonTitle = "Отменить";
+editActionTitle = "Редактировать";
+
+everyDay = "Каждый день";

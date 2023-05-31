@@ -10,8 +10,9 @@ final class TrackersViewController: UIViewController {
         static let searchBarPlaceholderText = NSLocalizedString("SearchBarPlaceholderText", comment: "Text for searchBar's placeholder")
         static let searchBarCancelButtonText = NSLocalizedString("SearchBarCancelButtonText", comment: "Text for searchBar's cancel button")
         static let deleteActionSheetMessage = NSLocalizedString("deleteActionSheetMessage", comment: "Text for action sheep title")
-        static let deleteActionSheetButtonTitle = NSLocalizedString("deleteActionSheetButtonTitle", comment: "Text for action sheep delete button")
+        static let deleteActionTitle = NSLocalizedString("deleteActionTitle", comment: "Text for action sheep delete button")
         static let cancelActionSheetButtonTitle = NSLocalizedString("cancelActionSheetButtonTitle", comment: "Text for action sheep cancel button")
+        static let editActionTitle = NSLocalizedString("editActionTitle", comment: "Edit title for UIContextmenu")
     }
     
     // MARK: private properties
@@ -206,7 +207,7 @@ final class TrackersViewController: UIViewController {
                 preferredStyle: .actionSheet
             )
             let deleteAction = UIAlertAction(
-                title: ViewControllerConstants.deleteActionSheetButtonTitle,
+                title: ViewControllerConstants.deleteActionTitle,
                 style: .destructive) { [weak self] _ in
                     guard let self = self else { return }
                     do {
@@ -229,7 +230,7 @@ final class TrackersViewController: UIViewController {
     
     private func getSchedule(for arraySchedule: [String]?) -> String {
         guard let arraySchedule else { return "" }
-        guard arraySchedule.count <= 6 else { return "Каждый день" }
+        guard arraySchedule.count <= 6 else { return Constants.stringForCheckedDay }
         
         let numberDay = arraySchedule.compactMap { Int($0) }
         let shortWeekday = Calendar.current.shortWeekdaySymbols
@@ -240,7 +241,7 @@ final class TrackersViewController: UIViewController {
             if index > 6 { index = 0 }
             scheduleArray.append(shortWeekday[index])
         }
-  
+        
         return scheduleArray.joined(separator: ", ")
     }
 }
@@ -377,14 +378,17 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
             
             return UIMenu(children: [
                 UIAction(title: "Закрепить") { _ in },
-                UIAction(title: "Редактировать") { [weak self] _ in
+                UIAction(title: ViewControllerConstants.editActionTitle) { [weak self] _ in
                     guard let self else { return }
                     self.editTracker(at: tracker, category: category, indexPath: indexPath)
                 },
-                UIAction(title: "Удалить", attributes: .destructive, handler: { [weak self] _ in
-                    guard let self else { return }
-                    self.showActionSheepForDeleteTracker(trackerIndexPath: indexPath)
-                } )
+                UIAction(
+                    title: ViewControllerConstants.deleteActionTitle,
+                    attributes: .destructive,
+                    handler: { [weak self] _ in
+                        guard let self else { return }
+                        self.showActionSheepForDeleteTracker(trackerIndexPath: indexPath)
+                    } )
             ])
         })
     }

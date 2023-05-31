@@ -100,7 +100,7 @@ extension EditTrackerViewController: EditTrackerViewDelegate {
             color: color,
             emoji: emoji,
             schedule: datesArray,
-            isHabit: isHabit
+            isHabit: editTracker.tracker.isHabit
         )
         
         try? dataProvider.resaveTracker(
@@ -182,7 +182,7 @@ extension EditTrackerViewController: ScheduleViewControllerDelegate {
         
         var stringSelectedDates: String
         if stringDatesArray.count == 7 {
-            stringSelectedDates = "Каждый день"
+            stringSelectedDates = Constants.stringForCheckedDay
         } else {
             stringSelectedDates = stringDatesArray.joined(separator: ", ")
         }

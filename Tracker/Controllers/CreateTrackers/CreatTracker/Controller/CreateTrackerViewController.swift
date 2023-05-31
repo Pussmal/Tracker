@@ -83,12 +83,11 @@ final class CreateTrackerViewController: UIViewController {
 // MARK: CreateTrackerViewDelegate
 extension CreateTrackerViewController: CreateTrackerViewDelegate {
     func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String) {
+        if typeTracker == .event { datesArray = Constants.allWeekDayStringIndexArray }
         guard
             let nameTracker,
             !datesArray.isEmpty
         else { return }
-        
-        if typeTracker == .event { datesArray = Constants.allWeekDayStringIndexArray }
         
         tracker = Tracker(
             id: UUID().uuidString,
@@ -171,7 +170,7 @@ extension CreateTrackerViewController: ScheduleViewControllerDelegate {
         
         var stringSelectedDates: String
         if stringDatesArray.count == 7 {
-            stringSelectedDates = "Каждый день"
+            stringSelectedDates = Constants.stringForCheckedDay
         } else {
             stringSelectedDates = stringDatesArray.joined(separator: ", ")
         }

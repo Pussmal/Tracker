@@ -27,13 +27,6 @@ final class SheduleCollectionViewCell: UICollectionViewCell {
         return switchView
     }()
     
-    private lazy var lineView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .ypGray
-        return view
-    }()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -49,10 +42,6 @@ final class SheduleCollectionViewCell: UICollectionViewCell {
         dayLabel.text = day
     }
     
-    func hideLineView() {
-        lineView.isHidden = true
-    }
-    
     private func setupView() {
         backgroundColor = .clear
         contentView.backgroundColor = .ypBackground
@@ -61,8 +50,7 @@ final class SheduleCollectionViewCell: UICollectionViewCell {
     private func addSubview() {
         contentView.addSubViews(
             dayLabel,
-            switchView,
-            lineView
+            switchView
         )
     }
     
@@ -74,11 +62,6 @@ final class SheduleCollectionViewCell: UICollectionViewCell {
             
             switchView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             switchView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.indentationFromEdges),
-            
-            lineView.leadingAnchor.constraint(equalTo: dayLabel.leadingAnchor),
-            lineView.trailingAnchor.constraint(equalTo: switchView.trailingAnchor),
-            lineView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            lineView.heightAnchor.constraint(equalToConstant: 0.5)
         ])
     }
     
