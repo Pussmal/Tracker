@@ -27,6 +27,7 @@ protocol DataProviderProtocol {
     func deleteTracker(at indexPath: IndexPath) throws
     
     func setPinnedCategory(tracker: PinnedTracker)
+    func unpinnedTracker(unpinned newTracker: PinnedTracker, deleteTrackerAt deleteIndexPath: IndexPath)
 }
 
 final class DataProvider: NSObject {
@@ -195,6 +196,32 @@ extension DataProvider: DataProviderProtocol {
         
         try? deleteTracker(at: tracker.oldIndexPath)
         try? saveTracker(newTracker, in: pinnedCategory)
+        try? fetchedResultsController.performFetch()
+    }
+    
+    func unpinnedTracker(unpinned newTracker: PinnedTracker, deleteTrackerAt deleteIndexPath: IndexPath) {
+      
+        
+        let tracker = Tracker(
+            id: newTracker.tracker.id,
+            name: newTracker.tracker.name,
+            color: newTracker.tracker.color,
+            emoji: newTracker.tracker.emoji,
+            schedule: newTracker.tracker.schedule,
+            isHabit: newTracker.tracker.isHabit,
+            isPinned: false,
+            idCategory: nil,
+            indexPathInCategory: nil)
+        
+        guard
+            let idCategory = newTracker.tracker.idCategory,
+            let stringIndexPathCategory = newTracker.tracker.indexPathInCategory,
+            let indexPath = IndexPathMarshalling().arrayFromString(string: stringIndexPathCategory),
+            let category = trackerCategoryStore.getTrackerCategoryCoreData(byCategoryId: idCategory)
+        else { return }
+       
+        try? deleteTracker(at: deleteIndexPath)
+        trackerStore.addTrackerAt(indexPath: indexPath, tracker: tracker, inCategory: category)
         try? fetchedResultsController.performFetch()
     }
 }

@@ -70,9 +70,14 @@ final class TrackerStore: NSObject {
             schedule: scheduleMarshaling.arrayFromString(string: scheduleString),
             isHabit: trackerCoreData.isHabit,
             isPinned: trackerCoreData.isPinned,
-            idCategory: nil,
-            indexPathInCategory: nil
+            idCategory: trackerCoreData.idCategory,
+            indexPathInCategory: trackerCoreData.indexPathInCategory
         )
+    }
+    
+    func addTrackerAt(indexPath: IndexPath, tracker: Tracker, inCategory category: TrackerCategoryCoreData) {
+        creatTrackerCoreData(from: tracker, with: category)
+        saveContext()
     }
     
     private func creatTrackerCoreData(from tracker: Tracker, with category: TrackerCategoryCoreData)  {

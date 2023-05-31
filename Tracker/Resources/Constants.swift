@@ -12,4 +12,6 @@ public struct Constants {
     static let allWeekDayStringIndexArray = ["0", "1", "2", "3", "4", "5", "6"]
     
     static let stringForCheckedDay = NSLocalizedString("everyDay", comment: "")
+    
+    static let pinnedCategory = "pinned"
 }

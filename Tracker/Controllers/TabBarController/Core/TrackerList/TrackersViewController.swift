@@ -256,7 +256,13 @@ final class TrackersViewController: UIViewController {
     }
     
     private func unpinTracker(tracker: Tracker, category: TrackerCategoryCoreData, indexPath: IndexPath) {
-        print("открепляем")
+        guard let indexPathInCategory = tracker.indexPathInCategory,
+              let oldIndexPath = IndexPathMarshalling().arrayFromString(string: indexPathInCategory)
+        else { return }
+        let newTracker = PinnedTracker(tracker: tracker, idOldCategory: tracker.idCategory ?? "", oldIndexPath: oldIndexPath)
+        dataProvider.unpinnedTracker(unpinned: newTracker, deleteTrackerAt: indexPath)
+        collectionView.reloadData()
+        
         // print("изменить категорию, удалить из трекера id старой категории, поменять свойств isPinnet на false, обновить экран, сделать fetchupdate у фетчконтроллера")
     }
 }
@@ -321,13 +327,14 @@ extension TrackersViewController: UICollectionViewDataSource {
         }
         
         // у нас есть дефолтная категория "Закрепленные", этим условием устанавливаем для нее title если она отображается, в остальных случаем тащим title из БД
-        guard indexPath.section != 0 else {
+        let categoryTitle = dataProvider.getSectionTitle(at: indexPath.section)
+        
+        guard let categoryTitle, categoryTitle != Constants.pinnedCategory else {
             let pinnedCategoryTitle = NSLocalizedString("pinnedCategory", comment: "")
             view.config(title: pinnedCategoryTitle)
             return view
         }
         
-        let categoryTitle = dataProvider.getSectionTitle(at: indexPath.section)
         view.config(title: categoryTitle)
         return view
     }

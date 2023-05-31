@@ -9,6 +9,7 @@ protocol TrackerCategoryStoreProtocol: AnyObject {
     func getTrackerCategoryCoreData(by indexPath: IndexPath) -> TrackerCategoryCoreData?
     func deleteCategory(delete: TrackerCategoryCoreData)
     func changeCategory(at indexPath: IndexPath, newCategoryTitle: String?)
+    func getTrackerCategoryCoreData(byCategoryId id: String) -> TrackerCategoryCoreData?
 }
 
 final class TrackerCategoryStore: NSObject {
@@ -48,7 +49,7 @@ final class TrackerCategoryStore: NSObject {
     }
     
     private func creatPinnedCategory() {
-        let trackerCategory = TrackerCategory(title: NSLocalizedString("pinnedCategory", comment: "Pinned category title"))
+        let trackerCategory = TrackerCategory(title: Constants.pinnedCategory)
         addTrackerCategoryCoreData(from: trackerCategory)
         UserDefaults.standard.set(true, forKey: Constants.creatPinnedCategory)
     }
@@ -102,5 +103,15 @@ extension TrackerCategoryStore: TrackerCategoryStoreProtocol {
         let oldCategory = fetchedResultsController.object(at: indexPath)
         oldCategory.title = newCategoryTitle
         saveContext()
+    }
+    
+    func getTrackerCategoryCoreData(byCategoryId id: String) -> TrackerCategoryCoreData? {
+        guard let categoriesCoreData = fetchedResultsController.fetchedObjects else { return nil }
+        for datum in categoriesCoreData {
+            if id == datum.idCategory {
+                return datum
+            }
+        }
+        return nil
     }
 }
