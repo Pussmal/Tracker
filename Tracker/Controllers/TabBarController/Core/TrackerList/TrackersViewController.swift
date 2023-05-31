@@ -19,6 +19,7 @@ final class TrackersViewController: UIViewController {
     // MARK: private properties
     private let searchController = UISearchController(searchResultsController: nil)
     private var dataProvider: DataProviderProtocol
+    private var selectedFilter: FilterType = .trackersForToday
     
     private var currentDate: Date {
         let date = datePicker.date
@@ -205,7 +206,9 @@ final class TrackersViewController: UIViewController {
     }
     
     private func showFilterViewController() {
-        let viewController = FiltersViewController()
+        let filterProvider = FilterCollectionViewProvider()
+        filterProvider.delegate = self
+        let viewController = FiltersViewController(selectedFilter: selectedFilter, provider: filterProvider)
         let navigationViewController = UINavigationController(rootViewController: viewController)
         present(navigationViewController, animated: true)
     }
@@ -487,5 +490,13 @@ extension TrackersViewController: EditTrackerViewControllerDelegate {
         checkPlugView()
         collectionView.reloadData()
         dismissViewController(viewController)
+    }
+}
+
+extension TrackersViewController: FilterCollectionViewProviderDelegate {
+    func getTrackerWithFilter(_ newFilter: FilterType) {
+        selectedFilter = newFilter
+        dismissViewController(self)
+        print(selectedFilter)
     }
 }

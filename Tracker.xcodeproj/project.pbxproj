@@ -24,6 +24,7 @@
 		5B5E993F2A27B05C006B6974 /* FiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E993E2A27B05C006B6974 /* FiltersViewController.swift */; };
 		5B5E99422A27B2A7006B6974 /* FilterCollectionViewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E99412A27B2A7006B6974 /* FilterCollectionViewProvider.swift */; };
 		5B5E99472A27BC3F006B6974 /* FilterCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E99462A27BC3F006B6974 /* FilterCollectionViewCell.swift */; };
+		5B5E994A2A27C6FB006B6974 /* FilterType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E99492A27C6FB006B6974 /* FilterType.swift */; };
 		5B6A1DF229D19784006BD980 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 5B6A1DF129D19784006BD980 /* .gitignore */; };
 		5B6A1DF629D19EDB006BD980 /* UIColor+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6A1DF529D19EDB006BD980 /* UIColor+extension.swift */; };
 		5B6A1DF829D1A804006BD980 /* UIFont+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B6A1DF729D1A804006BD980 /* UIFont+extension.swift */; };
@@ -100,6 +101,7 @@
 		5B5E993E2A27B05C006B6974 /* FiltersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersViewController.swift; sourceTree = "<group>"; };
 		5B5E99412A27B2A7006B6974 /* FilterCollectionViewProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCollectionViewProvider.swift; sourceTree = "<group>"; };
 		5B5E99462A27BC3F006B6974 /* FilterCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCollectionViewCell.swift; sourceTree = "<group>"; };
+		5B5E99492A27C6FB006B6974 /* FilterType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterType.swift; sourceTree = "<group>"; };
 		5B6A1DF129D19784006BD980 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		5B6A1DF529D19EDB006BD980 /* UIColor+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+extension.swift"; sourceTree = "<group>"; };
 		5B6A1DF729D1A804006BD980 /* UIFont+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+extension.swift"; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 			isa = PBXGroup;
 			children = (
 				5B5E99412A27B2A7006B6974 /* FilterCollectionViewProvider.swift */,
+				5B5E99492A27C6FB006B6974 /* FilterType.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -688,6 +691,7 @@
 				5B7D879229D16EDD00765744 /* AppDelegate.swift in Sources */,
 				5B88D8F229D4103000A325E4 /* CreateTrackerViewController.swift in Sources */,
 				5B88D8E329D3498300A325E4 /* TypeTrackerView.swift in Sources */,
+				5B5E994A2A27C6FB006B6974 /* FilterType.swift in Sources */,
 				5B6A1DFA29D1AEE8006BD980 /* TabBarController.swift in Sources */,
 				5BB5F7B02A0E196300670595 /* CategoryCellViewModel.swift in Sources */,
 				5B88D8EB29D351B800A325E4 /* TrackerButton.swift in Sources */,

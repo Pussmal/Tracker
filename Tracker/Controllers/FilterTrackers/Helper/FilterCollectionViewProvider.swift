@@ -1,6 +1,18 @@
 import UIKit
 
+protocol FilterCollectionViewProviderDelegate: AnyObject {
+    func getTrackerWithFilter(_ newFilter: FilterType)
+}
+
+protocol FilterCollectionViewProviderProtocol: AnyObject, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate {
+    func setFilter(selectedFilter: FilterType)
+}
+
 final class FilterCollectionViewProvider: NSObject {
+    
+    weak var delegate: FilterCollectionViewProviderDelegate?
+    private var selectedFilter: FilterType?
+    
     private func configCellLayer(at indexPath: IndexPath, cell: FilterCollectionViewCell) {
         if indexPath.row == 0 {
             cell.layer.masksToBounds = true
@@ -8,7 +20,7 @@ final class FilterCollectionViewProvider: NSObject {
             cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         }
 
-        if indexPath.row == Constants.filterTitleArray.count - 1 {
+        if indexPath.row == FilterType.allCases.count - 1 {
             cell.layer.masksToBounds = true
             cell.layer.cornerRadius = Constants.cornerRadius
             cell.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
@@ -25,18 +37,20 @@ extension FilterCollectionViewProvider: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: FilterCollectionViewCell.cellReuseIdentifier,
             for: indexPath
-        ) as? FilterCollectionViewCell else {
+        ) as? FilterCollectionViewCell,
+        let selectedFilter else {
             return UICollectionViewCell()
         }
       
-        let filterLabelText = Constants.filterTitleArray[safe: indexPath.row]
+        let checkmarkIsHidden = selectedFilter == FilterType.allCases[safe: indexPath.row]
+        let filterLabelText = FilterType.allCases[safe: indexPath.row]?.filterTitle
         configCellLayer(at: indexPath, cell: cell)
-        cell.config(filterLabelText: filterLabelText, checkmarkIsHidden: true)
+        cell.config(filterLabelText: filterLabelText, checkmarkIsHidden: checkmarkIsHidden)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        Constants.filterTitleArray.count
+        FilterType.allCases.count
     }
 }
 
@@ -55,3 +69,15 @@ extension FilterCollectionViewProvider: UICollectionViewDelegateFlowLayout {
     }
 }
 
+extension FilterCollectionViewProvider: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let newFilter = FilterType.allCases[safe: indexPath.row] else { return }
+        delegate?.getTrackerWithFilter(newFilter)
+    }
+}
+
+extension FilterCollectionViewProvider: FilterCollectionViewProviderProtocol {
+    func setFilter(selectedFilter: FilterType) {
+        self.selectedFilter = selectedFilter
+    }
+}

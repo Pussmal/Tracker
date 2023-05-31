@@ -8,7 +8,19 @@ final class FiltersViewController: UIViewController {
     }
     
     //MARK: - private properties
-    private let collectionViewProvider = FilterCollectionViewProvider()
+    private let provider: FilterCollectionViewProviderProtocol
+    private let selectedFilter: FilterType
+    
+    // MARK: - initialization
+    init(selectedFilter: FilterType, provider: FilterCollectionViewProviderProtocol) {
+        self.selectedFilter = selectedFilter
+        self.provider = provider
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     //MARK: UI
     private lazy var filterCollectionView: UICollectionView = {
@@ -29,8 +41,8 @@ final class FiltersViewController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.backgroundColor = .clear
-        collectionView.dataSource = collectionViewProvider
-        collectionView.delegate = collectionViewProvider
+        collectionView.dataSource = provider
+        collectionView.delegate = provider
         return collectionView
     }()
     
@@ -39,6 +51,7 @@ final class FiltersViewController: UIViewController {
         setupView()
         addViews()
         activateConstraints()
+        provider.setFilter(selectedFilter: selectedFilter)
     }
     
     private func setupView() {
@@ -59,3 +72,4 @@ final class FiltersViewController: UIViewController {
         ].forEach { $0.isActive = true }
     }
 }
+

@@ -10,12 +10,6 @@ public struct Constants {
     static let creatPinnedCategory = "created"
     
     static let allWeekDayStringIndexArray = ["0", "1", "2", "3", "4", "5", "6"]
-    static let filterTitleArray = [
-        NSLocalizedString("AllTrackers", comment: ""),
-        NSLocalizedString("TrackersForToday", comment: ""),
-        NSLocalizedString("Completed", comment: ""),
-        NSLocalizedString("NotCompleted", comment: "")
-    ]
     
     static let stringForCheckedDay = NSLocalizedString("everyDay", comment: "")
     
