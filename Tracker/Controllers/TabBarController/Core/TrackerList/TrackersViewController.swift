@@ -244,6 +244,21 @@ final class TrackersViewController: UIViewController {
         
         return scheduleArray.joined(separator: ", ")
     }
+    
+    private func pinTracker(tracker: Tracker, category: TrackerCategoryCoreData, indexPath: IndexPath) {
+        let newTracker = PinnedTracker(
+            tracker: tracker,
+            idOldCategory: category.idCategory ?? "",
+            oldIndexPath: indexPath
+        )
+        dataProvider.setPinnedCategory(tracker: newTracker)
+        collectionView.reloadData()
+    }
+    
+    private func unpinTracker(tracker: Tracker, category: TrackerCategoryCoreData, indexPath: IndexPath) {
+        print("открепляем")
+        // print("изменить категорию, удалить из трекера id старой категории, поменять свойств isPinnet на false, обновить экран, сделать fetchupdate у фетчконтроллера")
+    }
 }
 
 // MARK: UICollectionViewDelegateFlowLayout
@@ -298,6 +313,12 @@ extension TrackersViewController: UICollectionViewDataSource {
             withReuseIdentifier: HeaderReusableView.reuseIdentifier,
             for: indexPath) as? HeaderReusableView else {
             return UICollectionReusableView()
+        }
+        
+        guard indexPath.section != 0 else {
+            let pinnedCategoryTitle = NSLocalizedString("pinnedCategory", comment: "")
+            view.config(title: pinnedCategoryTitle)
+            return view
         }
         
         let categoryTitle = dataProvider.getSectionTitle(at: indexPath.section)
@@ -376,8 +397,23 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
         return UIContextMenuConfiguration(actionProvider: { [weak self] actions in
             guard let self else { return UIMenu() }
             
+            var pinActionTitle: String
+            
+            if tracker.isPinned {
+                pinActionTitle = NSLocalizedString("toUnpinTracker", comment: "")
+            } else {
+                pinActionTitle = NSLocalizedString("toPinTracker", comment: "")
+            }
+            
             return UIMenu(children: [
-                UIAction(title: "Закрепить") { _ in },
+                UIAction(title: pinActionTitle) {  [weak self] _ in
+                    guard let self else { return }
+                    if tracker.isPinned {
+                        self.unpinTracker(tracker: tracker, category: category, indexPath: indexPath)
+                    } else {
+                        self.pinTracker(tracker: tracker, category: category, indexPath: indexPath)
+                    }
+                },
                 UIAction(title: ViewControllerConstants.editActionTitle) { [weak self] _ in
                     guard let self else { return }
                     self.editTracker(at: tracker, category: category, indexPath: indexPath)

@@ -69,7 +69,9 @@ final class TrackerStore: NSObject {
             emoji: emoji,
             schedule: scheduleMarshaling.arrayFromString(string: scheduleString),
             isHabit: trackerCoreData.isHabit,
-            isPinned: trackerCoreData.isPinned
+            isPinned: trackerCoreData.isPinned,
+            idCategory: nil,
+            indexPathInCategory: nil
         )
     }
     
@@ -84,6 +86,9 @@ final class TrackerStore: NSObject {
         trackerCoreData.schedule = sheduleString
         trackerCoreData.category = category
         trackerCoreData.isHabit = tracker.isHabit
+        trackerCoreData.idCategory = tracker.idCategory
+        trackerCoreData.indexPathInCategory = tracker.indexPathInCategory
+        trackerCoreData.isPinned = tracker.isPinned
     }
     
     private func creatColorHex(with color: UIColor?) -> String? {

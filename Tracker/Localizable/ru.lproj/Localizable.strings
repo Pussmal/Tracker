@@ -29,3 +29,6 @@ editActionTitle = "Редактировать";
 
 everyDay = "Каждый день";
 pinnedCategory = "Закрепленные";
+
+toPinTracker = "Закрепить";
+toUnpinTracker = "Открепить";

@@ -29,3 +29,6 @@ editActionTitle = Edit;
 
 everyDay = "Every day";
 pinnedCategory = "Pinned";
+
+toPinTracker = "To pin";
+toUnpinTracker = "To unpin";
