@@ -95,7 +95,8 @@ extension CreateTrackerViewController: CreateTrackerViewDelegate {
             color: color,
             emoji: emoji,
             schedule: datesArray,
-            isHabit: isHabit
+            isHabit: isHabit,
+            isPinned: false
         )
         
         guard let tracker = tracker,

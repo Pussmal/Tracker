@@ -7,6 +7,7 @@ struct Tracker {
     let emoji: String
     let schedule: [String]?
     let isHabit: Bool
+    let isPinned: Bool
 }
 
 extension Tracker: Equatable {

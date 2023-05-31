@@ -70,7 +70,9 @@ extension CategoriesViewModel: CategoriesViewModelProtocol {
     }
     
     func needToHidePlugView() {
-        let needToHidePlugView = categoryStore.fetchedResultsController.sections?[0].numberOfObjects != 0
+        let checkedValue = categoryStore.fetchedResultsController.sections?[0].numberOfObjects
+        //при первом включении мы создаем категорию закрепленные, нам ее показывать не нужно, поэтому plug показываем даже если одна категория
+        let needToHidePlugView = checkedValue != 0 && checkedValue != 1
         needToHidePlugView ? hidePlugView?(true) : hidePlugView?(false)
     }
 }

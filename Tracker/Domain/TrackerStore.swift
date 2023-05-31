@@ -68,7 +68,8 @@ final class TrackerStore: NSObject {
             color: colorMarshaling.colorWithHexString(hexString: colorHex),
             emoji: emoji,
             schedule: scheduleMarshaling.arrayFromString(string: scheduleString),
-            isHabit: trackerCoreData.isHabit
+            isHabit: trackerCoreData.isHabit,
+            isPinned: trackerCoreData.isPinned
         )
     }
     

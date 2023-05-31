@@ -100,7 +100,8 @@ extension EditTrackerViewController: EditTrackerViewDelegate {
             color: color,
             emoji: emoji,
             schedule: datesArray,
-            isHabit: editTracker.tracker.isHabit
+            isHabit: editTracker.tracker.isHabit,
+            isPinned: editTracker.tracker.isPinned
         )
         
         try? dataProvider.resaveTracker(
