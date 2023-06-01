@@ -1,5 +1,11 @@
 import UIKit
 
+enum ShowTrackers {
+    case isCompleted
+    case isNotComplited
+    case isAllTrackers
+}
+
 final class TrackersViewController: UIViewController {
     
     // MARK: Constants
@@ -19,7 +25,10 @@ final class TrackersViewController: UIViewController {
     // MARK: private properties
     private let searchController = UISearchController(searchResultsController: nil)
     private var dataProvider: DataProviderProtocol
-    private var selectedFilter: FilterType = .trackersForToday
+    private var selectedFilter: FilterType = .trackersForToday // by default
+    private var showTrackers: ShowTrackers = .isAllTrackers // by default
+    private var completedTracker: [Tracker] = []
+    private var nonCompletedTracker: [Tracker] = []
     
     private var currentDate: Date {
         let date = datePicker.date
@@ -114,7 +123,7 @@ final class TrackersViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-        
+    
     // MARK: Override
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -126,7 +135,7 @@ final class TrackersViewController: UIViewController {
         
         dataProvider.delegate = self
         
-        try? dataProvider.loadTrackers(from: datePicker.date, with: nil)
+        loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
     }
     
     // MARK: Private methods
@@ -174,16 +183,21 @@ final class TrackersViewController: UIViewController {
     }
     
     private func checkPlugView() {
-        if dataProvider.isTrackersForSelectedDate {
-            self.plugView.alpha = 0
-            self.filterButton.alpha = 1
-        } else {
+        // если трекеров в базе нет, показываем заглушку что будем искать? если есть трекеры показываем заглушку не найдено и кнопку фильтрации
+        guard dataProvider.isTrackersInCoreData else {
+            plugView.config(plug: .trackers)
             UIView.animate(withDuration: 0.3) { [weak self] in
                 guard let self else { return }
                 self.filterButton.alpha = 0
                 self.plugView.alpha = 1
             }
+            plugView.isHidden = false
+            return
         }
+        
+        plugView.config(plug: .search)
+        filterButton.alpha = 1
+        plugView.alpha = dataProvider.isTrackersForSelectedDate ? 1 : 0
     }
     
     @objc
@@ -193,7 +207,13 @@ final class TrackersViewController: UIViewController {
     
     @objc
     private func changedDate() {
-        try? dataProvider.loadTrackers(from: datePicker.date, with: nil)
+        loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
+        
+        if currentDate == today {
+            selectedFilter = .trackersForToday
+        } else {
+            selectedFilter = .allTrackers
+        }
         presentedViewController?.dismiss(animated: false, completion: nil)
     }
     
@@ -280,6 +300,7 @@ final class TrackersViewController: UIViewController {
         let shortWeekday = Calendar.current.shortWeekdaySymbols
         var scheduleArray: [String] = []
         
+        // чтобы первый день был понедельник
         numberDay.forEach {
             var index = $0 + 1
             if index > 6 { index = 0 }
@@ -307,6 +328,11 @@ final class TrackersViewController: UIViewController {
         dataProvider.unpinnedTracker(unpinned: newTracker, deleteTrackerAt: indexPath)
         collectionView.reloadData()
     }
+    
+    private func loadTrackers(with showTrackers: ShowTrackers, date: Date, filterString searchText: String?) {
+        try? dataProvider.loadTrackers(from: date, showTrackers: showTrackers, with: searchText)
+    }
+         
 }
 
 // MARK: UICollectionViewDelegateFlowLayout
@@ -333,7 +359,14 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        dataProvider.numberOfRowsInSection(section)
+        switch showTrackers {
+        case .isCompleted:
+            return completedTracker.count
+        case .isNotComplited:
+            return nonCompletedTracker.count
+        case .isAllTrackers:
+            return dataProvider.numberOfRowsInSection(section)
+        }
     }
     
     func collectionView(
@@ -348,6 +381,8 @@ extension TrackersViewController: UICollectionViewDataSource {
         else { return UICollectionViewCell() }
         
         let countAndCompleted = getDayCountAndDayCompleted(for: tracker.id)
+        print(countAndCompleted.completed)
+        
         cell.config(
             tracker: tracker,
             completedDaysCount: countAndCompleted.count,
@@ -368,7 +403,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
         
-        // у нас есть дефолтная категория "Закрепленные", этим условием устанавливаем для нее title если она отображается, в остальных случаем тащим title из БД
+        // у нас есть дефолтная (скрытая) категория "Закрепленные", этим условием устанавливаем для нее title если она отображается, в остальных случаем тащим title из БД
         let categoryTitle = dataProvider.getSectionTitle(at: indexPath.section)
         
         guard let categoryTitle, categoryTitle != Constants.pinnedCategory else {
@@ -395,7 +430,7 @@ extension TrackersViewController {
 // MARK: TypeTrackerViewControllerDelegate
 extension TrackersViewController: TypeTrackerViewControllerDelegate {
     func dismissViewController(_ viewController: UIViewController) {
-        try? dataProvider.loadTrackers(from: datePicker.date, with: nil)
+        loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
         dismiss(animated: true)
     }
 }
@@ -415,7 +450,7 @@ extension TrackersViewController: UISearchResultsUpdating {
     }
     
     private func filterContentForSearchText (_ searchText: String?) {
-        try? dataProvider.loadTrackers(from: datePicker.date, with: searchText)
+        loadTrackers(with: showTrackers, date: datePicker.date, filterString: searchText)
         guard !dataProvider.isTrackersForSelectedDate && searchText != "" else { return }
         plugView.isHidden = false
         plugView.config(plug: .search)
@@ -425,7 +460,7 @@ extension TrackersViewController: UISearchResultsUpdating {
 // MARK: UISearchControllerDelegate
 extension TrackersViewController: UISearchControllerDelegate {
     func didDismissSearchController(_ searchController: UISearchController) {
-        try? dataProvider.loadTrackers(from: datePicker.date, with: nil)
+        loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
         checkPlugView()
         plugView.config(plug: .trackers)
         collectionView.reloadData()
@@ -496,7 +531,44 @@ extension TrackersViewController: EditTrackerViewControllerDelegate {
 extension TrackersViewController: FilterCollectionViewProviderDelegate {
     func getTrackerWithFilter(_ newFilter: FilterType) {
         selectedFilter = newFilter
+        switch newFilter {
+        case .allTrackers:
+            showAllTrackerForCurrentDay()
+        case .trackersForToday:
+            showTrackersForToday()
+        case .completed:
+            showCompletedTrackerForCurrentDay()
+        case .notCompleted:
+            showNonCompletedTrackerForCurrentDay()
+        }
         dismissViewController(self)
-        print(selectedFilter)
+    }
+}
+
+// MARK: Filter methods
+extension TrackersViewController {
+    func showAllTrackerForCurrentDay() {
+        loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
+        showTrackers = .isAllTrackers
+        collectionView.reloadData()
+    }
+    
+    func showTrackersForToday() {
+        loadTrackers(with: showTrackers, date: today, filterString: nil)
+        datePicker.date = Date()
+        showTrackers = .isAllTrackers
+        collectionView.reloadData()
+    }
+    
+    func showCompletedTrackerForCurrentDay() {
+        loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
+        showTrackers = .isCompleted
+        collectionView.reloadData()
+    }
+    
+    func showNonCompletedTrackerForCurrentDay() {
+        loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
+        showTrackers = .isNotComplited
+        collectionView.reloadData()
     }
 }

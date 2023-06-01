@@ -2,6 +2,7 @@ import UIKit
 
 final class FiltersViewController: UIViewController {
     
+    // MARK: - Helpers
     private struct ViewControllerConstant {
         static let titleViewController = NSLocalizedString("filterTitle", comment: "Title view controller")
         static let collectionViewReuseIdentifier = "Cell"
@@ -46,6 +47,7 @@ final class FiltersViewController: UIViewController {
         return collectionView
     }()
     
+    // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -54,6 +56,7 @@ final class FiltersViewController: UIViewController {
         provider.setFilter(selectedFilter: selectedFilter)
     }
     
+    // MARK: - private methods
     private func setupView() {
         title = ViewControllerConstant.titleViewController
         view.backgroundColor = .ypWhite

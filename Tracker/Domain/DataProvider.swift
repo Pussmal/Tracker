@@ -9,13 +9,14 @@ protocol DataProviderProtocol {
     var delegate: DataProviderDelegate? { get set }
     var numberOfSections: Int { get }
     var isTrackersForSelectedDate: Bool { get }
+    var isTrackersInCoreData: Bool { get }
     
     func numberOfRowsInSection(_ section: Int) -> Int
     func getTracker(at indexPath: IndexPath) -> Tracker?
     func getTrackersCategory(atTrackerIndexPath indexPath: IndexPath) -> TrackerCategoryCoreData?
     func getSectionTitle(at section: Int) -> String?
     
-    func loadTrackers(from date: Date, with filterString: String?) throws
+    func loadTrackers(from date: Date, showTrackers: ShowTrackers, with filterString: String?) throws
     
     func getCompletedDayCount(from trackerId: String) -> Int
     func getCompletedDay(from trackerId: String, currentDay: Date) -> Bool
@@ -72,11 +73,18 @@ final class DataProvider: NSObject {
 extension DataProvider: DataProviderProtocol {
     var isTrackersForSelectedDate: Bool {
         guard let objects = fetchedResultsController.fetchedObjects else { return false }
-        return objects.isEmpty ? false : true
+        return objects.isEmpty
     }
     
     var numberOfSections: Int {
         return fetchedResultsController.sections?.count ?? 0
+    }
+    
+    var isTrackersInCoreData: Bool {
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: DataProviderConstants.entityName)
+        let result = try? context.fetch(fetchRequest)
+        guard let isEmpty = result?.isEmpty else { return false }
+        return !isEmpty
     }
     
     func numberOfRowsInSection(_ section: Int) -> Int {
@@ -105,7 +113,7 @@ extension DataProvider: DataProviderProtocol {
         fetchedResultsController.object(at: indexPath).category
     }
     
-    func loadTrackers(from date: Date, with filterString: String?) throws {
+    func loadTrackers(from date: Date, showTrackers: ShowTrackers, with filterString: String?) throws {
         let currentDayStringIndex = Date.getCurrentDayStringIndex(at: date)
         var predicates: [NSPredicate] = []
         
@@ -115,6 +123,17 @@ extension DataProvider: DataProviderProtocol {
         if let filterString {
             let filterPredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.name), filterString)
             predicates.append(filterPredicate)
+        }
+        
+        switch showTrackers {
+        case .isCompleted:
+            let completedPredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.records), date as NSDate)
+            predicates.append(completedPredicate)
+        case .isNotComplited:
+            let completedPredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.records), date as NSDate)
+            predicates.append(completedPredicate)
+        case .isAllTrackers:
+            break
         }
         
         fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
@@ -200,8 +219,6 @@ extension DataProvider: DataProviderProtocol {
     }
     
     func unpinnedTracker(unpinned newTracker: PinnedTracker, deleteTrackerAt deleteIndexPath: IndexPath) {
-      
-        
         let tracker = Tracker(
             id: newTracker.tracker.id,
             name: newTracker.tracker.name,
