@@ -1,7 +1,7 @@
 import Foundation
 
 struct TrackerRecord: Hashable {
-    let checkDate: Date
+    let checkDate: String
 }
 
 extension TrackerRecord: Equatable {

@@ -32,14 +32,14 @@ final class TrackerRecordStore: NSObject {
     func saveRecord(for trackerCoreData: TrackerCoreData, with date: Date) {
         let trackerRecordCoreData = TrackerRecordCoreData(context: context)
         trackerRecordCoreData.tracker = trackerCoreData
-        trackerRecordCoreData.date = date
+        trackerRecordCoreData.date = date.stringDateRecordFormat
         saveContext()
     }
     
     func removeRecord(for trackerCoreData: TrackerCoreData, with date: Date) {
         trackerRecordsCoreData.forEach { trackerRecordCoreData in
             guard trackerRecordCoreData.tracker == trackerCoreData,
-                  trackerRecordCoreData.date == date else { return }
+                  trackerRecordCoreData.date == date.stringDateRecordFormat else { return }
             context.delete(trackerRecordCoreData)
             saveContext()
         }
@@ -47,9 +47,9 @@ final class TrackerRecordStore: NSObject {
     
     func checkDate(from trackerCoreData: TrackerCoreData, with date: Date) -> Bool {
         var completed = false
-        
+    
         let fetchedRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
-        fetchedRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerRecordCoreData.date), date as NSDate)
+        fetchedRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerRecordCoreData.date), date.stringDateRecordFormat)
         guard let objects = try? context.fetch(fetchedRequest) else { return false }
         
         objects.forEach { trcd in

@@ -127,7 +127,7 @@ extension DataProvider: DataProviderProtocol {
         
         switch showTrackers {
         case .isCompleted:
-            let completedPredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.records), date as NSDate)
+            let completedPredicate = NSPredicate(format: "%K CONTAINS[c] %@", #keyPath(TrackerCoreData.records), date.stringDateRecordFormat)
             predicates.append(completedPredicate)
         case .isNotComplited:
             let completedPredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.records), date as NSDate)

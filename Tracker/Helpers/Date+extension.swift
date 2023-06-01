@@ -23,7 +23,13 @@ extension Date {
                 break
             }
         }
-        
         return currentNumberOfDay
+    }
+    
+    var stringDateRecordFormat: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateStyle = .short
+        return dateFormatter.string(from: self)
     }
 }

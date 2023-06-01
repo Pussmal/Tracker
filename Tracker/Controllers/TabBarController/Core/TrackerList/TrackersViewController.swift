@@ -208,12 +208,6 @@ final class TrackersViewController: UIViewController {
     @objc
     private func changedDate() {
         loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
-        
-        if currentDate == today {
-            selectedFilter = .trackersForToday
-        } else {
-            selectedFilter = .allTrackers
-        }
         presentedViewController?.dismiss(animated: false, completion: nil)
     }
     
@@ -235,7 +229,7 @@ final class TrackersViewController: UIViewController {
     
     private func getDayCountAndDayCompleted(for trackerId: String) -> (count: Int, completed: Bool) {
         let count = dataProvider.getCompletedDayCount(from: trackerId)
-        let completed = dataProvider.getCompletedDay(from: trackerId, currentDay: currentDate)
+        let completed = dataProvider.getCompletedDay(from: trackerId, currentDay: datePicker.date)
         return (count, completed)
     }
     
@@ -249,14 +243,14 @@ final class TrackersViewController: UIViewController {
             schedule: schedule,
             checkCountDay: countAndCompleted.count,
             isChecked: countAndCompleted.completed,
-            canCheck: today < currentDate,
+            canCheck: Date() < datePicker.date,
             indexPath: indexPath
         )
         let viewController = EditTrackerViewController(
             editTypeTracker: editTypeTracker,
             editTracker: editTracker,
             selectedCategory: category,
-            selectedDay: currentDate
+            selectedDay: datePicker.date
         )
         viewController.delegate = self
         let navigationViewController = UINavigationController(rootViewController: viewController)
@@ -359,14 +353,7 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch showTrackers {
-        case .isCompleted:
-            return completedTracker.count
-        case .isNotComplited:
-            return nonCompletedTracker.count
-        case .isAllTrackers:
-            return dataProvider.numberOfRowsInSection(section)
-        }
+        dataProvider.numberOfRowsInSection(section)
     }
     
     func collectionView(
@@ -381,8 +368,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         else { return UICollectionViewCell() }
         
         let countAndCompleted = getDayCountAndDayCompleted(for: tracker.id)
-        print(countAndCompleted.completed)
-        
+    
         cell.config(
             tracker: tracker,
             completedDaysCount: countAndCompleted.count,
@@ -438,7 +424,7 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
 // MARK: TrackerCollectionViewCellDelegate
 extension TrackersViewController: TrackerCollectionViewCellDelegate {
     func checkTracker(id: String?, completed: Bool) {
-        dataProvider.checkTracker(trackerId: id, completed: completed, with: currentDate)
+        dataProvider.checkTracker(trackerId: id, completed: completed, with: datePicker.date)
     }
 }
 
@@ -548,27 +534,27 @@ extension TrackersViewController: FilterCollectionViewProviderDelegate {
 // MARK: Filter methods
 extension TrackersViewController {
     func showAllTrackerForCurrentDay() {
-        loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
         showTrackers = .isAllTrackers
+        loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
         collectionView.reloadData()
     }
     
     func showTrackersForToday() {
+        showTrackers = .isAllTrackers
         loadTrackers(with: showTrackers, date: today, filterString: nil)
         datePicker.date = Date()
-        showTrackers = .isAllTrackers
         collectionView.reloadData()
     }
     
     func showCompletedTrackerForCurrentDay() {
-        loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
         showTrackers = .isCompleted
+        loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
         collectionView.reloadData()
     }
     
     func showNonCompletedTrackerForCurrentDay() {
-        loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
         showTrackers = .isNotComplited
+        loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
         collectionView.reloadData()
     }
 }
