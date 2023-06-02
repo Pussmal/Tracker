@@ -305,21 +305,22 @@ final class TrackersViewController: UIViewController {
     }
     
     private func pinTracker(tracker: Tracker, category: TrackerCategoryCoreData, indexPath: IndexPath) {
-        let newTracker = PinnedTracker(
+        let pinnedTracker = PinnedTracker(
             tracker: tracker,
             idOldCategory: category.idCategory ?? "",
-            oldIndexPath: indexPath
+            trackerIndexPath: indexPath
         )
-        dataProvider.setPinnedCategory(tracker: newTracker)
+        dataProvider.setPinnedCategory(tracker: pinnedTracker)
         collectionView.reloadData()
     }
     
     private func unpinTracker(tracker: Tracker, category: TrackerCategoryCoreData, indexPath: IndexPath) {
-        guard let indexPathInCategory = tracker.indexPathInCategory,
-              let oldIndexPath = IndexPathMarshalling().arrayFromString(string: indexPathInCategory)
-        else { return }
-        let newTracker = PinnedTracker(tracker: tracker, idOldCategory: tracker.idCategory ?? "", oldIndexPath: oldIndexPath)
-        dataProvider.unpinnedTracker(unpinned: newTracker, deleteTrackerAt: indexPath)
+        let pinnedTracker = PinnedTracker(
+            tracker: tracker,
+            idOldCategory: tracker.idCategory ?? "",
+            trackerIndexPath: indexPath
+        )
+        dataProvider.unpinnedTracker(tracker: pinnedTracker)
         collectionView.reloadData()
     }
     

@@ -49,6 +49,14 @@ final class TrackerStore: NSObject {
         saveContext()
     }
     
+    func changeTrackerCategory(_ id: NSManagedObjectID, category: TrackerCategoryCoreData, isPinned: Bool, idCadegory: String?) throws {
+        guard let object = try context.existingObject(with: id) as? TrackerCoreData else { return }
+        object.category = category
+        object.isPinned = isPinned
+        object.idCategory = idCadegory
+        saveContext()
+    }
+    
     func deleteTracker(forId id: NSManagedObjectID) {
         guard let object = try? context.existingObject(with: id) as? TrackerCoreData else { return }
         context.delete(object)
