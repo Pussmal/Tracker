@@ -5,6 +5,7 @@ public struct Constants {
     static let cornerRadius: CGFloat = 16
     
     static let hugHeight: CGFloat = 75
+    static let statisticLabelHeight: CGFloat = 90
     
     static let firstEnabledUserDefaultsKey = "enabled"
     static let creatPinnedCategory = "created"

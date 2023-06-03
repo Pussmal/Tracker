@@ -67,6 +67,8 @@ final class StatisticView: UIView {
     private func setupView() {
         backgroundColor = .clear
         layer.borderColor = UIColor.red.cgColor
+        layer.borderWidth = 1
+        layer.cornerRadius = Constants.cornerRadius
     }
     
     private func addSubviews() {

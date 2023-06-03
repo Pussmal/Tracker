@@ -6,9 +6,17 @@ final class StatisticViewController: UIViewController {
     private let statisticProvider: StatisticProviderProtocol
     
     // MARK: UI
-    private lazy var plugView: PlugView = {
-        let plugView = PlugView(frame: .zero, plug: .statistic)
-        return plugView
+    private lazy var plugView = PlugView(frame: .zero, plug: .statistic)
+    private lazy var statisticLablesArray: [StatisticView] = []
+    
+    private lazy var stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.distribution = .fillEqually
+        stackView.axis = .vertical
+        stackView.backgroundColor = .clear
+        stackView.spacing = 10
+        return stackView
     }()
     
     init(statisticProvider: StatisticProviderProtocol) {
@@ -31,6 +39,7 @@ final class StatisticViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         plugView.isHidden = statisticProvider.isTrackersInCoreData
+        statisticLablesArray.forEach { $0.isHidden = !statisticProvider.isTrackersInCoreData }
     }
     
     // MARK: - private methods
@@ -39,13 +48,41 @@ final class StatisticViewController: UIViewController {
     }
     
     private func addSubviews() {
-        view.addSubViews(plugView)
+        view.addSubViews(plugView, stackView)
+        statisticLablesArray = StatisticType.allCases.enumerated().compactMap({ (index, type)  in
+            let statisticView = StatisticView()
+            let countForStatistic: Int
+            switch type {
+            case .bestPeriod:
+                countForStatistic = statisticProvider.bestPeriod
+            case .perfectDays:
+                countForStatistic = statisticProvider.perfectDays
+            case .completedTrackers:
+                countForStatistic = statisticProvider.completedTrackers
+            case .averageValue:
+                countForStatistic = statisticProvider.averageValue
+            }
+            statisticView.config(type: type, countForStatistic: countForStatistic)
+            return statisticView
+        })
+        statisticLablesArray.forEach {
+            stackView.addArrangedSubview($0)
+        }
     }
     
     private func activateConstraints() {
         NSLayoutConstraint.activate([
             plugView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            plugView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            plugView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        
+            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.indentationFromEdges),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.indentationFromEdges)
         ])
+        
+        statisticLablesArray.forEach {
+            $0.heightAnchor.constraint(equalToConstant: Constants.statisticLabelHeight).isActive = true
+        }
+        
     }
 }
