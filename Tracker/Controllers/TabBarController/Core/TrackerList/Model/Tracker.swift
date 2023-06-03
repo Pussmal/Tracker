@@ -9,7 +9,6 @@ struct Tracker {
     let isHabit: Bool
     let isPinned: Bool
     let idCategory: String?
-    let indexPathInCategory: String?
 }
 
 extension Tracker: Equatable {

@@ -1,10 +1,12 @@
 import Foundation
 
 extension Date {
-    var getDate: Date {
-        let dateComponents = Calendar.current.dateComponents([.day, .month, .year], from: self)
-        let date = Calendar.current.date(from: dateComponents)
-        return date?.addingTimeInterval(24*3600) ?? Date()
+    var getShortDate: Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateStyle = .short
+        let date = dateFormatter.string(from: self)
+        return dateFormatter.date(from: date)
     }
     
     static func getCurrentDayStringIndex(at date: Date) -> String {

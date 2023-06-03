@@ -137,7 +137,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     func enabledCheckTrackerButton(enabled: Bool) {
-        checkTrackerButton.isEnabled = !enabled
+        checkTrackerButton.isEnabled = enabled
     }
     
     // MARK: Private methods

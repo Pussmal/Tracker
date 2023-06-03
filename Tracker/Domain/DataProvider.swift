@@ -1,6 +1,11 @@
 import UIKit
 import CoreData
 
+enum Pinned {
+    case pinned
+    case unpinned
+}
+
 protocol DataProviderDelegate: AnyObject {
     func didUpdate()
 }
@@ -27,8 +32,9 @@ protocol DataProviderProtocol {
     func resaveTracker(at indexPath: IndexPath, newTracker: Tracker, category: TrackerCategoryCoreData?) throws
     func deleteTracker(at indexPath: IndexPath) throws
     
-    func setPinnedCategory(tracker: PinnedTracker)
-    func unpinnedTracker(tracker: PinnedTracker)
+//    func setPinnedCategory(tracker: PinnedTracker)
+//    func unpinnedTracker(tracker: PinnedTracker)
+    func pinned(tracker: PinnedTracker, pinned: Pinned)
 }
 
 final class DataProvider: NSObject {
@@ -41,7 +47,7 @@ final class DataProvider: NSObject {
     }
     
     private let context: NSManagedObjectContext
-  
+    
     private let trackerStore = TrackerStore()
     private let trackerCategoryStore = TrackerCategoryStore()
     private let trackerRecordStore = TrackerRecordStore()
@@ -67,6 +73,12 @@ final class DataProvider: NSObject {
     convenience override init() {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         self.init(context: context)
+    }
+    
+    private func changePinnedCategory(trackerIndexPath indexPath: IndexPath, category: TrackerCategoryCoreData?, isPinned: Bool, idCategory: String?) {
+        let object = fetchedResultsController.object(at: indexPath)
+        try? trackerStore.changeTrackerCategory(object.objectID, category: category, isPinned: isPinned, idCadegory: idCategory)
+        try? fetchedResultsController.performFetch()
     }
 }
 
@@ -144,7 +156,7 @@ extension DataProvider: DataProviderProtocol {
     
     func getCompletedDayCount(from trackerId: String) -> Int {
         var count = 0
-
+        
         fetchedResultsController.fetchedObjects?.forEach({ tcd in
             if tcd.id == trackerId {
                 count = tcd.records?.count ?? 0
@@ -197,20 +209,22 @@ extension DataProvider: DataProviderProtocol {
         try fetchedResultsController.performFetch()
     }
     
-    func setPinnedCategory(tracker: PinnedTracker) {
-        guard let pinnedCategory = trackerCategoryStore.getTrackerCategoryCoreData(by: IndexPath(row: 0, section: 0)) else { return }
-        let object = fetchedResultsController.object(at: tracker.trackerIndexPath)
-        try? trackerStore.changeTrackerCategory(object.objectID, category: pinnedCategory, isPinned: true, idCadegory: tracker.idOldCategory)
-        try? fetchedResultsController.performFetch()
-    }
-    
-    func unpinnedTracker(tracker: PinnedTracker) {
-       guard let category = trackerCategoryStore.getTrackerCategoryCoreData(byCategoryId: tracker.idOldCategory)
-        else { return }
-       
-        let object = fetchedResultsController.object(at: tracker.trackerIndexPath)
-        try? trackerStore.changeTrackerCategory(object.objectID, category: category, isPinned: false, idCadegory: nil)
-        try? fetchedResultsController.performFetch()
+    func pinned(tracker: PinnedTracker, pinned: Pinned) {
+        var category: TrackerCategoryCoreData?
+        var isPinned: Bool = false
+        var idCategory: String?
+        switch pinned {
+        case .pinned:
+            // by default категория "Закрепленные", создана при первом запуске программы
+            category = trackerCategoryStore.getTrackerCategoryCoreData(by: IndexPath(row: 0, section: 0))
+            idCategory = tracker.idOldCategory
+            isPinned = true
+        case .unpinned:
+            guard let oldIDCategory = tracker.tracker.idCategory else { return }
+            category = trackerCategoryStore.getTrackerCategoryCoreData(byCategoryId: oldIDCategory)
+            idCategory = tracker.idOldCategory
+        }
+        changePinnedCategory(trackerIndexPath: tracker.trackerIndexPath, category: category, isPinned: isPinned, idCategory: idCategory)
     }
 }
 

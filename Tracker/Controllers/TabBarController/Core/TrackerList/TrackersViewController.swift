@@ -30,17 +30,7 @@ final class TrackersViewController: UIViewController {
     private var completedTracker: [Tracker] = []
     private var nonCompletedTracker: [Tracker] = []
     
-    private var currentDate: Date {
-        let date = datePicker.date
-        let currentDate = date.getDate
-        return currentDate
-    }
-    
-    private var today: Date {
-        let date = Date()
-        let today = date.getDate
-        return today
-    }
+    private let today = Date()
     
     private var searchBarIsEmpty: Bool {
         guard let text = searchController.searchBar.text else { return false }
@@ -303,31 +293,15 @@ final class TrackersViewController: UIViewController {
         
         return scheduleArray.joined(separator: ", ")
     }
-    
-    private func pinTracker(tracker: Tracker, category: TrackerCategoryCoreData, indexPath: IndexPath) {
-        let pinnedTracker = PinnedTracker(
-            tracker: tracker,
-            idOldCategory: category.idCategory ?? "",
-            trackerIndexPath: indexPath
-        )
-        dataProvider.setPinnedCategory(tracker: pinnedTracker)
-        collectionView.reloadData()
-    }
-    
-    private func unpinTracker(tracker: Tracker, category: TrackerCategoryCoreData, indexPath: IndexPath) {
-        let pinnedTracker = PinnedTracker(
-            tracker: tracker,
-            idOldCategory: tracker.idCategory ?? "",
-            trackerIndexPath: indexPath
-        )
-        dataProvider.unpinnedTracker(tracker: pinnedTracker)
+
+    private func pinnedTracker(tracker: PinnedTracker, isPinned: Pinned) {
+        dataProvider.pinned(tracker: tracker, pinned: isPinned)
         collectionView.reloadData()
     }
     
     private func loadTrackers(with showTrackers: ShowTrackers, date: Date, filterString searchText: String?) {
         try? dataProvider.loadTrackers(from: date, showTrackers: showTrackers, with: searchText)
     }
-         
 }
 
 // MARK: UICollectionViewDelegateFlowLayout
@@ -365,7 +339,9 @@ extension TrackersViewController: UICollectionViewDataSource {
             withReuseIdentifier: TrackerCollectionViewCell.identifier,
             for: indexPath
         ) as? TrackerCollectionViewCell,
-              let tracker = dataProvider.getTracker(at: indexPath)
+              let tracker = dataProvider.getTracker(at: indexPath),
+              let shortTodayDate = today.getShortDate,
+              let shortCurentDate = datePicker.date.getShortDate
         else { return UICollectionViewCell() }
         
         let countAndCompleted = getDayCountAndDayCompleted(for: tracker.id)
@@ -376,7 +352,8 @@ extension TrackersViewController: UICollectionViewDataSource {
             completed: countAndCompleted.completed,
             isPinned: tracker.isPinned
         )
-        cell.enabledCheckTrackerButton(enabled: today < currentDate)
+        
+        cell.enabledCheckTrackerButton(enabled: shortTodayDate >= shortCurentDate)
         cell.delegate = self
         cell.interaction = UIContextMenuInteraction( delegate: self)
         return cell
@@ -485,11 +462,13 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
             return UIMenu(children: [
                 UIAction(title: pinActionTitle) {  [weak self] _ in
                     guard let self else { return }
-                    if tracker.isPinned {
-                        self.unpinTracker(tracker: tracker, category: category, indexPath: indexPath)
-                    } else {
-                        self.pinTracker(tracker: tracker, category: category, indexPath: indexPath)
-                    }
+                    let pinnedTracker = PinnedTracker(
+                        tracker: tracker,
+                        idOldCategory: category.idCategory,
+                        trackerIndexPath: indexPath
+                    )
+                    let pinned: Pinned = tracker.isPinned ? .unpinned : .pinned
+                    self.pinnedTracker(tracker: pinnedTracker, isPinned: pinned)
                 },
                 UIAction(title: ViewControllerConstants.editActionTitle) { [weak self] _ in
                     guard let self else { return }

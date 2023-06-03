@@ -102,8 +102,7 @@ extension EditTrackerViewController: EditTrackerViewDelegate {
             schedule: datesArray,
             isHabit: editTracker.tracker.isHabit,
             isPinned: editTracker.tracker.isPinned,
-            idCategory: editTracker.tracker.idCategory,
-            indexPathInCategory: editTracker.tracker.indexPathInCategory
+            idCategory: editTracker.tracker.idCategory
         )
         
         try? dataProvider.resaveTracker(

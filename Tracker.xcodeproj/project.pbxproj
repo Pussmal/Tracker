@@ -20,7 +20,6 @@
 		5B5C03762A20949D002B7452 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 5B5C03782A20949D002B7452 /* Localizable.stringsdict */; };
 		5B5C037B2A2095F7002B7452 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 5B5C037D2A2095F7002B7452 /* Localizable.stringsdict */; };
 		5B5E993A2A276398006B6974 /* PinnedTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E99392A276398006B6974 /* PinnedTracker.swift */; };
-		5B5E993C2A276638006B6974 /* IndexPathMarshalling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E993B2A276638006B6974 /* IndexPathMarshalling.swift */; };
 		5B5E993F2A27B05C006B6974 /* FiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E993E2A27B05C006B6974 /* FiltersViewController.swift */; };
 		5B5E99422A27B2A7006B6974 /* FilterCollectionViewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E99412A27B2A7006B6974 /* FilterCollectionViewProvider.swift */; };
 		5B5E99472A27BC3F006B6974 /* FilterCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E99462A27BC3F006B6974 /* FilterCollectionViewCell.swift */; };
@@ -97,7 +96,6 @@
 		5B5C03772A20949D002B7452 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		5B5C037C2A2095F7002B7452 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		5B5E99392A276398006B6974 /* PinnedTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedTracker.swift; sourceTree = "<group>"; };
-		5B5E993B2A276638006B6974 /* IndexPathMarshalling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexPathMarshalling.swift; sourceTree = "<group>"; };
 		5B5E993E2A27B05C006B6974 /* FiltersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersViewController.swift; sourceTree = "<group>"; };
 		5B5E99412A27B2A7006B6974 /* FilterCollectionViewProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCollectionViewProvider.swift; sourceTree = "<group>"; };
 		5B5E99462A27BC3F006B6974 /* FilterCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -580,7 +578,6 @@
 			children = (
 				5BF1822F29F6BC3A00AC5510 /* UIColorMarshalling.swift */,
 				5B49769B29F7A8620072F9C0 /* ScheduleMarshalling.swift */,
-				5B5E993B2A276638006B6974 /* IndexPathMarshalling.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -662,7 +659,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5BBB6AF929E5842200027985 /* TrackerRecord.swift in Sources */,
-				5B5E993C2A276638006B6974 /* IndexPathMarshalling.swift in Sources */,
 				5B0662EA29D8632A001A5A54 /* PlugView.swift in Sources */,
 				5B7D879629D16EDD00765744 /* TrackersViewController.swift in Sources */,
 				5B5E99472A27BC3F006B6974 /* FilterCollectionViewCell.swift in Sources */,

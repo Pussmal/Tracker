@@ -49,11 +49,11 @@ final class TrackerStore: NSObject {
         saveContext()
     }
     
-    func changeTrackerCategory(_ id: NSManagedObjectID, category: TrackerCategoryCoreData, isPinned: Bool, idCadegory: String?) throws {
+    func changeTrackerCategory(_ id: NSManagedObjectID, category: TrackerCategoryCoreData?, isPinned: Bool, idCadegory: String?) throws {
         guard let object = try context.existingObject(with: id) as? TrackerCoreData else { return }
         object.category = category
         object.isPinned = isPinned
-        object.idCategory = idCadegory
+        object.idCategory = isPinned ? idCadegory : nil
         saveContext()
     }
     
@@ -78,8 +78,7 @@ final class TrackerStore: NSObject {
             schedule: scheduleMarshaling.arrayFromString(string: scheduleString),
             isHabit: trackerCoreData.isHabit,
             isPinned: trackerCoreData.isPinned,
-            idCategory: trackerCoreData.idCategory,
-            indexPathInCategory: trackerCoreData.indexPathInCategory
+            idCategory: trackerCoreData.idCategory
         )
     }
     
@@ -100,7 +99,6 @@ final class TrackerStore: NSObject {
         trackerCoreData.category = category
         trackerCoreData.isHabit = tracker.isHabit
         trackerCoreData.idCategory = tracker.idCategory
-        trackerCoreData.indexPathInCategory = tracker.indexPathInCategory
         trackerCoreData.isPinned = tracker.isPinned
     }
     
