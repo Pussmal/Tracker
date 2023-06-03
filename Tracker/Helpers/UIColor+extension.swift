@@ -27,6 +27,10 @@ extension UIColor {
     static var ypColorSelection16: UIColor? { return UIColor(named: "Color selection 16")}
     static var ypColorSelection17: UIColor? { return UIColor(named: "Color selection 17")}
     static var ypColorSelection18: UIColor? { return UIColor(named: "Color selection 18")}
+    
+    static var ypblueGradient: UIColor? { return UIColor(named: "blueGradient")}
+    static var ypgreenGradient: UIColor? { return UIColor(named: "greenGradient")}
+    static var ypredGradient: UIColor? { return UIColor(named: "redGradient")}
 }
 
 extension UIColor {

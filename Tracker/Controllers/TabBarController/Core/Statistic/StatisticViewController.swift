@@ -49,8 +49,13 @@ final class StatisticViewController: UIViewController {
     
     private func addSubviews() {
         view.addSubViews(plugView, stackView)
+        let statisticViewWidth = UIScreen.main.bounds.width - (Constants.indentationFromEdges * 2)
+        let statisticViewSize = CGSize(
+            width: statisticViewWidth,
+            height: Constants.statisticLabelHeight
+        )
         statisticLablesArray = StatisticType.allCases.enumerated().compactMap({ (index, type)  in
-            let statisticView = StatisticView()
+            let statisticView = StatisticView(frame: CGRect(origin: .zero, size: statisticViewSize))
             let countForStatistic: Int
             switch type {
             case .bestPeriod:
@@ -83,6 +88,5 @@ final class StatisticViewController: UIViewController {
         statisticLablesArray.forEach {
             $0.heightAnchor.constraint(equalToConstant: Constants.statisticLabelHeight).isActive = true
         }
-        
     }
 }
