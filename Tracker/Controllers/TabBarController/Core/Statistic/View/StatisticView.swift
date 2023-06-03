@@ -88,7 +88,7 @@ final class StatisticView: UIView {
     private func setGradient() {
         let gradient = CAGradientLayer()
         gradient.frame = self.bounds
-        gradient.locations = [0, 0.5, 0.9]
+        gradient.locations = [0, 0.5, 1]
         gradient.colors = [
             UIColor.ypredGradient?.cgColor ?? UIColor().cgColor,
             UIColor.ypgreenGradient?.cgColor ?? UIColor().cgColor,

@@ -180,6 +180,7 @@
 		5B1C3DB42A2B45F500B7A5C3 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				5B6A1DFC29D1B184006BD980 /* StatisticViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -373,7 +374,6 @@
 				5B1C3DB62A2B463900B7A5C3 /* Helper */,
 				5B1C3DB52A2B460A00B7A5C3 /* View */,
 				5B1C3DB42A2B45F500B7A5C3 /* Controller */,
-				5B6A1DFC29D1B184006BD980 /* StatisticViewController.swift */,
 			);
 			path = Statistic;
 			sourceTree = "<group>";

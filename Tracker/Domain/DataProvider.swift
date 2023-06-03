@@ -134,7 +134,7 @@ extension DataProvider: DataProviderProtocol {
         
         switch showTrackers {
         case .isCompleted:
-            let completedPredicate = NSPredicate(format: "%K CONTAINS[c] %@", #keyPath(TrackerCoreData.records), date.stringDateRecordFormat)
+            let completedPredicate = NSPredicate(format: "records.date CONTAINS[cd] %@", date.stringDateRecordFormat)
             predicates.append(completedPredicate)
         case .isNotComplited:
             let completedPredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.records), date as NSDate)
@@ -157,7 +157,6 @@ extension DataProvider: DataProviderProtocol {
                 count = tcd.records?.count ?? 0
             }
         })
-        
         return count
     }
     
