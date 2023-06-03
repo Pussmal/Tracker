@@ -15,6 +15,8 @@
 		5B0662E429D6E7DE001A5A54 /* SheduleCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0662E329D6E7DE001A5A54 /* SheduleCollectionViewCell.swift */; };
 		5B0662E629D6E8E6001A5A54 /* SheduleCollectionViewCellHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0662E529D6E8E6001A5A54 /* SheduleCollectionViewCellHelper.swift */; };
 		5B0662EA29D8632A001A5A54 /* PlugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0662E929D8632A001A5A54 /* PlugView.swift */; };
+		5B1C3DB32A2B3C6D00B7A5C3 /* StatisticView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1C3DB22A2B3C6D00B7A5C3 /* StatisticView.swift */; };
+		5B1C3DB82A2B465000B7A5C3 /* StatisticProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1C3DB72A2B465000B7A5C3 /* StatisticProvider.swift */; };
 		5B49769C29F7A8620072F9C0 /* ScheduleMarshalling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B49769B29F7A8620072F9C0 /* ScheduleMarshalling.swift */; };
 		5B49C09229ED1BCE008EE30A /* Date+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B49C09129ED1BCE008EE30A /* Date+extension.swift */; };
 		5B5C03762A20949D002B7452 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 5B5C03782A20949D002B7452 /* Localizable.stringsdict */; };
@@ -91,6 +93,8 @@
 		5B0662E329D6E7DE001A5A54 /* SheduleCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheduleCollectionViewCell.swift; sourceTree = "<group>"; };
 		5B0662E529D6E8E6001A5A54 /* SheduleCollectionViewCellHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheduleCollectionViewCellHelper.swift; sourceTree = "<group>"; };
 		5B0662E929D8632A001A5A54 /* PlugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlugView.swift; sourceTree = "<group>"; };
+		5B1C3DB22A2B3C6D00B7A5C3 /* StatisticView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticView.swift; sourceTree = "<group>"; };
+		5B1C3DB72A2B465000B7A5C3 /* StatisticProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticProvider.swift; sourceTree = "<group>"; };
 		5B49769B29F7A8620072F9C0 /* ScheduleMarshalling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleMarshalling.swift; sourceTree = "<group>"; };
 		5B49C09129ED1BCE008EE30A /* Date+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+extension.swift"; sourceTree = "<group>"; };
 		5B5C03772A20949D002B7452 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
@@ -173,6 +177,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5B1C3DB42A2B45F500B7A5C3 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		5B1C3DB52A2B460A00B7A5C3 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5B1C3DB22A2B3C6D00B7A5C3 /* StatisticView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		5B1C3DB62A2B463900B7A5C3 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				5B1C3DB72A2B465000B7A5C3 /* StatisticProvider.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
 		5B5C037E2A209609002B7452 /* Stringsdict */ = {
 			isa = PBXGroup;
 			children = (
@@ -343,6 +370,9 @@
 		5B88D8DD29D2FA7B00A325E4 /* Statistic */ = {
 			isa = PBXGroup;
 			children = (
+				5B1C3DB62A2B463900B7A5C3 /* Helper */,
+				5B1C3DB52A2B460A00B7A5C3 /* View */,
+				5B1C3DB42A2B45F500B7A5C3 /* Controller */,
 				5B6A1DFC29D1B184006BD980 /* StatisticViewController.swift */,
 			);
 			path = Statistic;
@@ -671,6 +701,7 @@
 				5B0662DC29D6A112001A5A54 /* EditCategoryView.swift in Sources */,
 				5BB5F7AE2A0E0EB300670595 /* CategoriesViewModel.swift in Sources */,
 				5B88D8E729D34D7500A325E4 /* UIViewController+extension.swift in Sources */,
+				5B1C3DB82A2B465000B7A5C3 /* StatisticProvider.swift in Sources */,
 				5B0662DE29D6A33E001A5A54 /* EditCategoryViewTextFieldHelper.swift in Sources */,
 				5B5E993F2A27B05C006B6974 /* FiltersViewController.swift in Sources */,
 				5B5E99422A27B2A7006B6974 /* FilterCollectionViewProvider.swift in Sources */,
@@ -704,6 +735,7 @@
 				5B88D8F629D442E900A325E4 /* ColorAndEmojiCollectionViewHelper.swift in Sources */,
 				5B6A1DF629D19EDB006BD980 /* UIColor+extension.swift in Sources */,
 				5B49769C29F7A8620072F9C0 /* ScheduleMarshalling.swift in Sources */,
+				5B1C3DB32A2B3C6D00B7A5C3 /* StatisticView.swift in Sources */,
 				5BF1823029F6BC3A00AC5510 /* UIColorMarshalling.swift in Sources */,
 				5B88D90129D47B5A00A325E4 /* EmojiCollectionViewCell.swift in Sources */,
 				5B88D91A29D5D87E00A325E4 /* CategoriesView.swift in Sources */,

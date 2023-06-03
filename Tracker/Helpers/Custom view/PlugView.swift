@@ -4,12 +4,14 @@ enum PlugViewType {
     case trackers
     case search
     case category
+    case statistic
     
     var text: String {
         switch self {
         case .trackers: return NSLocalizedString("Trackers plug", comment: "Text for trackers plugView")
         case .search: return NSLocalizedString("Search plug" , comment: "Text for search plugView")
         case .category: return NSLocalizedString("Category plug", comment: "Text for category plugView")
+        case .statistic: return NSLocalizedString("Statistic plug", comment: "Text for statistic plugView")
         }
     }
     
@@ -19,6 +21,8 @@ enum PlugViewType {
             return UIImage(named: "plug") ?? UIImage()
         case .search:
             return UIImage(named: "notFound") ?? UIImage()
+        case .statistic:
+            return UIImage(named: "noAnalyze") ?? UIImage()
         }
     }
 }

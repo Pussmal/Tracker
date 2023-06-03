@@ -154,7 +154,7 @@ final class TrackersViewController: UIViewController {
             
             filterButton.widthAnchor.constraint(equalToConstant: filterButtonWidth),
             filterButton.heightAnchor.constraint(equalToConstant: filterButtonHeight),
-            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -17),
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
             filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }

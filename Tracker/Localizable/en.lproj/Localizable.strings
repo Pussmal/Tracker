@@ -7,6 +7,7 @@
 "Trackers plug" = "What will we track?";
 "Search plug" = "Nothing found";
 "Category plug" = "Habits and events can be combined in meaning";
+"Statistic plug" = "Nothing to analyze";
 
 //TabBarController
 "TabBarItemTracker" = "Trackers";
@@ -39,3 +40,8 @@ AllTrackers = "All trackers";
 TrackersForToday = "Trackers for today";
 Completed = Completed;
 NotCompleted = "Not completed";
+
+"Best period" = "Best period";
+"Perfect period" = "Perfect period";
+"Completed trackers" = "Completed trackers";
+"Average Value" = "Average Value";

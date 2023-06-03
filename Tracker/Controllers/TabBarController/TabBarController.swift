@@ -34,15 +34,16 @@ final class TabBarController: UITabBarController {
         let tabBarItems: [TabBarItem] = [.tracker, .statistic]
         tabBar.tintColor = .ypBlue
         tabBar.unselectedItemTintColor = .ypGray
+        let dataProvider = DataProvider()
         
         viewControllers = tabBarItems.compactMap({ item in
             switch item {
             case .tracker:
-                let dataProvider = DataProvider()
                 let viewController = TrackersViewController(dataProvider: dataProvider)
                 return creatNavigationController(vc: viewController, title: item.title)
             case .statistic:
-                let viewController = StatisticViewController()
+                let statisticProvider = StatisticProvider(dataProvider: dataProvider)
+                let viewController = StatisticViewController(statisticProvider: statisticProvider)
                 return creatNavigationController(vc: viewController, title: item.title)
             }
         })

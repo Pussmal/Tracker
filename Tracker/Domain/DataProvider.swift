@@ -10,6 +10,10 @@ protocol DataProviderDelegate: AnyObject {
     func didUpdate()
 }
 
+protocol DataProviderStatisticProtocol: AnyObject {
+    var isTrackersInCoreData: Bool { get }
+}
+
 protocol DataProviderProtocol {
     var delegate: DataProviderDelegate? { get set }
     var numberOfSections: Int { get }
@@ -32,8 +36,6 @@ protocol DataProviderProtocol {
     func resaveTracker(at indexPath: IndexPath, newTracker: Tracker, category: TrackerCategoryCoreData?) throws
     func deleteTracker(at indexPath: IndexPath) throws
     
-//    func setPinnedCategory(tracker: PinnedTracker)
-//    func unpinnedTracker(tracker: PinnedTracker)
     func pinned(tracker: PinnedTracker, pinned: Pinned)
 }
 
@@ -91,14 +93,7 @@ extension DataProvider: DataProviderProtocol {
     var numberOfSections: Int {
         return fetchedResultsController.sections?.count ?? 0
     }
-    
-    var isTrackersInCoreData: Bool {
-        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: DataProviderConstants.entityName)
-        let result = try? context.fetch(fetchRequest)
-        guard let isEmpty = result?.isEmpty else { return false }
-        return !isEmpty
-    }
-    
+
     func numberOfRowsInSection(_ section: Int) -> Int {
         return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
@@ -228,4 +223,11 @@ extension DataProvider: DataProviderProtocol {
     }
 }
 
-
+extension DataProvider: DataProviderStatisticProtocol {
+    var isTrackersInCoreData: Bool {
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: DataProviderConstants.entityName)
+        let result = try? context.fetch(fetchRequest)
+        guard let isEmpty = result?.isEmpty else { return false }
+        return !isEmpty
+    }
+}
