@@ -12,7 +12,8 @@ protocol DataProviderDelegate: AnyObject {
 
 protocol DataProviderStatisticProtocol: AnyObject {
     var isTrackersInCoreData: Bool { get }
-    var completedTraclersAllTime: Int { get }
+    var completedTrackersAllTime: Int { get }
+    func averageValueCompletedTrackers(forDate date: Date?) -> Int
 }
 
 protocol DataProviderProtocol {
@@ -83,6 +84,19 @@ final class DataProvider: NSObject {
         try? trackerStore.changeTrackerCategory(object.objectID, category: category, isPinned: isPinned, idCadegory: idCategory)
         try? fetchedResultsController.performFetch()
     }
+    
+    private func checkDate(from trackerCoreData: TrackerCoreData, with date: Date) -> Bool {
+        var completed = false
+        guard let date = date.getShortDate as? NSDate else { return completed }
+                
+        trackerCoreData.records?.forEach({
+            if let record = $0 as? TrackerRecordCoreData,
+                let checkDate = record.date {
+                completed = checkDate == date as Date
+            }
+        })
+        return completed
+    }
 }
 
 extension DataProvider: DataProviderProtocol {
@@ -135,7 +149,8 @@ extension DataProvider: DataProviderProtocol {
         
         switch showTrackers {
         case .isCompleted:
-            let completedPredicate = NSPredicate(format: "records.date CONTAINS[cd] %@", date.stringDateRecordFormat)
+            guard let date = date.getShortDate as? NSDate else { return }
+            let completedPredicate = NSPredicate(format: "records.date CONTAINS[cd] %@", date)
             predicates.append(completedPredicate)
         case .isNotComplited:
             let completedPredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.records), date as NSDate)
@@ -167,7 +182,7 @@ extension DataProvider: DataProviderProtocol {
         guard let trackers = fetchedResultsController.fetchedObjects else { return false }
         trackers.forEach { trackerCoreData in
             if trackerCoreData.id == trackerId {
-                completed = trackerRecordStore.checkDate(from: trackerCoreData, with: currentDay)
+                completed = checkDate(from: trackerCoreData, with: currentDay)
             }
         }
         return completed
@@ -224,7 +239,12 @@ extension DataProvider: DataProviderProtocol {
 }
 
 extension DataProvider: DataProviderStatisticProtocol {
-    var completedTraclersAllTime: Int {
+    func averageValueCompletedTrackers(forDate date: Date?) -> Int {
+        print(date)
+        return 0
+    }
+    
+    var completedTrackersAllTime: Int {
         trackerRecordStore.trackerRecordsCoreData.count
     }
     

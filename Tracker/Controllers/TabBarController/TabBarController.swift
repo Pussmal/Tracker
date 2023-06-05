@@ -42,7 +42,8 @@ final class TabBarController: UITabBarController {
                 let viewController = TrackersViewController(dataProvider: dataProvider)
                 return creatNavigationController(vc: viewController, title: item.title)
             case .statistic:
-                let statisticProvider = StatisticProvider(dataProvider: dataProvider)
+                let currentDate = Date()
+                let statisticProvider = StatisticProvider(dataProvider: dataProvider, currentDay: currentDate)
                 let viewController = StatisticViewController(statisticProvider: statisticProvider)
                 return creatNavigationController(vc: viewController, title: item.title)
             }

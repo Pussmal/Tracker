@@ -10,13 +10,27 @@ protocol StatisticProviderProtocol {
 }
 
 final class StatisticProvider {
-    
     private let dataProvider: DataProviderStatisticProtocol
+    private var currentDay: Date?
     
-    init(dataProvider: DataProviderStatisticProtocol) {
+    private var imageListServiceObserver: NSObjectProtocol?
+    
+    init(dataProvider: DataProviderStatisticProtocol, currentDay: Date?) {
+        self.currentDay = currentDay
         self.dataProvider = dataProvider
+        configNotification()
     }
     
+    private func configNotification() {
+        imageListServiceObserver = NotificationCenter.default
+            .addObserver(forName: TrackersViewController.didChangeNotification,
+                         object: nil,
+                         queue: .main,
+                         using: { [weak self] notification in
+                guard let self = self else { return }
+                self.currentDay = notification.userInfo?["date"] as? Date
+            })
+    }
 }
 
 extension StatisticProvider: StatisticProviderProtocol {
@@ -29,11 +43,11 @@ extension StatisticProvider: StatisticProviderProtocol {
     }
     
     var completedTrackers: Int {
-        dataProvider.completedTraclersAllTime
+        dataProvider.completedTrackersAllTime
     }
     
     var averageValue: Int {
-        0
+        dataProvider.averageValueCompletedTrackers(forDate: currentDay)
     }
     
     var isTrackersInCoreData: Bool {

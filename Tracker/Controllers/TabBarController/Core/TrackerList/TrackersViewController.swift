@@ -8,6 +8,9 @@ enum ShowTrackers {
 
 final class TrackersViewController: UIViewController {
     
+    // MARK: - Static properties
+    static let didChangeNotification = Notification.Name(rawValue: "CurentDateDidChange")
+    
     // MARK: Constants
     private struct ViewControllerConstants {
         static let addTrackerButtonImageName = "plus"
@@ -198,7 +201,15 @@ final class TrackersViewController: UIViewController {
     @objc
     private func changedDate() {
         loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
+        sendNotification()
         presentedViewController?.dismiss(animated: false, completion: nil)
+    }
+    
+    private func sendNotification() {
+        NotificationCenter.default.post(
+            name: TrackersViewController.didChangeNotification,
+            object: self,
+            userInfo: ["date" : self.datePicker.date] )
     }
     
     @objc
@@ -355,7 +366,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         cell.enabledCheckTrackerButton(enabled: shortTodayDate >= shortCurentDate)
         cell.delegate = self
-        cell.interaction = UIContextMenuInteraction( delegate: self)
+        cell.interaction = UIContextMenuInteraction(delegate: self)
         return cell
     }
     
@@ -367,9 +378,9 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
         
-        // у нас есть дефолтная (скрытая) категория "Закрепленные", этим условием устанавливаем для нее title если она отображается, в остальных случаем тащим title из БД
         let categoryTitle = dataProvider.getSectionTitle(at: indexPath.section)
         
+        // у нас есть дефолтная (скрытая) категория "Закрепленные", этим условием устанавливаем для нее title, в остальных случаем тащим title из БД
         guard let categoryTitle, categoryTitle != Constants.pinnedCategory else {
             let pinnedCategoryTitle = NSLocalizedString("pinnedCategory", comment: "")
             view.config(title: pinnedCategoryTitle)
@@ -523,6 +534,7 @@ extension TrackersViewController {
         showTrackers = .isAllTrackers
         loadTrackers(with: showTrackers, date: today, filterString: nil)
         datePicker.date = Date()
+        sendNotification()
         collectionView.reloadData()
     }
     

@@ -64,11 +64,12 @@ final class StatisticView: UIView {
     }
     
     func config(countForStatistic: Int) {
-        statisticCountLabel.text = String(countForStatistic)
-    }
-    
-    func updatCountForStatistic(countForStatistic: Int) {
-        statisticCountLabel.text = String(countForStatistic)
+        switch statisticType {
+        case .averageValue:
+            statisticCountLabel.text = "\(String(countForStatistic)) %"
+        default:
+            statisticCountLabel.text = String(countForStatistic)
+        }
     }
     
     private func setupView() {

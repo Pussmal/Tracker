@@ -5,7 +5,7 @@ extension Date {
         let dateFormatter = DateFormatter()
         dateFormatter.timeStyle = .none
         dateFormatter.dateStyle = .short
-        let date = dateFormatter.string(from: self)
+        let date = dateFormatter.string(from: self.addingTimeInterval(24*3600))
         return dateFormatter.date(from: date)
     }
     
