@@ -21,19 +21,19 @@ final class StatisticProvider {
 
 extension StatisticProvider: StatisticProviderProtocol {
     var bestPeriod: Int {
-        6
+        0
     }
     
     var perfectDays: Int {
-        2
+        0
     }
     
     var completedTrackers: Int {
-        5
+        dataProvider.completedTraclersAllTime
     }
     
     var averageValue: Int {
-        4
+        0
     }
     
     var isTrackersInCoreData: Bool {

@@ -12,6 +12,7 @@ protocol DataProviderDelegate: AnyObject {
 
 protocol DataProviderStatisticProtocol: AnyObject {
     var isTrackersInCoreData: Bool { get }
+    var completedTraclersAllTime: Int { get }
 }
 
 protocol DataProviderProtocol {
@@ -223,6 +224,10 @@ extension DataProvider: DataProviderProtocol {
 }
 
 extension DataProvider: DataProviderStatisticProtocol {
+    var completedTraclersAllTime: Int {
+        trackerRecordStore.trackerRecordsCoreData.count
+    }
+    
     var isTrackersInCoreData: Bool {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: DataProviderConstants.entityName)
         let result = try? context.fetch(fetchRequest)

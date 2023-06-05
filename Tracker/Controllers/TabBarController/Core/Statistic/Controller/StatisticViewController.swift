@@ -40,6 +40,20 @@ final class StatisticViewController: UIViewController {
         super.viewWillAppear(animated)
         plugView.isHidden = statisticProvider.isTrackersInCoreData
         statisticLablesArray.forEach { $0.isHidden = !statisticProvider.isTrackersInCoreData }
+        statisticLablesArray.forEach {
+            var countForStatistic: Int
+            switch $0.statisticType {
+            case .bestPeriod:
+                countForStatistic = statisticProvider.bestPeriod
+            case .perfectDays:
+                countForStatistic = statisticProvider.perfectDays
+            case .completedTrackers:
+                countForStatistic = statisticProvider.completedTrackers
+            case .averageValue:
+                countForStatistic = statisticProvider.averageValue
+            }
+            $0.config(countForStatistic: countForStatistic)
+        }
     }
     
     // MARK: - private methods
@@ -55,20 +69,10 @@ final class StatisticViewController: UIViewController {
             height: Constants.statisticLabelHeight
         )
         statisticLablesArray = StatisticType.allCases.enumerated().compactMap({ (index, type)  in
-            let statisticView = StatisticView(frame: CGRect(origin: .zero, size: statisticViewSize))
-            let countForStatistic: Int
-            switch type {
-            case .bestPeriod:
-                countForStatistic = statisticProvider.bestPeriod
-            case .perfectDays:
-                countForStatistic = statisticProvider.perfectDays
-            case .completedTrackers:
-                countForStatistic = statisticProvider.completedTrackers
-            case .averageValue:
-                countForStatistic = statisticProvider.averageValue
-            }
-            statisticView.config(type: type, countForStatistic: countForStatistic)
-            return statisticView
+            return StatisticView(
+                frame: CGRect(origin: .zero, size: statisticViewSize),
+                statisticType: type
+            )
         })
         statisticLablesArray.forEach {
             stackView.addArrangedSubview($0)

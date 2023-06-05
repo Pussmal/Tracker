@@ -11,7 +11,7 @@ enum StatisticType: CaseIterable {
         case .bestPeriod:
             return NSLocalizedString("Best period", comment: "title for Best period statistic label")
         case .perfectDays:
-            return NSLocalizedString("Perfect period", comment: "title for Perfect period statistic label")
+            return NSLocalizedString("Perfect days", comment: "title for Perfect days statistic label")
         case .completedTrackers:
             return NSLocalizedString("Completed trackers", comment: "title for completed trackers statistic label")
         case .averageValue:
@@ -21,6 +21,9 @@ enum StatisticType: CaseIterable {
 }
 
 final class StatisticView: UIView {
+    
+    let statisticType: StatisticType
+    
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -48,7 +51,8 @@ final class StatisticView: UIView {
         return label
     }()
     
-    override init(frame: CGRect) {
+    init(frame: CGRect, statisticType: StatisticType ) {
+        self.statisticType = statisticType
         super.init(frame: frame)
         setupView()
         addSubviews()
@@ -59,13 +63,17 @@ final class StatisticView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func config(type: StatisticType, countForStatistic: Int) {
-        statisticNameLabel.text = type.titleStatistic
+    func config(countForStatistic: Int) {
+        statisticCountLabel.text = String(countForStatistic)
+    }
+    
+    func updatCountForStatistic(countForStatistic: Int) {
         statisticCountLabel.text = String(countForStatistic)
     }
     
     private func setupView() {
         backgroundColor = .clear
+        statisticNameLabel.text = statisticType.titleStatistic
         setGradient()
     }
     
