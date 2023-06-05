@@ -63,12 +63,12 @@ final class StatisticView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func config(countForStatistic: Int) {
+    func config(countForStatistic: String?) {
         switch statisticType {
         case .averageValue:
-            statisticCountLabel.text = "\(String(countForStatistic)) %"
+            statisticCountLabel.text = (countForStatistic ?? "error") + " " + "%"
         default:
-            statisticCountLabel.text = String(countForStatistic)
+            statisticCountLabel.text = countForStatistic
         }
     }
     

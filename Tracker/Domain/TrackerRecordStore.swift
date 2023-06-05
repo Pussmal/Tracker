@@ -2,16 +2,11 @@ import UIKit
 import CoreData
 
 final class TrackerRecordStore: NSObject {
-    
     var trackerRecordsCoreData: [TrackerRecordCoreData] {
         let fetchedRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
         fetchedRequest.returnsObjectsAsFaults = false
         guard let objects = try? context.fetch(fetchedRequest) else { return [] }
         return objects
-    }
-    
-    var countCompletedTrackersForDay: Int {
-       return 0
     }
     
     private struct TrackerRecordStoreConstants {
@@ -48,6 +43,13 @@ final class TrackerRecordStore: NSObject {
             context.delete(trackerRecordCoreData)
             saveContext()
         }
+    }
+    
+    func countCompletedTrackersFor(date: Date) -> Int {
+        let fetchedRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        fetchedRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerRecordCoreData.date), date as NSDate)
+        guard let objects = try? context.fetch(fetchedRequest) else { return 0 }
+        return objects.count
     }
         
     private func saveContext() {

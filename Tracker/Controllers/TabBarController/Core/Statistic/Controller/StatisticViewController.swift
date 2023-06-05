@@ -41,16 +41,16 @@ final class StatisticViewController: UIViewController {
         plugView.isHidden = statisticProvider.isTrackersInCoreData
         statisticLablesArray.forEach { $0.isHidden = !statisticProvider.isTrackersInCoreData }
         statisticLablesArray.forEach {
-            var countForStatistic: Int
+            var countForStatistic: String
             switch $0.statisticType {
             case .bestPeriod:
-                countForStatistic = statisticProvider.bestPeriod
+                countForStatistic = String(statisticProvider.bestPeriod)
             case .perfectDays:
-                countForStatistic = statisticProvider.perfectDays
+                countForStatistic = String(statisticProvider.perfectDays)
             case .completedTrackers:
-                countForStatistic = statisticProvider.completedTrackers
+                countForStatistic = String(statisticProvider.completedTrackers)
             case .averageValue:
-                countForStatistic = statisticProvider.averageValue
+                countForStatistic = String(format: "%.01f", statisticProvider.averageValue)
             }
             $0.config(countForStatistic: countForStatistic)
         }

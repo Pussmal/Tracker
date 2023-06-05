@@ -13,7 +13,7 @@ protocol DataProviderDelegate: AnyObject {
 protocol DataProviderStatisticProtocol: AnyObject {
     var isTrackersInCoreData: Bool { get }
     var completedTrackersAllTime: Int { get }
-    func averageValueCompletedTrackers(forDate date: Date?) -> Int
+    func averageValueCompletedTrackers(forDate date: Date?) -> Float
 }
 
 protocol DataProviderProtocol {
@@ -87,12 +87,11 @@ final class DataProvider: NSObject {
     
     private func checkDate(from trackerCoreData: TrackerCoreData, with date: Date) -> Bool {
         var completed = false
-        guard let date = date.getShortDate as? NSDate else { return completed }
-                
+        guard let date = date.getShortDate else { return completed }
         trackerCoreData.records?.forEach({
             if let record = $0 as? TrackerRecordCoreData,
                 let checkDate = record.date {
-                completed = checkDate == date as Date
+                completed = checkDate == date
             }
         })
         return completed
@@ -239,9 +238,11 @@ extension DataProvider: DataProviderProtocol {
 }
 
 extension DataProvider: DataProviderStatisticProtocol {
-    func averageValueCompletedTrackers(forDate date: Date?) -> Int {
-        print(date)
-        return 0
+    func averageValueCompletedTrackers(forDate date: Date?) -> Float {
+        guard let date = date?.getShortDate else { return 0 }
+        let completedTrackers = trackerRecordStore.countCompletedTrackersFor(date: date)
+        guard let totalTrackerPerDay = fetchedResultsController.fetchedObjects?.count else { return 0 }
+        return Float(completedTrackers) / Float(totalTrackerPerDay) * 100
     }
     
     var completedTrackersAllTime: Int {

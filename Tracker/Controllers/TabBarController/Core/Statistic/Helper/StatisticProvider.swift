@@ -5,7 +5,7 @@ protocol StatisticProviderProtocol {
     var bestPeriod: Int { get }
     var perfectDays: Int { get }
     var completedTrackers: Int { get }
-    var averageValue: Int { get }
+    var averageValue: Float { get }
     
 }
 
@@ -46,7 +46,7 @@ extension StatisticProvider: StatisticProviderProtocol {
         dataProvider.completedTrackersAllTime
     }
     
-    var averageValue: Int {
+    var averageValue: Float {
         dataProvider.averageValueCompletedTrackers(forDate: currentDay)
     }
     
