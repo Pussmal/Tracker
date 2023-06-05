@@ -35,13 +35,14 @@ final class CreateTrackerViewController: UIViewController {
     }
         
     private var tracker: Tracker?
-    private let dataProvider = DataProvider()
+    private let dataProvider: DataProviderProtocol
     
     // MARK: UI
     private var createTrackerView: CreateTrackerView!
     
     //MARK: initialization
-    init(typeTracker: TypeTracker) {
+    init(typeTracker: TypeTracker, dataProvider: DataProviderProtocol) {
+        self.dataProvider = dataProvider
         self.typeTracker = typeTracker
         super.init(nibName: nil, bundle: nil)
     }

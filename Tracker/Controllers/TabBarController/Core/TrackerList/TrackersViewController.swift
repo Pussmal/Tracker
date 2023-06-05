@@ -247,11 +247,14 @@ final class TrackersViewController: UIViewController {
             canCheck: Date() < datePicker.date,
             indexPath: indexPath
         )
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let dataProvider = DataProvider(context: context)
         let viewController = EditTrackerViewController(
             editTypeTracker: editTypeTracker,
             editTracker: editTracker,
             selectedCategory: category,
-            selectedDay: datePicker.date
+            selectedDay: datePicker.date,
+            dataProvider: dataProvider
         )
         viewController.delegate = self
         let navigationViewController = UINavigationController(rootViewController: viewController)

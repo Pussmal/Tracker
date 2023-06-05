@@ -53,7 +53,9 @@ extension TypeTrackerViewController: TypeTrackerViewDelegate {
 // MARK: create TrackerViewController
 extension TypeTrackerViewController {
     private func createTrackerViewController(typeTracker: TypeTracker) -> UINavigationController {
-        let viewController = CreateTrackerViewController(typeTracker: typeTracker)
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let dataProvider = DataProvider(context: context)
+        let viewController = CreateTrackerViewController(typeTracker: typeTracker, dataProvider: dataProvider)
         viewController.delegate = self
         let navigationViewController = UINavigationController(rootViewController: viewController)
         return navigationViewController

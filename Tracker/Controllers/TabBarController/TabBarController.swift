@@ -34,7 +34,8 @@ final class TabBarController: UITabBarController {
         let tabBarItems: [TabBarItem] = [.tracker, .statistic]
         tabBar.tintColor = .ypBlue
         tabBar.unselectedItemTintColor = .ypGray
-        let dataProvider = DataProvider()
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let dataProvider = DataProvider(context: context)
         
         viewControllers = tabBarItems.compactMap({ item in
             switch item {

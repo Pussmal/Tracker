@@ -1,4 +1,3 @@
-import UIKit
 import CoreData
 
 final class TrackerRecordStore: NSObject {
@@ -22,11 +21,6 @@ final class TrackerRecordStore: NSObject {
     
     init(context: NSManagedObjectContext) {
         self.context = context
-    }
-    
-    convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        self.init(context: context)
     }
     
     func saveRecord(for trackerCoreData: TrackerCoreData, with date: Date) {

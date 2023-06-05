@@ -35,17 +35,18 @@ final class EditTrackerViewController: UIViewController {
     }
     
     private let editTracker: EditTracker
-    private let dataProvider = DataProvider()
+    private let dataProvider: DataProviderProtocol
     
     // MARK: UI
     private var editTrackerView: EditTrackerView!
     
     //MARK: initialization
-    init(editTypeTracker: EditTypeTracker, editTracker: EditTracker, selectedCategory: TrackerCategoryCoreData, selectedDay: Date) {
+    init(editTypeTracker: EditTypeTracker, editTracker: EditTracker, selectedCategory: TrackerCategoryCoreData, selectedDay: Date, dataProvider: DataProviderProtocol) {
         self.editTypeTracker = editTypeTracker
         self.editTracker = editTracker
         self.selectedCategory = selectedCategory
         self.selectedDay = selectedDay
+        self.dataProvider = dataProvider
         super.init(nibName: nil, bundle: nil)
     }
     

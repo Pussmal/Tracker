@@ -6,7 +6,6 @@ protocol StatisticProviderProtocol {
     var perfectDays: Int { get }
     var completedTrackers: Int { get }
     var averageValue: Float { get }
-    
 }
 
 final class StatisticProvider {
@@ -21,6 +20,7 @@ final class StatisticProvider {
         configNotification()
     }
     
+    // отслеживаем изменение даты в datePicker для передачи выбранной даты в dataProvider, чтобы получить среднее значение выполненных трекеров в выбранный день
     private func configNotification() {
         imageListServiceObserver = NotificationCenter.default
             .addObserver(forName: TrackersViewController.didChangeNotification,

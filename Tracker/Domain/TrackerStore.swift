@@ -1,4 +1,3 @@
-import UIKit
 import CoreData
 
 final class TrackerStore: NSObject {
@@ -26,12 +25,7 @@ final class TrackerStore: NSObject {
     init(context: NSManagedObjectContext) {
         self.context = context
     }
-    
-    convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        self.init(context: context)
-    }
-    
+        
     func addNewTracker(_ tracker: Tracker, with category: TrackerCategoryCoreData) {
         creatTrackerCoreData(from: tracker, with: category)
         saveContext()
@@ -39,7 +33,7 @@ final class TrackerStore: NSObject {
     
     func changeTracker(_ id: NSManagedObjectID, newTracker: Tracker, category: TrackerCategoryCoreData?) throws {
         guard let object = try context.existingObject(with: id) as? TrackerCoreData else { return }
-        let colorHex = creatColorHex(with: newTracker.color)
+        let colorHex = colorMarshaling.hexStringFromColor(color: newTracker.color)
         let sheduleString = creatStringSchedule(with: newTracker.schedule)
         object.name = newTracker.name
         object.colorHex = colorHex
@@ -88,7 +82,7 @@ final class TrackerStore: NSObject {
     }
     
     private func creatTrackerCoreData(from tracker: Tracker, with category: TrackerCategoryCoreData)  {
-        let colorHex = creatColorHex(with: tracker.color)
+        let colorHex = colorMarshaling.hexStringFromColor(color: tracker.color)
         let sheduleString = creatStringSchedule(with: tracker.schedule)
         let trackerCoreData = TrackerCoreData(context: context)
         trackerCoreData.colorHex = colorHex
@@ -100,11 +94,6 @@ final class TrackerStore: NSObject {
         trackerCoreData.isHabit = tracker.isHabit
         trackerCoreData.idCategory = tracker.idCategory
         trackerCoreData.isPinned = tracker.isPinned
-    }
-    
-    private func creatColorHex(with color: UIColor?) -> String? {
-        guard let color else { return nil }
-        return colorMarshaling.hexStringFromColor(color: color)
     }
     
     private func creatStringSchedule(with arraySchedule: [String]?) -> String? {

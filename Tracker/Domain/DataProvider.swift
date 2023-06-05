@@ -1,4 +1,3 @@
-import UIKit
 import CoreData
 
 enum Pinned {
@@ -52,9 +51,9 @@ final class DataProvider: NSObject {
     
     private let context: NSManagedObjectContext
     
-    private let trackerStore = TrackerStore()
-    private let trackerCategoryStore = TrackerCategoryStore()
-    private let trackerRecordStore = TrackerRecordStore()
+    private lazy var trackerStore = TrackerStore(context: context)
+    private lazy var trackerCategoryStore = TrackerCategoryStore()
+    private lazy var trackerRecordStore = TrackerRecordStore(context: context)
     
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: DataProviderConstants.entityName)
@@ -73,12 +72,7 @@ final class DataProvider: NSObject {
     init(context: NSManagedObjectContext) {
         self.context = context
     }
-    
-    convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        self.init(context: context)
-    }
-    
+        
     private func changePinnedCategory(trackerIndexPath indexPath: IndexPath, category: TrackerCategoryCoreData?, isPinned: Bool, idCategory: String?) {
         let object = fetchedResultsController.object(at: indexPath)
         try? trackerStore.changeTrackerCategory(object.objectID, category: category, isPinned: isPinned, idCadegory: idCategory)
