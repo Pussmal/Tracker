@@ -77,6 +77,7 @@
 		5BD58D632A14CEFB00D9B4DC /* ColorPageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD58D622A14CEFB00D9B4DC /* ColorPageType.swift */; };
 		5BD58D652A15F9D400D9B4DC /* CategoriesViewControllerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD58D642A15F9D400D9B4DC /* CategoriesViewControllerViewModel.swift */; };
 		5BE404D12A1F5313009A7CBE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5BE404D32A1F5313009A7CBE /* Localizable.strings */; };
+		5BE7A3942A2F7BB50053910D /* PerfectDaysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE7A3932A2F7BB50053910D /* PerfectDaysStorage.swift */; };
 		5BF181FF29F6A07C00AC5510 /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF181FE29F6A07C00AC5510 /* TrackerStore.swift */; };
 		5BF1820129F6A08E00AC5510 /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF1820029F6A08E00AC5510 /* TrackerCategoryStore.swift */; };
 		5BF1820329F6A09E00AC5510 /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF1820229F6A09E00AC5510 /* TrackerRecordStore.swift */; };
@@ -159,6 +160,7 @@
 		5BD58D642A15F9D400D9B4DC /* CategoriesViewControllerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewControllerViewModel.swift; sourceTree = "<group>"; };
 		5BE404D22A1F5313009A7CBE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5BE404D42A1F532E009A7CBE /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		5BE7A3932A2F7BB50053910D /* PerfectDaysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfectDaysStorage.swift; sourceTree = "<group>"; };
 		5BF181FE29F6A07C00AC5510 /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		5BF1820029F6A08E00AC5510 /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		5BF1820229F6A09E00AC5510 /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
@@ -590,6 +592,7 @@
 				5BF181FE29F6A07C00AC5510 /* TrackerStore.swift */,
 				5BF1820029F6A08E00AC5510 /* TrackerCategoryStore.swift */,
 				5BF1820229F6A09E00AC5510 /* TrackerRecordStore.swift */,
+				5BE7A3932A2F7BB50053910D /* PerfectDaysStorage.swift */,
 				5BF1822E29F6BC2600AC5510 /* Helpers */,
 			);
 			path = Domain;
@@ -745,6 +748,7 @@
 				5B0662E029D6E49E001A5A54 /* SheduleViewController.swift in Sources */,
 				5BD58D652A15F9D400D9B4DC /* CategoriesViewControllerViewModel.swift in Sources */,
 				5BBB6AF729E583DC00027985 /* TrackerCategory.swift in Sources */,
+				5BE7A3942A2F7BB50053910D /* PerfectDaysStorage.swift in Sources */,
 				5BC5CB6829F90FCD008A1FFB /* DataProvider.swift in Sources */,
 				5B0662E629D6E8E6001A5A54 /* SheduleCollectionViewCellHelper.swift in Sources */,
 				5B0662DA29D6A096001A5A54 /* EditCategoryViewController.swift in Sources */,

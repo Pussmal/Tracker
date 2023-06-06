@@ -39,7 +39,7 @@ extension StatisticProvider: StatisticProviderProtocol {
     }
     
     var perfectDays: Int {
-        0
+        dataProvider.perfectDays
     }
     
     var completedTrackers: Int {

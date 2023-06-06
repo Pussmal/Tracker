@@ -12,6 +12,7 @@ protocol DataProviderDelegate: AnyObject {
 protocol DataProviderStatisticProtocol: AnyObject {
     var isTrackersInCoreData: Bool { get }
     var completedTrackersAllTime: Int { get }
+    var perfectDays: Int { get }
     func averageValueCompletedTrackers(forDate date: Date?) -> Float
 }
 
@@ -38,6 +39,8 @@ protocol DataProviderProtocol {
     func deleteTracker(at indexPath: IndexPath) throws
     
     func pinned(tracker: PinnedTracker, pinned: Pinned)
+    
+    func checkPerfectDay(forDate date: Date)
 }
 
 final class DataProvider: NSObject {
@@ -54,6 +57,7 @@ final class DataProvider: NSObject {
     private lazy var trackerStore = TrackerStore(context: context)
     private lazy var trackerCategoryStore = TrackerCategoryStore()
     private lazy var trackerRecordStore = TrackerRecordStore(context: context)
+    private lazy var perfectDaysStorage = PerfectDaysStorage.shared
     
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: DataProviderConstants.entityName)
@@ -227,9 +231,28 @@ extension DataProvider: DataProviderProtocol {
         }
         changePinnedCategory(trackerIndexPath: tracker.trackerIndexPath, category: category, isPinned: isPinned, idCategory: idCategory)
     }
+    
+    func checkPerfectDay(forDate date: Date) {
+        guard let date = date.getShortDate,
+              let totalTrackerPerDay = fetchedResultsController.fetchedObjects?.count
+        else { return }
+        let completedTrackers = trackerRecordStore.countCompletedTrackersFor(date: date)
+      
+        if totalTrackerPerDay == completedTrackers {
+            guard !perfectDaysStorage.perfectDays.contains(date) else { return }
+            perfectDaysStorage.addPerfectDay(date: date)
+        } else {
+            guard perfectDaysStorage.perfectDays.contains(date) else { return }
+            perfectDaysStorage.deletePerfectDay(date: date)
+        }
+    }
 }
 
 extension DataProvider: DataProviderStatisticProtocol {
+    var perfectDays: Int {
+        perfectDaysStorage.perfectDays.count
+    }
+    
     func averageValueCompletedTrackers(forDate date: Date?) -> Float {
         guard let date = date?.getShortDate else { return 0 }
         let completedTrackers = trackerRecordStore.countCompletedTrackersFor(date: date)

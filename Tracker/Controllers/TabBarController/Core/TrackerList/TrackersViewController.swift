@@ -120,15 +120,13 @@ final class TrackersViewController: UIViewController {
     // MARK: Override
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupView()
         addSubviews()
         activateConstraints()
         setupSearchController()
-        
-        dataProvider.delegate = self
-        
         loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
+        dataProvider.delegate = self
+        checkPerfectDay(forDate: datePicker.date)
     }
     
     // MARK: Private methods
@@ -202,6 +200,7 @@ final class TrackersViewController: UIViewController {
     private func changedDate() {
         loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
         sendNotification()
+        checkPerfectDay(forDate: datePicker.date)
         presentedViewController?.dismiss(animated: false, completion: nil)
     }
     
@@ -316,6 +315,10 @@ final class TrackersViewController: UIViewController {
     private func loadTrackers(with showTrackers: ShowTrackers, date: Date, filterString searchText: String?) {
         try? dataProvider.loadTrackers(from: date, showTrackers: showTrackers, with: searchText)
     }
+    
+    private func checkPerfectDay(forDate date: Date) {
+        dataProvider.checkPerfectDay(forDate: date)
+    }
 }
 
 // MARK: UICollectionViewDelegateFlowLayout
@@ -417,6 +420,7 @@ extension TrackersViewController: TypeTrackerViewControllerDelegate {
 extension TrackersViewController: TrackerCollectionViewCellDelegate {
     func checkTracker(id: String?, completed: Bool) {
         dataProvider.checkTracker(trackerId: id, completed: completed, with: datePicker.date)
+        checkPerfectDay(forDate: datePicker.date)
     }
 }
 
@@ -537,6 +541,7 @@ extension TrackersViewController {
         showTrackers = .isAllTrackers
         loadTrackers(with: showTrackers, date: today, filterString: nil)
         datePicker.date = Date()
+        checkPerfectDay(forDate: datePicker.date)
         sendNotification()
         collectionView.reloadData()
     }
