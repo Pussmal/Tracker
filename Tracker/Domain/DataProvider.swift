@@ -28,8 +28,8 @@ protocol DataProviderProtocol {
     
     func loadTrackers(from date: Date, showTrackers: ShowTrackers, with filterString: String?) throws
     
-    func getCompletedDayCount(from trackerId: String) -> Int
-    func getCompletedDay(from trackerId: String, currentDay: Date) -> Bool
+    func getCompletedDayCount(at indexPath: IndexPath) -> Int
+    func getCompletedDay(currentDay: Date, at indexPath: IndexPath) -> Bool
     
     func checkTracker(trackerId: String?, completed: Bool, with date: Date)
     
@@ -57,6 +57,7 @@ final class DataProvider: NSObject {
     
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: DataProviderConstants.entityName)
+        fetchRequest.returnsObjectsAsFaults = false
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(keyPath: \TrackerCoreData.category, ascending: true)
         ]
@@ -72,7 +73,7 @@ final class DataProvider: NSObject {
     init(context: NSManagedObjectContext) {
         self.context = context
     }
-        
+    
     private func changePinnedCategory(trackerIndexPath indexPath: IndexPath, category: TrackerCategoryCoreData?, isPinned: Bool, idCategory: String?) {
         let object = fetchedResultsController.object(at: indexPath)
         try? trackerStore.changeTrackerCategory(object.objectID, category: category, isPinned: isPinned, idCadegory: idCategory)
@@ -81,13 +82,17 @@ final class DataProvider: NSObject {
     
     private func checkDate(from trackerCoreData: TrackerCoreData, with date: Date) -> Bool {
         var completed = false
-        guard let date = date.getShortDate else { return completed }
-        trackerCoreData.records?.forEach({
-            if let record = $0 as? TrackerRecordCoreData,
-                let checkDate = record.date {
+        guard let date = date.getShortDate,
+              let records =  trackerCoreData.records else { return completed }
+        
+        for record in records {
+            if let record = record as? TrackerRecordCoreData,
+               let checkDate = record.date {
                 completed = checkDate == date
+                break
             }
-        })
+        }
+        
         return completed
     }
 }
@@ -101,7 +106,7 @@ extension DataProvider: DataProviderProtocol {
     var numberOfSections: Int {
         return fetchedResultsController.sections?.count ?? 0
     }
-
+    
     func numberOfRowsInSection(_ section: Int) -> Int {
         return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
@@ -158,27 +163,20 @@ extension DataProvider: DataProviderProtocol {
         delegate?.didUpdate()
     }
     
-    func getCompletedDayCount(from trackerId: String) -> Int {
-        var count = 0
-        
-        fetchedResultsController.fetchedObjects?.forEach({ tcd in
-            if tcd.id == trackerId {
-                count = tcd.records?.count ?? 0
-            }
-        })
-        return count
+    func getCompletedDayCount(at indexPath: IndexPath) -> Int {
+        fetchedResultsController.object(at: indexPath).records?.count ?? 0
     }
     
-    func getCompletedDay(from trackerId: String, currentDay: Date) -> Bool {
-        var completed = false
-        
-        guard let trackers = fetchedResultsController.fetchedObjects else { return false }
-        trackers.forEach { trackerCoreData in
-            if trackerCoreData.id == trackerId {
-                completed = checkDate(from: trackerCoreData, with: currentDay)
+    func getCompletedDay(currentDay: Date, at indexPath: IndexPath) -> Bool {
+        let currentTrackerCoreData = fetchedResultsController.object(at: indexPath)
+        guard let date = currentDay.getShortDate, let records = currentTrackerCoreData.records else { return false }
+        for record in records {
+            if let checkDate = (record as? TrackerRecordCoreData)?.date,
+               checkDate == date {
+                return true
             }
         }
-        return completed
+        return false
     }
     
     func checkTracker(trackerId: String?, completed: Bool, with date: Date) {

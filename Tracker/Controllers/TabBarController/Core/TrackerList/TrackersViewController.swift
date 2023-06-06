@@ -228,15 +228,15 @@ final class TrackersViewController: UIViewController {
         present(navigationViewController, animated: true)
     }
     
-    private func getDayCountAndDayCompleted(for trackerId: String) -> (count: Int, completed: Bool) {
-        let count = dataProvider.getCompletedDayCount(from: trackerId)
-        let completed = dataProvider.getCompletedDay(from: trackerId, currentDay: datePicker.date)
+    private func getDayCountAndDayCompleted(for trackerId: String, at indexPath: IndexPath) -> (count: Int, completed: Bool) {
+        let count = dataProvider.getCompletedDayCount(at: indexPath)
+        let completed = dataProvider.getCompletedDay(currentDay: datePicker.date, at: indexPath)
         return (count, completed)
     }
     
     private func editTracker(at tracker: Tracker, category: TrackerCategoryCoreData, indexPath: IndexPath) {
         let editTypeTracker: EditTypeTracker = tracker.isHabit ? .editHabit : .editEvent
-        let countAndCompleted = getDayCountAndDayCompleted(for: tracker.id)
+        let countAndCompleted = getDayCountAndDayCompleted(for: tracker.id, at: indexPath)
         let schedule = getSchedule(for: tracker.schedule)
         let editTracker = EditTracker(
             tracker: tracker,
@@ -358,7 +358,7 @@ extension TrackersViewController: UICollectionViewDataSource {
               let shortCurentDate = datePicker.date.getShortDate
         else { return UICollectionViewCell() }
         
-        let countAndCompleted = getDayCountAndDayCompleted(for: tracker.id)
+        let countAndCompleted = getDayCountAndDayCompleted(for: tracker.id, at: indexPath)
     
         cell.config(
             tracker: tracker,
