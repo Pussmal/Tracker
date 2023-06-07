@@ -11,6 +11,7 @@ protocol DataProviderDelegate: AnyObject {
 
 protocol DataProviderStatisticProtocol: AnyObject {
     var isTrackersInCoreData: Bool { get }
+    var bestPeriod: Int { get }
     var completedTrackersAllTime: Int { get }
     var perfectDays: Int { get }
     func averageValueCompletedTrackers(forDate date: Date?) -> Float
@@ -149,14 +150,15 @@ extension DataProvider: DataProviderProtocol {
             predicates.append(filterPredicate)
         }
         
+        guard let date = date.getShortDate as? NSDate else { return }
+        
         switch showTrackers {
         case .isCompleted:
-            guard let date = date.getShortDate as? NSDate else { return }
             let completedPredicate = NSPredicate(format: "records.date CONTAINS[cd] %@", date)
             predicates.append(completedPredicate)
         case .isNotComplited:
-            let completedPredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.records), date as NSDate)
-            predicates.append(completedPredicate)
+            let notCompletedPredicate = NSPredicate(format: "NOT records.date CONTAINS[cd] %@", date)
+            predicates.append(notCompletedPredicate)
         case .isAllTrackers:
             break
         }
@@ -237,18 +239,52 @@ extension DataProvider: DataProviderProtocol {
               let totalTrackerPerDay = fetchedResultsController.fetchedObjects?.count
         else { return }
         let completedTrackers = trackerRecordStore.countCompletedTrackersFor(date: date)
-      
-        if totalTrackerPerDay == completedTrackers {
+        
+        if totalTrackerPerDay == completedTrackers, totalTrackerPerDay != 0 {
             guard !perfectDaysStorage.perfectDays.contains(date) else { return }
-            perfectDaysStorage.addPerfectDay(date: date)
+            perfectDaysStorage.perfectDay(type: .add, at: date)
         } else {
             guard perfectDaysStorage.perfectDays.contains(date) else { return }
-            perfectDaysStorage.deletePerfectDay(date: date)
+            perfectDaysStorage.perfectDay(type: .delete, at: date)
         }
     }
 }
 
 extension DataProvider: DataProviderStatisticProtocol {
+    var bestPeriod: Int {
+        // если нет идеальных дней, значит нет идеального периода
+        guard !perfectDaysStorage.perfectDays.isEmpty else { return 0 }
+        let bestDays = perfectDaysStorage.perfectDays
+        var index = 0
+        var nextIndex = 1
+        
+        // если bestDays не пустой значит есть один идеальный день, значит лучший период 1 день
+        var bestPeriod = 1
+       
+        // если период обрывается записываю сюда сколько этот период длился
+        var bestPeriods: [Int] = []
+        
+        while index < bestDays.count {
+            if nextIndex >= bestDays.count { break }
+            let day = bestDays[index]
+            let nextDay = Calendar.current.date(byAdding: .day, value: 1, to: day)
+        
+            if nextDay == bestDays[nextIndex] {
+                bestPeriod += 1
+            } else {
+                bestPeriods.append(bestPeriod)
+                bestPeriod = 1
+            }
+            
+            index += 1
+            nextIndex += 1
+        }
+        
+        bestPeriods.append(bestPeriod)
+        let sortBestPeriods = bestPeriods.sorted(by: >)
+        return sortBestPeriods.first ?? 0
+    }
+    
     var perfectDays: Int {
         perfectDaysStorage.perfectDays.count
     }

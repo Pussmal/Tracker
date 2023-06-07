@@ -123,6 +123,7 @@ final class TrackersViewController: UIViewController {
         setupView()
         addSubviews()
         activateConstraints()
+        checkPlugView()
         setupSearchController()
         loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
         dataProvider.delegate = self
@@ -273,6 +274,7 @@ final class TrackersViewController: UIViewController {
                     guard let self = self else { return }
                     do {
                         try self.dataProvider.deleteTracker(at: trackerIndexPath)
+                        self.checkPerfectDay(forDate: self.datePicker.date)
                         self.collectionView.reloadData()
                         self.checkPlugView()
                     } catch {

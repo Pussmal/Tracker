@@ -35,7 +35,7 @@ final class StatisticProvider {
 
 extension StatisticProvider: StatisticProviderProtocol {
     var bestPeriod: Int {
-        0
+        dataProvider.bestPeriod
     }
     
     var perfectDays: Int {

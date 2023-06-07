@@ -1,5 +1,10 @@
 import Foundation
 
+enum PerfectDaysStorageType {
+    case add
+    case delete
+}
+
 final class PerfectDaysStorage {
     // MARK: Singletone
     static let shared = PerfectDaysStorage()
@@ -19,18 +24,25 @@ final class PerfectDaysStorage {
         set { userDefaults.set(newValue, forKey: Keys.perfectDays.rawValue) }
     }
     
-    func addPerfectDay(date: Date) {
+    func perfectDay(type: PerfectDaysStorageType, at date: Date) {
+        switch type {
+        case .add:
+            addPerfectDay(date: date)
+        case .delete:
+            deletePerfectDay(date: date)
+        }
+    }
+    
+    private func addPerfectDay(date: Date) {
         let dateArray = userDefaults.array(forKey: Keys.perfectDays.rawValue) as? [Date] ?? [Date]()
         let newArray = (dateArray + [date]).sorted()
         userDefaults.set(newArray, forKey: Keys.perfectDays.rawValue)
-        print(perfectDays)
     }
     
-    func deletePerfectDay(date: Date) {
+    private func deletePerfectDay(date: Date) {
         var dateArray = userDefaults.array(forKey: Keys.perfectDays.rawValue) as? [Date] ?? [Date]()
         guard let deleteIndex = dateArray.firstIndex(of: date) else { return }
         dateArray.remove(at: deleteIndex)
         userDefaults.set(dateArray, forKey: Keys.perfectDays.rawValue)
-        print(perfectDays)
     }
 }
