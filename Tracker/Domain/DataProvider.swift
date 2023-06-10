@@ -157,14 +157,13 @@ extension DataProvider: DataProviderProtocol {
             let completedPredicate = NSPredicate(format: "records.date CONTAINS[cd] %@", date)
             predicates.append(completedPredicate)
         case .isNotComplited:
-            let notCompletedPredicate = NSPredicate(format: "NOT records.date CONTAINS[cd] %@", date)
+            let notCompletedPredicate = NSPredicate(format: "NOT (records.date CONTAINS[cd] %@)", date)
             predicates.append(notCompletedPredicate)
         case .isAllTrackers:
             break
         }
         
         fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        
         try? fetchedResultsController.performFetch()
         delegate?.didUpdate()
     }
