@@ -80,6 +80,7 @@
 		5BD58D652A15F9D400D9B4DC /* CategoriesViewControllerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD58D642A15F9D400D9B4DC /* CategoriesViewControllerViewModel.swift */; };
 		5BE404D12A1F5313009A7CBE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5BE404D32A1F5313009A7CBE /* Localizable.strings */; };
 		5BE7A3942A2F7BB50053910D /* PerfectDaysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE7A3932A2F7BB50053910D /* PerfectDaysStorage.swift */; };
+		5BED28992A3467EF00EED4DF /* DataProviderStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BED28982A3467EF00EED4DF /* DataProviderStub.swift */; };
 		5BF181FF29F6A07C00AC5510 /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF181FE29F6A07C00AC5510 /* TrackerStore.swift */; };
 		5BF1820129F6A08E00AC5510 /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF1820029F6A08E00AC5510 /* TrackerCategoryStore.swift */; };
 		5BF1820329F6A09E00AC5510 /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF1820229F6A09E00AC5510 /* TrackerRecordStore.swift */; };
@@ -178,6 +179,7 @@
 		5BE7A3932A2F7BB50053910D /* PerfectDaysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfectDaysStorage.swift; sourceTree = "<group>"; };
 		5BE7A39C2A318A250053910D /* TrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BE7A39E2A318A250053910D /* TrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerTests.swift; sourceTree = "<group>"; };
+		5BED28982A3467EF00EED4DF /* DataProviderStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProviderStub.swift; sourceTree = "<group>"; };
 		5BF181FE29F6A07C00AC5510 /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		5BF1820029F6A08E00AC5510 /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		5BF1820229F6A09E00AC5510 /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
@@ -637,6 +639,7 @@
 			isa = PBXGroup;
 			children = (
 				5BE7A39E2A318A250053910D /* TrackerTests.swift */,
+				5BED28982A3467EF00EED4DF /* DataProviderStub.swift */,
 			);
 			path = TrackerTests;
 			sourceTree = "<group>";
@@ -926,6 +929,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BED28992A3467EF00EED4DF /* DataProviderStub.swift in Sources */,
 				5B2FEF812A31A59B00B5634D /* TrackerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
