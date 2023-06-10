@@ -12,14 +12,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return container
     }()
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {        
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        setupNavigationBarAppearance()
+        AnalyticsService.activate()
+        return true
+    }
+            
+    private func setupNavigationBarAppearance() {
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = UIColor.ypWhite
         appearance.titleTextAttributes = [.foregroundColor: UIColor.ypBlack ?? UIColor.black]
         UINavigationBarAppearance().titleTextAttributes = [.font: UIFont.ypMediumSize16]
         UINavigationBar.appearance().prefersLargeTitles = false
         UINavigationBar.appearance().backgroundColor = UIColor.ypWhite
-        return true
     }
     
     // MARK: - Core Data Saving support

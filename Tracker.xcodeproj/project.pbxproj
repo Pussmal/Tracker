@@ -59,6 +59,8 @@
 		5B88D91829D5D80E00A325E4 /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B88D91729D5D80E00A325E4 /* CategoriesViewController.swift */; };
 		5B88D91A29D5D87E00A325E4 /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B88D91929D5D87E00A325E4 /* CategoriesView.swift */; };
 		5B88D91C29D5EB6A00A325E4 /* CategoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B88D91B29D5EB6A00A325E4 /* CategoryCollectionViewCell.swift */; };
+		5B98F2172A3488FD00FD761D /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B98F2162A3488FD00FD761D /* AnalyticsService.swift */; };
+		5B98F21A2A34948300FD761D /* Reusable in Frameworks */ = {isa = PBXBuildFile; productRef = 5B98F2192A34948300FD761D /* Reusable */; };
 		5BAAF5582A209E89002A23AA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5BAAF55A2A209E89002A23AA /* InfoPlist.strings */; };
 		5BAAF55D2A20E6DD002A23AA /* EditCountDaysView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BAAF55C2A20E6DD002A23AA /* EditCountDaysView.swift */; };
 		5BAAF55F2A20E83B002A23AA /* CountButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BAAF55E2A20E83B002A23AA /* CountButton.swift */; };
@@ -154,6 +156,7 @@
 		5B88D91729D5D80E00A325E4 /* CategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
 		5B88D91929D5D87E00A325E4 /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
 		5B88D91B29D5EB6A00A325E4 /* CategoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCollectionViewCell.swift; sourceTree = "<group>"; };
+		5B98F2162A3488FD00FD761D /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		5BAAF5592A209E89002A23AA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5BAAF55B2A209E8D002A23AA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5BAAF55C2A20E6DD002A23AA /* EditCountDaysView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCountDaysView.swift; sourceTree = "<group>"; };
@@ -198,6 +201,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8CEAD77C6CA7C566980C6CD9 /* Pods_Tracker.framework in Frameworks */,
+				5B98F21A2A34948300FD761D /* Reusable in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -389,6 +393,7 @@
 				5BF181FD29F6A06300AC5510 /* Domain */,
 				5BF1820429F6A0EE00AC5510 /* CoreData */,
 				5B6A1DF429D19EC3006BD980 /* Helpers */,
+				5B98F2152A34884B00FD761D /* Analytics */,
 				5BE404D62A1F536F009A7CBE /* Localizable */,
 				5B7D87A529D16F0300765744 /* Resources */,
 			);
@@ -539,6 +544,14 @@
 				5B0662E329D6E7DE001A5A54 /* SheduleCollectionViewCell.swift */,
 			);
 			path = CollectionViewCell;
+			sourceTree = "<group>";
+		};
+		5B98F2152A34884B00FD761D /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				5B98F2162A3488FD00FD761D /* AnalyticsService.swift */,
+			);
+			path = Analytics;
 			sourceTree = "<group>";
 		};
 		5BAAF5602A2326BE002A23AA /* EditTracker */ = {
@@ -692,6 +705,9 @@
 			dependencies = (
 			);
 			name = Tracker;
+			packageProductDependencies = (
+				5B98F2192A34948300FD761D /* Reusable */,
+			);
 			productName = Tracker;
 			productReference = 5B7D878E29D16EDD00765744 /* Tracker.app */;
 			productType = "com.apple.product-type.application";
@@ -749,6 +765,7 @@
 			mainGroup = 5B7D878529D16EDD00765744;
 			packageReferences = (
 				5BE7A3B82A318B260053910D /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+				5B98F2182A34948300FD761D /* XCRemoteSwiftPackageReference "Reusable" */,
 			);
 			productRefGroup = 5B7D878F29D16EDD00765744 /* Products */;
 			projectDirPath = "";
@@ -879,6 +896,7 @@
 				5B6A1E0329D1D645006BD980 /* UIView+extension.swift in Sources */,
 				5B88D8F429D412E100A325E4 /* CreateTrackerView.swift in Sources */,
 				5BAAF55F2A20E83B002A23AA /* CountButton.swift in Sources */,
+				5B98F2172A3488FD00FD761D /* AnalyticsService.swift in Sources */,
 				5B88D8E929D34F9D00A325E4 /* Constants.swift in Sources */,
 				5B7D879229D16EDD00765744 /* AppDelegate.swift in Sources */,
 				5B88D8F229D4103000A325E4 /* CreateTrackerViewController.swift in Sources */,
@@ -1247,6 +1265,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5B98F2182A34948300FD761D /* XCRemoteSwiftPackageReference "Reusable" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AliSoftware/Reusable";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		5BE7A3B82A318B260053910D /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
@@ -1262,6 +1288,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5BE7A3B82A318B260053910D /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTesting;
+		};
+		5B98F2192A34948300FD761D /* Reusable */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5B98F2182A34948300FD761D /* XCRemoteSwiftPackageReference "Reusable" */;
+			productName = Reusable;
 		};
 /* End XCSwiftPackageProductDependency section */
 

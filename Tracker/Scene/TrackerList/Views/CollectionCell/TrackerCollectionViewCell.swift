@@ -1,12 +1,11 @@
 import UIKit
+import Reusable
 
 protocol TrackerCollectionViewCellDelegate: AnyObject {
     func checkTracker(id: String?, completed: Bool)
 }
 
-final class TrackerCollectionViewCell: UICollectionViewCell {
-    static let identifier = "TrackerCollectionViewCell"
-    
+final class TrackerCollectionViewCell: UICollectionViewCell, Reusable {
     weak var delegate: TrackerCollectionViewCellDelegate?
     var interaction: UIContextMenuInteraction? {
         didSet {

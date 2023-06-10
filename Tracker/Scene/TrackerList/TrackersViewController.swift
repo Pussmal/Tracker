@@ -1,12 +1,13 @@
 import UIKit
+import Reusable
 
 enum ShowTrackers {
     case isCompleted
-    case isNotComplited
+    case isNotCompleted
     case isAllTrackers
 }
 
-final class TrackersViewController: UIViewController {
+final class TrackersViewController: UIViewController, Reusable {
     
     // MARK: - Static properties
     static let didChangeNotification = Notification.Name(rawValue: "CurentDateDidChange")
@@ -27,6 +28,7 @@ final class TrackersViewController: UIViewController {
     
     // MARK: private properties
     private let searchController = UISearchController(searchResultsController: nil)
+    private let analytics = AnalyticsService()
     private var dataProvider: DataProviderProtocol
     private var selectedFilter: FilterType = .trackersForToday // by default
     private var showTrackers: ShowTrackers = .isAllTrackers // by default
@@ -72,14 +74,7 @@ final class TrackersViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(
-            UICollectionViewCell.self,
-            forCellWithReuseIdentifier: ViewControllerConstants.reuseIdentifierCell
-        )
-        collectionView.register(
-            TrackerCollectionViewCell.self,
-            forCellWithReuseIdentifier: TrackerCollectionViewCell.identifier
-        )
+        collectionView.register(cellType: TrackerCollectionViewCell.self)
         collectionView.register(
             HeaderReusableView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
@@ -130,6 +125,16 @@ final class TrackersViewController: UIViewController {
         checkPerfectDay(forDate: datePicker.date)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        reportAnalytics(event: .open, screen: .trackersList, item: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        reportAnalytics(event: .close, screen: .trackersList, item: nil)
+    }
+    
     // MARK: Private methods
     private func setupView() {
         view.backgroundColor = .ypWhite
@@ -175,7 +180,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func checkPlugView() {
-        // если трекеров в базе нет, показываем заглушку что будем искать? если есть трекеры показываем заглушку не найдено и кнопку фильтрации
+        // если трекеров в базе нет, показываем заглушку "что будем искать?". Если есть трекеры показываем заглушку "не найдено" и кнопку фильтрации
         guard dataProvider.isTrackersInCoreData else {
             plugView.config(plug: .trackers)
             UIView.animate(withDuration: 0.3) { [weak self] in
@@ -195,6 +200,7 @@ final class TrackersViewController: UIViewController {
     @objc
     private func addTrackerButtonTapped() {
         showTypeTrackerViewController()
+        reportAnalytics(event: .click, screen: .trackersList, item: .addTracker)
     }
     
     @objc
@@ -214,6 +220,7 @@ final class TrackersViewController: UIViewController {
     
     @objc
     private func filterButtonTapped() {
+        reportAnalytics(event: .click, screen: .trackersList, item: .filter)
         filterButton.showAnimation { [weak self] in
             guard let self else { return }
             self.showFilterViewController()
@@ -308,7 +315,7 @@ final class TrackersViewController: UIViewController {
         
         return scheduleArray.joined(separator: ", ")
     }
-
+    
     private func pinnedTracker(tracker: PinnedTracker, isPinned: Pinned) {
         dataProvider.pinned(tracker: tracker, pinned: isPinned)
         collectionView.reloadData()
@@ -320,6 +327,10 @@ final class TrackersViewController: UIViewController {
     
     private func checkPerfectDay(forDate date: Date) {
         dataProvider.checkPerfectDay(forDate: date)
+    }
+    
+    private func reportAnalytics(event: Event, screen: Screen, item: Item?) {
+        analytics.report(event: event, screen: screen, item: item)
     }
 }
 
@@ -354,17 +365,15 @@ extension TrackersViewController: UICollectionViewDataSource {
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: TrackerCollectionViewCell.identifier,
-            for: indexPath
-        ) as? TrackerCollectionViewCell,
+        let cell = collectionView.dequeueReusableCell(for: indexPath, cellType: TrackerCollectionViewCell.self)
+        guard
               let tracker = dataProvider.getTracker(at: indexPath),
               let shortTodayDate = today.getShortDate,
-              let shortCurentDate = datePicker.date.getShortDate
-        else { return UICollectionViewCell() }
+              let shortCurrentDate = datePicker.date.getShortDate
+        else { return cell }
         
         let countAndCompleted = getDayCountAndDayCompleted(for: tracker.id, at: indexPath)
-    
+        
         cell.config(
             tracker: tracker,
             completedDaysCount: countAndCompleted.count,
@@ -372,7 +381,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             isPinned: tracker.isPinned
         )
         
-        cell.enabledCheckTrackerButton(enabled: shortTodayDate >= shortCurentDate)
+        cell.enabledCheckTrackerButton(enabled: shortTodayDate >= shortCurrentDate)
         cell.delegate = self
         cell.interaction = UIContextMenuInteraction(delegate: self)
         return cell
@@ -423,6 +432,7 @@ extension TrackersViewController: TrackerCollectionViewCellDelegate {
     func checkTracker(id: String?, completed: Bool) {
         dataProvider.checkTracker(trackerId: id, completed: completed, with: datePicker.date)
         checkPerfectDay(forDate: datePicker.date)
+        reportAnalytics(event: .click, screen: .trackersList, item: .trackerChecked)
     }
 }
 
@@ -461,7 +471,6 @@ extension TrackersViewController: DataProviderDelegate {
 
 extension TrackersViewController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        
         guard let location = interaction.view?.convert(location, to: collectionView),
               let indexPath = collectionView.indexPathForItem(at: location),
               let tracker =  dataProvider.getTracker(at: indexPath),
@@ -493,6 +502,7 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
                 UIAction(title: ViewControllerConstants.editActionTitle) { [weak self] _ in
                     guard let self else { return }
                     self.editTracker(at: tracker, category: category, indexPath: indexPath)
+                    self.reportAnalytics(event: .click, screen: .trackersList, item: .edit)
                 },
                 UIAction(
                     title: ViewControllerConstants.deleteActionTitle,
@@ -500,6 +510,7 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
                     handler: { [weak self] _ in
                         guard let self else { return }
                         self.showActionSheepForDeleteTracker(trackerIndexPath: indexPath)
+                        self.reportAnalytics(event: .click, screen: .trackersList, item: .delete)
                     } )
             ])
         })
@@ -555,7 +566,7 @@ extension TrackersViewController {
     }
     
     func showNonCompletedTrackerForCurrentDay() {
-        showTrackers = .isNotComplited
+        showTrackers = .isNotCompleted
         loadTrackers(with: showTrackers, date: datePicker.date, filterString: nil)
         collectionView.reloadData()
     }

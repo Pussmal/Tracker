@@ -7,12 +7,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        let viewController = creatViewController()
+        let viewController = createViewController()
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
     }
     
-    private func creatViewController() -> UIViewController {
+    private func createViewController() -> UIViewController {
         let isEnabled = UserDefaults.standard.bool(forKey: Constants.firstEnabledUserDefaultsKey)
         
         if isEnabled {

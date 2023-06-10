@@ -156,7 +156,7 @@ extension DataProvider: DataProviderProtocol {
         case .isCompleted:
             let completedPredicate = NSPredicate(format: "records.date CONTAINS[cd] %@", date)
             predicates.append(completedPredicate)
-        case .isNotComplited:
+        case .isNotCompleted:
             let notCompletedPredicate = NSPredicate(format: "NOT (records.date CONTAINS[cd] %@)", date)
             predicates.append(notCompletedPredicate)
         case .isAllTrackers:
