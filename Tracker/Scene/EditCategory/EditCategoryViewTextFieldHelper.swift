@@ -27,4 +27,9 @@ extension EditCategoryViewTextFieldHelper: UITextFieldDelegate {
         
         return updatedText.count <= 38
     }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
 }

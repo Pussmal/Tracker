@@ -26,12 +26,7 @@ final class CreateTrackerViewController: UIViewController {
     private var datesArray: [String] = []
     
     private var isHabit: Bool {
-        switch typeTracker {
-        case .habit:
-            return true
-        case .event:
-            return false
-        }
+        typeTracker == .habit
     }
         
     private var tracker: Tracker?
@@ -55,18 +50,15 @@ final class CreateTrackerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        configureKeyboard()
+        
         createTrackerView = CreateTrackerView(
             frame: view.bounds,
             delegate: self,
             typeTracker: typeTracker
         )
-        
-        switch typeTracker {
-        case .habit:
-            setupView(with: ViewControllerConstants.habitTitle)
-        case .event:
-            setupView(with: ViewControllerConstants.eventTitle)
-        }
+            
+        setupView(with: isHabit ? ViewControllerConstants.habitTitle : ViewControllerConstants.eventTitle)
     }
     
     // MARK: private methods
@@ -76,8 +68,8 @@ final class CreateTrackerViewController: UIViewController {
         addScreenView(view: createTrackerView)
     }
     
-    deinit {
-        print("CreateTrackerViewController deinit")
+    private func configureKeyboard() {
+        hideKeyboardWhenTappedAround()
     }
 }
 

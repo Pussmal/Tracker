@@ -7,7 +7,7 @@ final class StatisticViewController: UIViewController {
     
     // MARK: UI
     private lazy var plugView = PlugView(frame: .zero, plug: .statistic)
-    private lazy var statisticLablesArray: [StatisticView] = []
+    private lazy var statisticViews: [StatisticView] = []
     
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
@@ -39,20 +39,20 @@ final class StatisticViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         plugView.isHidden = statisticProvider.isTrackersInCoreData
-        statisticLablesArray.forEach { $0.isHidden = !statisticProvider.isTrackersInCoreData }
-        statisticLablesArray.forEach {
-            var countForStatistic: String
+        statisticViews.forEach { $0.isHidden = !statisticProvider.isTrackersInCoreData }
+        statisticViews.forEach {
+            var textForStatistic: String
             switch $0.statisticType {
             case .bestPeriod:
-                countForStatistic = String(statisticProvider.bestPeriod)
+                textForStatistic = String(statisticProvider.bestPeriod)
             case .perfectDays:
-                countForStatistic = String(statisticProvider.perfectDays)
+                textForStatistic = String(statisticProvider.perfectDays)
             case .completedTrackers:
-                countForStatistic = String(statisticProvider.completedTrackers)
+                textForStatistic = String(statisticProvider.completedTrackers)
             case .averageValue:
-                countForStatistic = String(format: "%.01f", statisticProvider.averageValue)
+                textForStatistic = String(format: "%.01f", statisticProvider.averageValue)
             }
-            $0.config(countForStatistic: countForStatistic)
+            $0.config(countForStatistic: textForStatistic)
         }
     }
     
@@ -68,13 +68,13 @@ final class StatisticViewController: UIViewController {
             width: statisticViewWidth,
             height: Constants.statisticLabelHeight
         )
-        statisticLablesArray = StatisticType.allCases.enumerated().compactMap({ (index, type)  in
+        statisticViews = StatisticType.allCases.enumerated().compactMap({ (index, type)  in
             return StatisticView(
                 frame: CGRect(origin: .zero, size: statisticViewSize),
                 statisticType: type
             )
         })
-        statisticLablesArray.forEach {
+        statisticViews.forEach {
             stackView.addArrangedSubview($0)
         }
     }
@@ -89,7 +89,7 @@ final class StatisticViewController: UIViewController {
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.indentationFromEdges)
         ])
         
-        statisticLablesArray.forEach {
+        statisticViews.forEach {
             $0.heightAnchor.constraint(equalToConstant: Constants.statisticLabelHeight).isActive = true
         }
     }

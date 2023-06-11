@@ -26,12 +26,7 @@ final class EditTrackerViewController: UIViewController {
     private var selectedDay: Date
     
     private var isHabit: Bool {
-        switch editTypeTracker {
-        case .editHabit:
-            return true
-        case .editEvent:
-            return false
-        }
+        editTypeTracker == .editHabit
     }
     
     private let editTracker: EditTracker
@@ -82,10 +77,6 @@ final class EditTrackerViewController: UIViewController {
         view.backgroundColor = .clear
         self.title = title
         addScreenView(view: editTrackerView)
-    }
-    
-    deinit {
-        print("CreateTrackerViewController deinit")
     }
 }
 

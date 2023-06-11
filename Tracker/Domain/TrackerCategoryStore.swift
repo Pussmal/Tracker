@@ -107,11 +107,6 @@ extension TrackerCategoryStore: TrackerCategoryStoreProtocol {
     
     func getTrackerCategoryCoreData(byCategoryId id: String) -> TrackerCategoryCoreData? {
         guard let categoriesCoreData = fetchedResultsController.fetchedObjects else { return nil }
-        for datum in categoriesCoreData {
-            if id == datum.idCategory {
-                return datum
-            }
-        }
-        return nil
+        return categoriesCoreData.first(where: { id == $0.idCategory })
     }
 }

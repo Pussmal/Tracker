@@ -61,7 +61,7 @@ final class CategoryCollectionViewCell: UICollectionViewCell {
     private func bind() {
         guard let viewModel else { return }
         categoryLabel.text = viewModel.categoryLabel
-        checkmarkImageView.isHidden = viewModel.selectedCategory ? false : true
+        checkmarkImageView.isHidden = !viewModel.selectedCategory
     }
     
     private func setupView() {

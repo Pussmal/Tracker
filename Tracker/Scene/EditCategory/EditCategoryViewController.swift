@@ -23,6 +23,7 @@ final class EditCategoryViewController: UIViewController {
             delegate: self
         )
         setupView()
+        configureKeyboard()
     }
     
     private func setupView() {
@@ -42,9 +43,9 @@ final class EditCategoryViewController: UIViewController {
         }
         typeEditeCategory = type
     }
-    
-    deinit {
-        print("EditCategoryViewController deinit")
+        
+    private func configureKeyboard() {
+        hideKeyboardWhenTappedAround()
     }
     
     private func creatNewCategory(category: String)  {

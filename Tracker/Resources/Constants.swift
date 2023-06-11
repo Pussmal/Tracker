@@ -13,7 +13,7 @@ public struct Constants {
     static let firstEnabledUserDefaultsKey = "enabled"
     static let creatPinnedCategory = "created"
     
-    static let allWeekDayStringIndexArray = ["0", "1", "2", "3", "4", "5", "6"]
+    static let allWeekDayStringIndexArray = Array(0..<7).map { String($0)}
     
     static let stringForCheckedDay = NSLocalizedString("everyDay", comment: "")
     

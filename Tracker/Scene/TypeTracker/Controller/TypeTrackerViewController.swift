@@ -31,10 +31,6 @@ final class TypeTrackerViewController: UIViewController {
         title = TypeTrackerViewControllerConstants.viewControllerTitle
         addScreenView(view: typeTrackerView)
     }
-    
-    deinit {
-        print("TypeTrackerViewController deinit")
-    }
 }
 
 // MARK: TypeTrackerViewDelegate

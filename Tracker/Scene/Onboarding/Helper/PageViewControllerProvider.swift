@@ -11,7 +11,7 @@ final class PageViewControllerProvider {
 }
 
 extension PageViewControllerProvider: PageViewControllerProviderProtocol {
-    var numberOfPages: Int { return ColorPageType.allCases.count }
+    var numberOfPages: Int { ColorPageType.allCases.count }
 
     func getViewController(at index: Int) -> UIViewController? {
         viewControllers[safe: index]

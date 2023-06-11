@@ -71,7 +71,12 @@ final class DataProvider: NSObject {
             managedObjectContext: context,
             sectionNameKeyPath: DataProviderConstants.sectionNameKeyPath,
             cacheName: nil)
-        try? fetchedResultController.performFetch()
+        
+        do {
+            try fetchedResultController.performFetch()
+        } catch let error {
+            assertionFailure(error.localizedDescription)
+        }
         return fetchedResultController
     }()
     
@@ -81,8 +86,14 @@ final class DataProvider: NSObject {
     
     private func changePinnedCategory(trackerIndexPath indexPath: IndexPath, category: TrackerCategoryCoreData?, isPinned: Bool, idCategory: String?) {
         let object = fetchedResultsController.object(at: indexPath)
-        try? trackerStore.changeTrackerCategory(object.objectID, category: category, isPinned: isPinned, idCadegory: idCategory)
-        try? fetchedResultsController.performFetch()
+        
+        do {
+            try trackerStore.changeTrackerCategory(object.objectID, category: category, isPinned: isPinned, idCadegory: idCategory)
+            try fetchedResultsController.performFetch()
+            
+        } catch let error {
+            assertionFailure(error.localizedDescription)
+        }
     }
     
     private func checkDate(from trackerCoreData: TrackerCoreData, with date: Date) -> Bool {

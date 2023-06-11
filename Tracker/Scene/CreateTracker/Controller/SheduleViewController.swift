@@ -35,10 +35,6 @@ final class SheduleViewController: UIViewController {
         view.backgroundColor = .clear
         addScreenView(view: sheduleView)
     }
-    
-    deinit {
-        print("SheduleViewController deinit")
-    }
 }
 
 extension SheduleViewController: SheduleViewDelegate {

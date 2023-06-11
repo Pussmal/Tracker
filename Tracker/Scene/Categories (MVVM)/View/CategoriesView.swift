@@ -136,13 +136,13 @@ final class CategoriesView: UIView {
     }
     
     private func bind() {
-        viewModel?.hidePlugView = { [weak self] in
-            guard let self = self else { return }
-            self.plugView.isHidden = $0
+        viewModel?.hidePlugView = { [weak plugView] in
+            guard let plugView = plugView else { return }
+            plugView.isHidden = $0
         }
-        viewModel?.needToUpdateCollectionView = { [weak self] in
-            guard let self = self, $0 else { return }
-            self.categoryCollectionView.reloadData()
+        viewModel?.needToUpdateCollectionView = { [weak categoryCollectionView] in
+            guard let categoryCollectionView = categoryCollectionView, $0 else { return }
+            categoryCollectionView.reloadData()
         }
     }
     
@@ -154,15 +154,17 @@ final class CategoriesView: UIView {
             else { return UIMenu() }
             
             return UIMenu(children: [
-                UIAction(title: ViewConstant.editActionTitle) { _ in
+                UIAction(title: ViewConstant.editActionTitle) { [weak self] _ in
+                    guard let self = self else { return }
                     self.delegate?.showEditCategoryViewController(
                         type: .editCategory,
                         editCategoryString: selectedCategory.title,
                         at: indexPath
                     )
                 },
-                UIAction(title: ViewConstant.deleteActionTitle, attributes: .destructive, handler: { _ in
-                    guard let cell = self.viewModel?.categoryCellViewModel(at: indexPath) else { return }
+                UIAction(title: ViewConstant.deleteActionTitle, attributes: .destructive, handler: { [weak self] _ in
+                    guard let self = self,
+                          let cell = self.viewModel?.categoryCellViewModel(at: indexPath) else { return }
                     cell.selectedCategory ? self.delegate?.showErrorAlert() : self.delegate?.showDeleteActionSheet(deleteCategory: selectedCategory)
                 })
             ])
@@ -229,8 +231,7 @@ extension CategoriesView: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
-        guard indexPaths.count > 0 else { return nil }
-        let indexPath = indexPaths[0]
+        guard let indexPath = indexPaths.first else { return nil }
         return createContextMenu(indexPath: indexPath)
     }
 }
@@ -251,7 +252,7 @@ extension CategoriesView: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         minimumLineSpacingForSectionAt section: Int
     ) -> CGFloat {
-        0
+        .zero
     }
 }
 

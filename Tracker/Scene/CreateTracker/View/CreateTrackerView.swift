@@ -1,4 +1,5 @@
 import UIKit
+import Reusable
 
 protocol CreateTrackerViewDelegate: AnyObject {
     func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String)
@@ -7,7 +8,7 @@ protocol CreateTrackerViewDelegate: AnyObject {
     func showSchedule()
 }
 
-final class CreateTrackerView: UIView {
+final class CreateTrackerView: UIView, Reusable {
     
     // MARK: -Delegate
     weak var delegate: CreateTrackerViewDelegate?
@@ -190,6 +191,8 @@ final class CreateTrackerView: UIView {
         nameTrackerTextFieldHelper.delegate = self
         sheduleCategoryTableViewHelper.delegate = self
         
+        nameTrackerTextField.delegate = self
+        
         setupView()
         addViews()
         activateConstraints()
@@ -360,5 +363,12 @@ extension CreateTrackerView: ColorAndEmojiCollectionViewHelperDelegate {
     
     func sendSelectedColor(_ color: UIColor?) {
         self.color = color
+    }
+}
+
+extension CreateTrackerView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

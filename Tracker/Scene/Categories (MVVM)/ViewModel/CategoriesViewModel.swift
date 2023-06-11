@@ -24,10 +24,6 @@ final class CategoriesViewModel {
         self.selectedCategory = selectedCategory
         self.categoryStore = categoryStore
     }
-    
-    deinit{
-        print("CategoriesViewModel deinit")
-    }
 }
 
 // MARK: CategoriesViewModelProtocol

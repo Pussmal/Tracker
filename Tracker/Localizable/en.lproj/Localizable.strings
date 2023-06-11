@@ -1,7 +1,7 @@
 // Onboarding
 "First label onboarding text" = "Track only you want";
 "Second label onboarding text" = "Even if it's not liters of water and yoga";
-"Button title" = "Here is the technology!";
+"Onboarding button title" = "Here is the technology!";
 
 // PlugViewType
 "Trackers plug" = "What will we track?";

@@ -57,10 +57,6 @@ final class CategoriesViewController: UIViewController {
         title = CategoryViewControllerConstants.title
         addScreenView(view: сategoriesView)
     }
-    
-    deinit {
-        print("CategoryViewController deinit")
-    }
 }
 
 // MARK: CategoriesViewDelegate
