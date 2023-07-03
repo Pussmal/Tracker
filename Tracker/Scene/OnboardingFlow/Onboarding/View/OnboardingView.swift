@@ -8,24 +8,54 @@ final class OnboardingView: UIView {
     
     //MARK: - delegate
     weak var delegate: OnboardingViewDelegate?
+   
+    private var colorPage: ColorPage? {
+        didSet {
+            updateView()
+        }
+    }
     
     //MARK: - viewConstants
-    private struct viewConstants {
+    private struct ViewConstants {
         static let okButtonTitle = NSLocalizedString(
             LocalizedKey.onboardingButton.rawValue, comment: "Title for okButton"
         )
     }
     
     // MARK: - UI
-    private lazy var backgroundImageView: UIImageView = {
+    private lazy var backgroundImageView = makeBackgroundImageView()
+    private lazy var infoLabel = makeInfoLabel()
+    private lazy var okButton = makeOkButton()
+    
+    // MARK: - initialization
+   override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupView()
+        addSubview()
+        activateConstraints()
+    }
+
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: Public methods
+    public func setColorPage(colorPage: ColorPage) {
+        self.colorPage = colorPage
+    }
+}
+
+// MARK: - private methods
+private extension OnboardingView {
+    func makeBackgroundImageView() -> UIImageView {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .clear
         return imageView
-    }()
+    }
     
-    private lazy var infoLabel: UILabel = {
+    func makeInfoLabel() -> UILabel {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .black
@@ -33,12 +63,12 @@ final class OnboardingView: UIView {
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
-    }()
+    }
     
-    private lazy var okButton: TrackerButton = {
+    func makeOkButton() -> UIButton {
         let button = TrackerButton(
             frame: .zero,
-            title: viewConstants.okButtonTitle
+            title: ViewConstants.okButtonTitle
         )
         button.addTarget(
             self,
@@ -48,32 +78,21 @@ final class OnboardingView: UIView {
         button.backgroundColor = .black
         button.setTitleColor(.white, for: .normal)
         return button
-    }()
+    }
     
-    // MARK: - initialization
-    init(frame: CGRect, imageNamed: String?, infoLabelText: String?) {
-        super.init(frame: frame)
-        setupView()
-        addSubview()
-        activateConstraints()
-        
-        guard let imageNamed else { return }
-        let image = UIImage(named: imageNamed)
+    func updateView() {
+        super.layoutSubviews()
+        let image = UIImage(named: colorPage?.backgroundImageName ?? "")
         backgroundImageView.image = image
-        infoLabel.text = infoLabelText
-    }
-
-    required init(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        infoLabel.text = colorPage?.onboardingInfoText
     }
         
-    // MARK: - private methods
-    private func setupView() {
+    func setupView() {
         backgroundColor = .clear
         translatesAutoresizingMaskIntoConstraints = false
     }
     
-    private func addSubview() {
+    func addSubview() {
         addSubViews(
             backgroundImageView,
             infoLabel,
@@ -81,7 +100,7 @@ final class OnboardingView: UIView {
         )
     }
     
-    private func activateConstraints() {
+    func activateConstraints() {
         let infoLabelSideConstants: CGFloat = 14
         let infoLabelTopConstants: CGFloat = self.frame.height / 2
         let okButtonConstants: CGFloat = 20
@@ -106,7 +125,7 @@ final class OnboardingView: UIView {
     }
     
     @objc
-    private func okButtonTapped() {
+    func okButtonTapped() {
         okButton.showAnimation { [weak self] in
             guard let self = self else { return }
             self.delegate?.onboardingButtonTapped()

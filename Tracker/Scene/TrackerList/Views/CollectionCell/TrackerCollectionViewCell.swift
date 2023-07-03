@@ -1,12 +1,14 @@
 import UIKit
-import Reusable
 
 protocol TrackerCollectionViewCellDelegate: AnyObject {
     func checkTracker(id: String?, completed: Bool)
 }
 
-final class TrackerCollectionViewCell: UICollectionViewCell, Reusable {
+final class TrackerCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
+    static var defaultReuseIdentifier: String { "TrackerCell" }
+    
     weak var delegate: TrackerCollectionViewCellDelegate?
+    
     var interaction: UIContextMenuInteraction? {
         didSet {
             if let interaction { nameAndEmojiView.addInteraction(interaction) }

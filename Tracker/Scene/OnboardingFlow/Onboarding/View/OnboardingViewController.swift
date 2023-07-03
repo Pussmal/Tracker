@@ -3,21 +3,14 @@ import UIKit
 final class OnboardingViewController: UIViewController {
     
     //MARK: - private properties
-    private var colorPage: ColorPage
+    private var viewModel: OnboardingViewModelProtocol
     
     //MARK: UI
-    private lazy var onboardingView: OnboardingView = {
-        let view = OnboardingView(
-            frame: view.frame,
-            imageNamed: colorPage.backgroundImageName,
-            infoLabelText: colorPage.onboardingInfoText)
-        view.delegate = self
-        return view
-    }()
+    private lazy var onboardingView = makeOnboardingView()
     
     // MARK: - initialization
-    init(colorPage: ColorPage) {
-        self.colorPage = colorPage
+    init(viewModel: OnboardingViewModelProtocol) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -31,31 +24,47 @@ final class OnboardingViewController: UIViewController {
         setupView()
         addViews()
         activateConstraints()
+        bind()
+        viewModel.setColorOnboarding()
+    }
+}
+
+//MARK: - private methods
+private extension OnboardingViewController {
+    func makeOnboardingView() -> OnboardingView {
+        let view = OnboardingView(frame: view.bounds)
+        view.delegate = self
+        return view
     }
     
-    //MARK: - private methods
-    private func setupView() {
+    func setupView() {
         view.backgroundColor = .clear
     }
     
-    private func addViews() {
+    func addViews() {
         view.addSubview(onboardingView)
     }
     
-    private func activateConstraints() {
+    func activateConstraints() {
         NSLayoutConstraint.activate([
-           onboardingView.topAnchor.constraint(equalTo: view.topAnchor),
-           onboardingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-           onboardingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-           onboardingView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            onboardingView.topAnchor.constraint(equalTo: view.topAnchor),
+            onboardingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            onboardingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            onboardingView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
-    private func showMainViewController() {
+    func showMainViewController() {
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid configuration")}
         let tabBarVC = TabBarController()
         window.rootViewController = tabBarVC
         UserDefaults.standard.set(true, forKey: Constants.firstEnabledUserDefaultsKey)
+    }
+    
+    func bind() {
+        viewModel.updateColorPage = { [weak self] colorPage in
+            self?.onboardingView.setColorPage(colorPage: colorPage)
+        }
     }
 }
 

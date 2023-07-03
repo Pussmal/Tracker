@@ -1,5 +1,4 @@
 import UIKit
-import Reusable
 
 enum ShowTrackers {
     case isCompleted
@@ -7,7 +6,7 @@ enum ShowTrackers {
     case isAllTrackers
 }
 
-final class TrackersViewController: UIViewController, Reusable {
+final class TrackersViewController: UIViewController {
     
     // MARK: - Static properties
     static let didChangeNotification = Notification.Name(rawValue: "CurentDateDidChange")
@@ -74,7 +73,7 @@ final class TrackersViewController: UIViewController, Reusable {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(cellType: TrackerCollectionViewCell.self)
+        collectionView.register(TrackerCollectionViewCell.self)
         collectionView.register(
             HeaderReusableView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
@@ -365,12 +364,16 @@ extension TrackersViewController: UICollectionViewDataSource {
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(for: indexPath, cellType: TrackerCollectionViewCell.self)
+       
         guard
-              let tracker = dataProvider.getTracker(at: indexPath),
-              let shortTodayDate = today.getShortDate,
-              let shortCurrentDate = datePicker.date.getShortDate
-        else { return cell }
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: TrackerCollectionViewCell.defaultReuseIdentifier,
+                for: indexPath
+            ) as? TrackerCollectionViewCell,
+            let tracker = dataProvider.getTracker(at: indexPath),
+            let shortTodayDate = today.getShortDate,
+            let shortCurrentDate = datePicker.date.getShortDate
+        else { return UICollectionViewCell() }
         
         let countAndCompleted = getDayCountAndDayCompleted(for: tracker.id, at: indexPath)
         

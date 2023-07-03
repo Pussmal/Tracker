@@ -1,5 +1,4 @@
 import UIKit
-import Reusable
 
 protocol CreateTrackerViewDelegate: AnyObject {
     func sendTrackerSetup(nameTracker: String?, color: UIColor, emoji: String)
@@ -8,7 +7,7 @@ protocol CreateTrackerViewDelegate: AnyObject {
     func showSchedule()
 }
 
-final class CreateTrackerView: UIView, Reusable {
+final class CreateTrackerView: UIView {
     
     // MARK: -Delegate
     weak var delegate: CreateTrackerViewDelegate?
