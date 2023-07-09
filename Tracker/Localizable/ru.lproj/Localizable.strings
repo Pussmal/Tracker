@@ -1,0 +1,47 @@
+// Onboarding
+"First label onboarding text" = "Отслеживайте только то, что хотите";
+"Second label onboarding text" = "Даже если это не литры воды и йога";
+"Onboarding button title" = "Вот это технологии!";
+
+// PlugViewType
+"Trackers plug" = "Что будем отслеживать?";
+"Search plug" = "Ничего не найдено";
+"Category plug" = "Привычки и события можно объединить по смыслу";
+"Statistic plug" = "Анализировать пока нечего";
+
+//TabBarController
+"TabBarItemTracker" = "Трекеры";
+"TabBarItemStatistics" = "Статистика";
+
+//TypeTrackerViewController
+TypeTrackerViewControllerTitle = "Создание трекера";
+
+//TypeTrackerView
+HabitButtonTitle = "Привычка";
+EventButtonTitle = "Нерегулярное событие";
+
+//TrackersViewController
+SearchBarPlaceholderText = "Поиск";
+SearchBarCancelButtonText = "Отмена";
+deleteActionSheetMessage = "Уверены что хотите удалить трекер?";
+deleteActionTitle = "Удалить";
+cancelActionSheetButtonTitle = "Отменить";
+editActionTitle = "Редактировать";
+
+everyDay = "Каждый день";
+pinnedCategory = "Закрепленные";
+
+toPinTracker = "Закрепить";
+toUnpinTracker = "Открепить";
+
+filterTitle = "Фильтры";
+
+AllTrackers = "Все трекеры";
+TrackersForToday = "Трекеры на сегодня";
+Completed = "Завершенные";
+NotCompleted = "Не завершенные";
+   
+"Best period" = "Лучший период";
+"Perfect days" = "Идеальные дни";
+"Completed trackers" = "Трекеров завершено";
+"Average Value" = "Среднее значение";

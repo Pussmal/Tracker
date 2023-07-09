@@ -1,7 +1,34 @@
 import UIKit
 
-final class PlugView: UIStackView {
+enum PlugViewType {
+    case trackers
+    case search
+    case category
+    case statistic
     
+    var text: String {
+        switch self {
+        case .trackers: return NSLocalizedString("Trackers plug", comment: "Text for trackers plugView")
+        case .search: return NSLocalizedString("Search plug" , comment: "Text for search plugView")
+        case .category: return NSLocalizedString("Category plug", comment: "Text for category plugView")
+        case .statistic: return NSLocalizedString("Statistic plug", comment: "Text for statistic plugView")
+        }
+    }
+    
+    var image: UIImage {
+        switch self {
+        case .trackers, .category:
+            return UIImage(named: "plug") ?? UIImage()
+        case .search:
+            return UIImage(named: "notFound") ?? UIImage()
+        case .statistic:
+            return UIImage(named: "noAnalyze") ?? UIImage()
+        }
+    }
+}
+
+final class PlugView: UIStackView {
+        
     private lazy var plugImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -19,21 +46,21 @@ final class PlugView: UIStackView {
         return label
     }()
     
-    init(frame: CGRect, titleLabel: String, image: UIImage) {
+    init(frame: CGRect, plug: PlugViewType) {
         super.init(frame: frame)
         setupView()
         addSubview()
-        plugLabel.text = titleLabel
-        plugImageView.image = image
+        plugLabel.text = plug.text
+        plugImageView.image = plug.image
     }
     
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func config(title: String, image: UIImage?) {
-        plugLabel.text = title
-        plugImageView.image = image
+    func config(plug: PlugViewType) {
+        plugLabel.text = plug.text
+        plugImageView.image = plug.image
     }
     
     private func setupView() {
@@ -42,7 +69,6 @@ final class PlugView: UIStackView {
         distribution = .fill
         axis = .vertical
         spacing = 8
-        
     }
     
     private func addSubview() {

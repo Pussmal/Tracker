@@ -3,7 +3,8 @@ import UIKit
 /// Класс отвечает за перевод цвета в hex и обратно
 final class UIColorMarshalling {
     
-    func hexStringFromColor(color: UIColor) -> String {
+    func hexStringFromColor(color: UIColor?) -> String {
+        guard let color else { return "" }
         let components = color.cgColor.components
         let r: CGFloat = components?[0] ?? 0
         let g: CGFloat = components?[1] ?? 0

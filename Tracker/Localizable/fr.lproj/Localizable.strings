@@ -1,0 +1,20 @@
+// Onboarding
+"First label onboarding text" = "Suivez uniquement ce que vous voulez";
+"Second label onboarding text" = "Meme si c'est pas des litres d'eau et du yoga";
+"Button title" = "C'est la technologie!";
+
+// PlugViewType
+"Trackers plug" = "Que suivrons-nous?";
+"Search plug" = "Rien n'a ètè trouvè ";
+"Category plug" = "Les habitudes et les èvènements peuvent être combinès dans le sens";
+
+//TabBarController
+"TabBarItemTracker" = "Traqueurs";
+"TabBarItemStatistics" = "Statistiques";
+
+//TypeTrackerViewController
+TypeTrackerViewControllerTitle = "Crèation d'un traqueur";
+
+//TypeTrackerView
+habbitButtonTitle = Habitude;
+eventButtonTitle = "Pas un èvènement règulier";

@@ -1,0 +1,47 @@
+// Onboarding
+"First label onboarding text" = "Track only you want";
+"Second label onboarding text" = "Even if it's not liters of water and yoga";
+"Onboarding button title" = "Here is the technology!";
+
+// PlugViewType
+"Trackers plug" = "What will we track?";
+"Search plug" = "Nothing found";
+"Category plug" = "Habits and events can be combined in meaning";
+"Statistic plug" = "Nothing to analyze";
+
+//TabBarController
+"TabBarItemTracker" = "Trackers";
+"TabBarItemStatistics" = "Statistics";
+
+//TypeTrackerViewController
+TypeTrackerViewControllerTitle = "Create tracker";
+
+//TypeTrackerView
+HabitButtonTitle = "Habit";
+EventButtonTitle = "Not a regular event";
+
+//TrackersViewController
+SearchBarPlaceholderText = Search;
+SearchBarCancelButtonText = Cancel;
+deleteActionSheetMessage = "Delete this tracker?";
+deleteActionTitle = Delete;
+cancelActionSheetButtonTitle = Cancel;
+editActionTitle = Edit;
+
+everyDay = "Every day";
+pinnedCategory = "Pinned";
+
+toPinTracker = "To pin";
+toUnpinTracker = "To unpin";
+
+filterTitle = Filters;
+
+AllTrackers = "All trackers";
+TrackersForToday = "Trackers for today";
+Completed = Completed;
+NotCompleted = "Not completed";
+
+"Best period" = "Best period";
+"Perfect days" = "Perfect days";
+"Completed trackers" = "Completed trackers";
+"Average Value" = "Average Value";
